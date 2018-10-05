@@ -1,0 +1,19 @@
+$line-height-base: 1.5;
+$headings-margin-bottom: 1.5rem;
+
+$spacer: 1.5rem;
+$spacers: (
+  0: 0,
+  1: ($spacer * 0.5),
+  2: ($spacer * 1),
+  3: ($spacer * 1.5),
+  4: ($spacer * 2),
+  5: ($spacer * 2.5)
+);
+
+$h1-font-size: 2.488rem;
+$h2-font-size: 2.074rem;
+$h3-font-size: 1.728rem;
+$h4-font-size: 1.44rem;
+$h5-font-size: 1.2rem;
+$h6-font-size: 1.0rem;
