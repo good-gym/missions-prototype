@@ -7,9 +7,9 @@
   = f.input :radius, as: :hidden
 
   .list-group
-    - @times.each do |time|
+    = f.simple_fields_for(:time_slots) do |tsf|
       .list-group-item
-        %strong= time.inspect
-        = hidden_field_tag "times[]", time
+        %strong= tsf.object.started_at
+        = tsf.input :started_at, as: :hidden
 
   .mt-2= f.submit "Confirm", class: "btn btn-primary btn-lg btn-block"

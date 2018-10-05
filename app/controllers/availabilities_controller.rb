@@ -4,7 +4,9 @@ class AvailabilitiesController < ApplicationController
   def new
     @availability = Availability.new(default_availability_params)
     @dates = params[:dates].map { |d| Date.parse(d) } if params[:dates]
-    @times = params[:times].map { |d| Time.parse(d) } if params[:times]
+    if params[:times]
+      params[:times].each { |d| @availability.time_slots.build(started_at: Time.parse(d)) }
+    end
   end
 
   def create
@@ -41,7 +43,11 @@ class AvailabilitiesController < ApplicationController
 
   def availability_params
     params.require(:availability)
-      .permit(:radius, postcode_attributes: %i[postcode])
+      .permit(
+        :radius,
+        postcode_attributes: %i[postcode],
+        time_slots_attributes: %i[started_at]
+      )
       .merge(owner: current_user)
   end
 end

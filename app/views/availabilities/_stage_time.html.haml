@@ -3,6 +3,8 @@
     = pf.input :postcode, as: :hidden
   = f.input :radius, as: :hidden
 
+  - matches = Availability.on_days(@dates).grouped_by_time
+
   %table.table
     %thead
       %tr
@@ -17,5 +19,9 @@
             - time = Time.zone.parse("#{date} #{8+i}:00:00")
             %td.text-center
               = check_box_tag("times[]", time, false)
+              - if matches[time].present?
+                %span.badge.badge-info
+                  #{matches[time]} match
+
 
   %p= f.submit "Select times", class: "btn btn-secondary btn-lg btn-block"

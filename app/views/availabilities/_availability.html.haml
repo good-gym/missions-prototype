@@ -1,5 +1,12 @@
 .list-group-item
   %p
     Running #{availability.radius}km from #{availability.postcode}
+
+  .row
+    - availability.time_slots.each do |time_slot|
+      .col-3
+        .card
+          .card-body
+            = time_slot.started_at
   %small
     Booked on #{availability.created_at}
