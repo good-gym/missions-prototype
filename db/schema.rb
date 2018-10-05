@@ -12,10 +12,13 @@
 
 ActiveRecord::Schema.define(version: 2018_10_05_144202) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "availabilities", force: :cascade do |t|
     t.string "owner_type"
-    t.integer "owner_id"
-    t.integer "postcode_id"
+    t.bigint "owner_id"
+    t.bigint "postcode_id"
     t.float "radius"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -25,23 +28,22 @@ ActiveRecord::Schema.define(version: 2018_10_05_144202) do
 
   create_table "coaches", force: :cascade do |t|
     t.string "name"
-    t.integer "postcode_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["postcode_id"], name: "index_coaches_on_postcode_id"
   end
 
   create_table "postcodes", force: :cascade do |t|
     t.string "postcode"
     t.float "lat"
     t.float "lng"
+    t.jsonb "geodata", default: "{}", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["postcode"], name: "index_postcodes_on_postcode", unique: true
   end
 
   create_table "referrals", force: :cascade do |t|
-    t.integer "coach_id"
+    t.bigint "coach_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["coach_id"], name: "index_referrals_on_coach_id"
@@ -54,11 +56,14 @@ ActiveRecord::Schema.define(version: 2018_10_05_144202) do
   end
 
   create_table "time_slots", force: :cascade do |t|
-    t.integer "availability_id"
+    t.bigint "availability_id"
     t.datetime "started_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["availability_id"], name: "index_time_slots_on_availability_id"
   end
 
+  add_foreign_key "availabilities", "postcodes"
+  add_foreign_key "referrals", "coaches"
+  add_foreign_key "time_slots", "availabilities"
 end

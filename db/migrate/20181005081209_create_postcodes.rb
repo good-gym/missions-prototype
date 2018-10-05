@@ -4,6 +4,7 @@ class CreatePostcodes < ActiveRecord::Migration[5.2]
       t.string :postcode
       t.float :lat
       t.float :lng
+      t.jsonb :geodata, null: false, default: "{}"
 
       t.timestamps
     end
