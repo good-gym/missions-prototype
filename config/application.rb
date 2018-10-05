@@ -19,6 +19,8 @@ Bundler.require(*Rails.groups)
 
 module GoodgymMissions
   class Application < Rails::Application
+    config.time_zone = "London"
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
 
