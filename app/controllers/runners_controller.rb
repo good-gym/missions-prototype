@@ -14,7 +14,7 @@ class RunnersController < ApplicationController
   def create
     @runner = Runner.new(runner_params)
     if @runner.save
-      redirect_to runners_path
+      redirect_to runner_path(@runner)
     else
       render :new
     end

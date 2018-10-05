@@ -9,5 +9,26 @@
     = csp_meta_tag
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
-  %body.pt-3
+  %body
+    %nav.navbar.mb-1{ class: current_user.is_a?(Referrer) ? "bg-dark navbar-dark" : "bg-light navbar-light" }
+      = link_to "Home", root_path, class: "navbar-brand"
+
+      - if current_user
+        .dropdown
+          %button#dropdownMenuButton.btn.btn-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :type => "button"}
+            = image_tag(avatar_icon_url(current_user), title: current_user.name, width: 30, height: 30, class: "avatar")
+            = current_user.name
+          .dropdown-menu{"aria-labelledby" => "dropdownMenuButton"}
+            = button_to "Signout", sessions_path, method: :delete, class: "dropdown-item btn btn-link"
+      - else
+        = link_to "Login", root_path
     = yield
+
+    %footer.footer.bg-light.py-1.mt-4
+      .container.small.d-flex.justify-content-between
+        %p
+          This is a prototype for #{link_to("GoodGym", "https://www.goodgym.org")}.
+        %p
+          %a{ href: %[javascript:void((function(d){if(self!=top||d.getElementById('toolbar')&&d.getElementById('toolbar').getAttribute('data-resizer'))return false;d.write('<!DOCTYPE HTML><html style="opacity:0;"><head><meta charset="utf-8"/></head><body><a data-viewport="375%C3%97667" class="active">Mobile</a><script src="https://lab.maltewassermann.com/viewport-resizer/resizer.min.js"></script></body></html>')})(document));] }
+            Mobile
+            %i.fa.fa-mobile
