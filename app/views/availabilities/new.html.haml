@@ -1,0 +1,17 @@
+.container
+  %h2 Book new mission
+  - if stage != :first
+    %p
+      Running
+      %strong #{@availability.radius}km
+      from
+      %strong= @availability.postcode
+      %br
+      Preferences:
+      %span.text-muted Heavy lifting, cats, dogs
+
+  = case stage
+  - when :first then render "stage_first"
+  - when :date then render "stage_date"
+  - when :time then render "stage_time"
+  - when :confirm then render "stage_confirm"

@@ -1,0 +1,22 @@
+= simple_form_for(@availability, url: new_availability_path, method: "get") do |f|
+  = f.simple_fields_for(:postcode) do |pf|
+    = pf.input :postcode, label: "Running from", required: true
+
+  .row
+    .col-8
+      = f.input :radius, as: :range, label: "Running distance", required: true,
+        input_html: { oninput: "radius_output.value = availability_radius.value", step: 2.5, min: 2.5, max: 50 }
+    .col-4.pt-4
+      %output#radius_output{ name: "radius-output" }= @availability.radius
+      km
+
+  %p.mb-0 Preferences
+  %p.text-muted
+    Heavy lifting, cats, dogs
+
+  %h3 When are you free?
+  = f.submit "Select a new time", class: "btn btn-secondary"
+
+  %hr
+
+  %button.disabled.btn.btn-secondary.btn-lg.btn-block{ type: "button" } Confirm

@@ -1,0 +1,21 @@
+= simple_form_for(@availability, url: new_availability_path, method: "get") do |f|
+  = f.simple_fields_for :postcode do |pf|
+    = pf.input :postcode, as: :hidden
+  = f.input :radius, as: :hidden
+
+  %table.table
+    %thead
+      %tr
+        %th
+        - @dates.each do |date|
+          %th.text-center= date.to_s(:long)
+    %tbody
+      - 12.times do |i|
+        %tr
+          %td #{8 + i}:00
+          - @dates.each do |date|
+            - time = Time.zone.parse("#{date} #{8+i}:00:00")
+            %td.text-center
+              = check_box_tag("times[]", time, false)
+
+  %p= f.submit "Select times", class: "btn btn-secondary btn-lg btn-block"

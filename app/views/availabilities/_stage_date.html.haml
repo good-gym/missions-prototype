@@ -1,0 +1,38 @@
+%h3 When are you free?
+
+= simple_form_for(@availability, url: new_availability_path, method: "get") do |f|
+  = f.simple_fields_for :postcode do |pf|
+    = pf.input :postcode, as: :hidden
+  = f.input :radius, as: :hidden
+
+  - calendar = Calendar.new(Date.today.beginning_of_month)
+  .card.mb-2{ style: "margin-left: -15px; margin-right: -15px;"}
+    .card-header
+      .d-flex.justify-content-between
+        %span <
+        = calendar.date.to_s(:month_year)
+        %span >
+    %table.table.table-sm.w-100
+      %thead.text-uppercase
+        %tr
+          %th.text-center Mon
+          %th.text-center Tue
+          %th.text-center Wed
+          %th.text-center Thu
+          %th.text-center Fri
+          %th.text-center Sat
+          %th.text-center Sun
+      %tbody
+        - calendar.weeks.each do |week|
+          %tr
+            - week.each do |day|
+              %td.text-center
+                - if day.month == calendar.date.month
+                  %label
+                    = day.day
+                    %br
+                    = check_box_tag("dates[]", day, false, disabled: day.past?)
+                - else
+                  .text-muted= day.day
+
+  %p= f.submit "Select days", class: "btn btn-secondary btn-lg btn-block"

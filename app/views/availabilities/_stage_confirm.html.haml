@@ -1,0 +1,15 @@
+%h3 Times
+
+= simple_form_for(@availability) do |f|
+  = f.error_notification
+  = f.simple_fields_for :postcode do |pf|
+    = pf.input :postcode, as: :hidden
+  = f.input :radius, as: :hidden
+
+  .list-group
+    - @times.each do |time|
+      .list-group-item
+        %strong= time.inspect
+        = hidden_field_tag "times[]", time
+
+  .mt-2= f.submit "Confirm", class: "btn btn-primary btn-lg btn-block"
