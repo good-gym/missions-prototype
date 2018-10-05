@@ -1,0 +1,13 @@
+.container
+  .title-with-button
+    %h1= @runner.name
+    = login_as_button(@runner)
+
+  %h3 Slots Booked
+  .list-group
+    - @runner.availabilities.each do |availability|
+      .list-group-item
+        %p
+          Running #{availability.radius}km from #{availability.postcode}
+        %small
+          Booked on #{availability.created_at}

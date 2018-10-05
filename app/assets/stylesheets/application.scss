@@ -1,2 +1,13 @@
 @import "bootstrap_variables";
 @import "bootstrap/scss/bootstrap";
+
+.title-with-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  @include media-breakpoint-up(md) {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}

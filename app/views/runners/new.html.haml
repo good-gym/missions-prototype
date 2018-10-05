@@ -1,0 +1,8 @@
+.container
+  %h1 New runner
+
+  = simple_form_for(@runner) do |f|
+    = f.error_notification
+
+    = f.input :name
+    = f.submit class: "btn btn-primary"
