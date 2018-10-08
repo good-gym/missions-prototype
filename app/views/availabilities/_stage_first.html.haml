@@ -1,6 +1,5 @@
 = simple_form_for(@availability, url: new_availability_path, method: "get") do |f|
-  = f.simple_fields_for(:postcode) do |pf|
-    = pf.input :postcode, label: "Running from", required: true
+  = f.input :postcode_str, label: "Running from", required: true
 
   .row
     .col-8

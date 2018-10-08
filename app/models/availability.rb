@@ -1,10 +1,8 @@
 class Availability < ApplicationRecord
+  include Postcodeable
   belongs_to :owner, polymorphic: true
-  belongs_to :postcode
 
   has_many :time_slots
-
-  accepts_nested_attributes_for :postcode
   accepts_nested_attributes_for :time_slots
 
   validates :time_slots, length: { minimum: 1 }

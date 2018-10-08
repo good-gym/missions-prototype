@@ -1,4 +1,11 @@
 class Postcode < ApplicationRecord
+  validates :postcode, uniqueness: true, presence: true, postcode: true
+  after_commit :locate!
+
+  def postcode=(str)
+    super UKPostcode.parse(str).to_s
+  end
+
   def to_s
     postcode
   end

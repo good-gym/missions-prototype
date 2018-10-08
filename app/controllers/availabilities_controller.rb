@@ -44,8 +44,7 @@ class AvailabilitiesController < ApplicationController
   def availability_params
     params.require(:availability)
       .permit(
-        :radius,
-        postcode_attributes: %i[postcode],
+        :postcode_str, :radius,
         time_slots_attributes: %i[started_at]
       )
       .merge(owner: current_user)
