@@ -1,0 +1,22 @@
+.card
+  .card-header
+    .d-flex.justify-content-between
+      %span <
+      = calendar.date.to_s(:month_year)
+      %span >
+  %table.table.table-sm.w-100
+    %thead.text-uppercase
+      %tr
+        %th.text-center Mon
+        %th.text-center Tue
+        %th.text-center Wed
+        %th.text-center Thu
+        %th.text-center Fri
+        %th.text-center Sat
+        %th.text-center Sun
+    %tbody
+      - calendar.weeks.each do |week|
+        %tr
+          - week.each do |day|
+            %td.text-center
+              = yield(day)

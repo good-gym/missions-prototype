@@ -1,0 +1,58 @@
+.container
+  #map.mb-2{ style: "height: 400px" }
+
+  - date = params[:date] ? Date.parse(params[:date]) : Date.today
+  - date = Time.parse(params[:time]) if params[:time]
+  - calendar = Calendar.new(date || Date.today)
+  - matches = Availability.in_month(calendar.date).grouped_by_date
+
+  - day_matches = Availability.on_days(date.to_date)
+  - time_slots = day_matches.joins(:time_slots).group(:started_at).pluck("started_at, count(*)")
+
+  %h2
+    = date.to_s(:short)
+  .row.mb-2
+    - time_slots.each do |time, count|
+      .col
+        = link_to({ time: time }, class: "card") do
+          .card-body
+            %h4= time.to_s(:time_of_day)
+            %span.badge.badge-secondary= count
+
+  - @data = day_matches.map { |a| [a.postcode.lat, a.postcode.lng, a.radius] }
+
+  = render_calendar(calendar: calendar, matches: matches) do |day|
+    - if day.month == calendar.date.month
+      = link_to(day.day, { date: day})
+      - if matches[day].present?
+        %br
+        %span.badge.badge-info= matches[day]
+    - else
+      .text-muted= day.day
+
+:javascript
+  function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
+  var center = { lat: 51.5362528, lng: -0.0488964 };
+  var map = L.map("map").setView([center.lat, center.lng], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: 'Map data © OpenStreetMap contributors',
+      maxZoom: 18
+  }).addTo(map);
+
+  var data = #{@data.to_json.html_safe};
+  data.forEach(function(center_and_radius) {
+    var color = getRandomColor();
+    var point = new L.LatLng(center_and_radius[0], center_and_radius[1]);
+    var marker = L.circle(point, {
+      radius: center_and_radius[2] * 500,
+      color: color, fillColor: color, fillOpacity: 0.2
+    }).addTo(map);
+  });

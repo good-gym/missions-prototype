@@ -6,4 +6,8 @@ module ApplicationHelper
       class: "btn btn-secondary"
     )
   end
+
+  def render_calendar(locals = {}, &block)
+    render(layout: "shared/calendar", locals: locals, &block)
+  end
 end

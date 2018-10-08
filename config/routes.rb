@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   resources :dashboards do
     collection do
+      get :map
       get :runner
     end
   end

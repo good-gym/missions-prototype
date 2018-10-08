@@ -2,11 +2,15 @@
   %p
     Running #{availability.radius}km from #{availability.postcode}
 
-  .row
+  .row.mb-1
     - availability.time_slots.each do |time_slot|
-      .col-3
-        .card
-          .card-body
-            = time_slot.started_at
-  %small
+      .col
+        .card.text-center
+          .card-body.p-1
+            %small.text-uppercase.text-info= time_slot.started_at.strftime("%b")
+            %h2.mb-0= time_slot.started_at.day
+            %small
+              = time_slot.started_at.strftime("%A")
+              %span.text-muted= time_slot.started_at.to_s(:time_of_day)
+  %small.text-muted
     Booked on #{availability.created_at}
