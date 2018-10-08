@@ -1,21 +1,22 @@
 = simple_form_for(@availability, url: new_availability_path, method: "get") do |f|
-  = f.input :postcode_str, label: "Running from", required: true
+  = f.error_notification
+  = f.input :postcode_str, required: true,
+    label: "Where are you running from?", placeholder: "Please enter a postcode"
 
   .row
     .col-8
-      = f.input :radius, as: :range, label: "Running distance", required: true,
-        input_html: { oninput: "radius_output.value = availability_radius.value", step: 2.5, min: 2.5, max: 50 }
-    .col-4.pt-4
+      = f.input :radius, as: :range, required: true,
+        input_html: { oninput: "radius_output.value = availability_radius.value; radius_output2.value = availability_radius.value * 2;", step: 2.5, min: 2.5, max: 50 },
+        label: "Distance from starting point", hint: "Remember you will need to run there and back."
+    .col-4.pt-1
       %output#radius_output{ name: "radius-output" }= @availability.radius
       km
+      %small.text-muted.d-block
+        %output#radius_output2{ name: "radius-output2" }= @availability.radius * 2
+        km total run distance
 
   %p.mb-0 Preferences
   %p.text-muted
     Heavy lifting, cats, dogs
 
-  %h3 When are you free?
-  = f.submit "Select a new time", class: "btn btn-secondary"
-
-  %hr
-
-  %button.disabled.btn.btn-secondary.btn-lg.btn-block{ type: "button" } Confirm
+  %p= f.submit "Next step", class: "btn btn-secondary btn-block btn-lg"

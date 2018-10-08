@@ -1,16 +1,27 @@
-.list-group-item
-  %p
-    Running #{availability.radius}km from #{availability.postcode}
+- form ||= nil
 
-  .row.mb-1
-    - availability.time_slots.each do |time_slot|
-      .col
-        .card.text-center
+.list-group-item
+  .small.text-muted.d-flex.justify-content-between
+    %span Running #{availability.radius}km from #{availability.postcode}
+    - if availability.created_at.present?
+      %span Booked on #{availability.created_at.to_s(:short)}
+    - if availability.persisted?
+      = button_to(availability_path(availability), method: :delete, class: "btn btn-secondary btn-sm d-inline") do
+        %i.fa.fa-trash
+        Cancel
+
+  .row.flex-wrap
+    - availability.time_slots.each_with_index do |time_slot, i|
+      .col-6.col-md-3.col-xl-2
+        .card.text-center.mb-1.availability__time-slot
           .card-body.p-1
+            - if form.present?
+              %button.btn.btn-sm.btn-secondary.availability__time-slot-delete{ type: "button", title: "Remove" }
+                .fa.fa-times
+              = hidden_field_tag "availability[time_slots_attributes][#{i}][started_at]", time_slot.started_at
             %small.text-uppercase.text-info= time_slot.started_at.strftime("%b")
-            %h2.mb-0= time_slot.started_at.day
-            %small
+            %h2.mb-1= time_slot.started_at.day.ordinalize
+            %p.small
               = time_slot.started_at.strftime("%A")
               %span.text-muted= time_slot.started_at.to_s(:time_of_day)
-  %small.text-muted
-    Booked on #{availability.created_at}
+            = render "availabilities/slots_with_owners", slots: time_slot.nearby_slots

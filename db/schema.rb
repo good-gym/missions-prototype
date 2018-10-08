@@ -44,9 +44,19 @@ ActiveRecord::Schema.define(version: 2018_10_05_144202) do
 
   create_table "referrals", force: :cascade do |t|
     t.bigint "coach_id"
+    t.bigint "referrer_id"
+    t.bigint "postcode_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["coach_id"], name: "index_referrals_on_coach_id"
+    t.index ["postcode_id"], name: "index_referrals_on_postcode_id"
+    t.index ["referrer_id"], name: "index_referrals_on_referrer_id"
+  end
+
+  create_table "referrers", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "runners", force: :cascade do |t|
@@ -65,5 +75,7 @@ ActiveRecord::Schema.define(version: 2018_10_05_144202) do
 
   add_foreign_key "availabilities", "postcodes"
   add_foreign_key "referrals", "coaches"
+  add_foreign_key "referrals", "postcodes"
+  add_foreign_key "referrals", "referrers"
   add_foreign_key "time_slots", "availabilities"
 end

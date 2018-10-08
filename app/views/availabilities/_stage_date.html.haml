@@ -1,43 +1,46 @@
-%h3 When are you free?
+- calendar = Calendar.new
+- matches = Availability.not_owned_by(current_user).in_month(calendar.date).grouped_by_date
+- owner_matches = Availability.owned_by(current_user).in_month(calendar.date).grouped_by_date
+
+%h3 When do you want to do your mission?
+%p.lead
+  You can pick multiple days if you'd like.
+
+  - if (matches.any? || owner_matches.any?) && current_user.availabilities.count <= 1
+    = render "availabilities/stage_date/help", matches: matches, owner_matches: owner_matches
 
 = simple_form_for(@availability, url: new_availability_path, method: "get") do |f|
-  = f.simple_fields_for :postcode do |pf|
-    = pf.input :postcode, as: :hidden
+  = f.error_notification
+  = f.input :postcode_str, as: :hidden
   = f.input :radius, as: :hidden
 
-  - calendar = Calendar.new
-  - matches = Availability.in_month(calendar.date).grouped_by_date
+  .mb-2{ style: "margin-left: -15px; margin-right: -15px;"}
+    = render_calendar(calendar: calendar, matches: matches) do |day|
+      - if day.month == calendar.date.month
+        %label.text-center{ class: day.past? ? "text-muted" : "" }
+          = day.day
+          %p.mb-0
+            - if day.past?
+              &nbsp;
+              %br
+            - elsif (day - 3).past?
+              %i.far.fa-clock.text-muted{ title: "Deadline past" }
+            - else
+              = check_box_tag("dates[]", day, false, disabled: day.past?)
+          - if matches[day].present?
+            %span.badge.badge-info
+              %i.fa.fa-walking
+              = matches[day]
+          - elsif owner_matches[day].present?
+            %span.badge.badge-success
+              %i.fa.fa-thumbs-up
+              = owner_matches[day]
+          - else
+            %span &nbsp;
+      - else
+        .text-muted= day.day
 
-  .card.mb-2{ style: "margin-left: -15px; margin-right: -15px;"}
-    .card-header
-      .d-flex.justify-content-between
-        %span <
-        = calendar.date.to_s(:month_year)
-        %span >
-    %table.table.table-sm.w-100
-      %thead.text-uppercase
-        %tr
-          %th.text-center Mon
-          %th.text-center Tue
-          %th.text-center Wed
-          %th.text-center Thu
-          %th.text-center Fri
-          %th.text-center Sat
-          %th.text-center Sun
-      %tbody
-        - calendar.weeks.each do |week|
-          %tr
-            - week.each do |day|
-              %td.text-center
-                - if day.month == calendar.date.month
-                  %label
-                    = day.day
-                    %br
-                    = check_box_tag("dates[]", day, false, disabled: day.past?)
-                    - if matches[day].present?
-                      %br
-                      %span.badge.badge-info= matches[day]
-                - else
-                  .text-muted= day.day
+  %p= f.submit "Next step", class: "btn btn-secondary btn-block btn-lg"
 
-  %p= f.submit "Select days", class: "btn btn-secondary btn-lg btn-block"
+- if (matches.any? || owner_matches.any?) && current_user.availabilities.many?
+  = render "availabilities/stage_date/help", matches: matches, owner_matches: owner_matches

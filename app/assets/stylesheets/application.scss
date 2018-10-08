@@ -3,6 +3,8 @@
 
 @import "leaflet/dist/leaflet";
 
+@import "components/*";
+
 .title-with-button {
   display: flex;
   justify-content: space-between;

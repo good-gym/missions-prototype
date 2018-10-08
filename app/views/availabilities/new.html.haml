@@ -1,14 +1,18 @@
 .container
   %h2 Book new mission
   - if stage != :first
-    %p
-      Running
-      %strong #{@availability.radius}km
-      from
-      %strong= @availability.postcode
-      %br
-      Preferences:
-      %span.text-muted Heavy lifting, cats, dogs
+    .card.mb-2
+      .card-body.py-1
+        %small.text-muted.text-uppercase.d-flex.justify-content-between.mb-1
+          %span Your mission options
+          = link_to "Edit", nil
+        Running
+        %strong #{@availability.radius}km
+        from
+        %strong= @availability.postcode
+        %br
+        Preferences:
+        %span.text-muted Heavy lifting, cats, dogs
 
   = case stage
   - when :first then render "stage_first"

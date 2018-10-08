@@ -21,6 +21,19 @@ class AvailabilitiesController < ApplicationController
     end
   end
 
+  def destroy
+    @availability = Availability.find(params[:id])
+
+    message =
+      if @availability.owner == current_user && @availability.destroy
+        "Cancelled mission booking"
+      else
+        "Unable to cancel mission booking"
+      end
+
+    redirect_back(fallback_location: root_path, notice: message)
+  end
+
   private
 
   def stage
@@ -38,7 +51,7 @@ class AvailabilitiesController < ApplicationController
   def default_availability_params
     return availability_params if params.key?(:availability)
 
-    { postcode: Postcode.new, radius: 10 }
+    { postcode: Postcode.new, radius: 5 }
   end
 
   def availability_params

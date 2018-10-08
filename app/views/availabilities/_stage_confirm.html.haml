@@ -1,15 +1,11 @@
-%h3 Times
+%h3 Your selected mission start times
 
 = simple_form_for(@availability) do |f|
   = f.error_notification
-  = f.simple_fields_for :postcode do |pf|
-    = pf.input :postcode, as: :hidden
+  = f.input :postcode_str, as: :hidden
   = f.input :radius, as: :hidden
 
-  .list-group
-    = f.simple_fields_for(:time_slots) do |tsf|
-      .list-group-item
-        %strong= tsf.object.started_at
-        = tsf.input :started_at, as: :hidden
-
-  .mt-2= f.submit "Confirm", class: "btn btn-primary btn-lg btn-block"
+  .list-group.mb-2
+    = render partial: "availabilities/availability",
+      collection: [@availability], locals: { form: f }
+  %p= f.submit "Confirm", class: "btn btn-primary btn-lg btn-block"

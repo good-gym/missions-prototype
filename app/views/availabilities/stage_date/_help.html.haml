@@ -1,0 +1,24 @@
+.alert.alert-warning
+  %h5
+    %i.fa.fa-info-circle
+    %span How to book a slot
+  %p
+    Remember that we need two runners for a mission to happen. You can
+    maximise the chances of your mission going ahead if you choose a time
+    slot when other runners are available, which you can check using the
+    following key:
+  %ul.list-unstyled.mb-0
+    - if matches.any?
+      %li.mb-1
+        .d-flex.align-items-center
+          %span.badge.badge-info.mr-1
+            %i.fa.fa-walking{ style: "width: 15px;" }
+            = 1
+          %small Number of other runners nearby who have booked a slot
+    - if owner_matches.any?
+      %li.mb-1
+        .d-flex.align-items-center
+          %span.badge.badge-success.mr-1
+            %i.fa.fa-thumbs-up{ style: "width: 15px;" }
+            = 1
+          %small Number of slots you've booked

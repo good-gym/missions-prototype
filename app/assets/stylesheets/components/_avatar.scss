@@ -1,0 +1,14 @@
+.avatar {
+  border-radius: 50%;
+}
+.avatar-sm {
+  width: 25px;
+  height: 25px;
+}
+
+.avatar-list {
+  display: flex;
+  .avatar {
+    margin-left: -5px;
+  }
+}

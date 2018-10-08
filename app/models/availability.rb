@@ -2,11 +2,13 @@ class Availability < ApplicationRecord
   include Postcodeable
   belongs_to :owner, polymorphic: true
 
-  has_many :time_slots
+  has_many :time_slots, dependent: :destroy
   accepts_nested_attributes_for :time_slots
 
   validates :time_slots, length: { minimum: 1 }
 
+  scope :owned_by, ->(owner) { where(owner: owner) }
+  scope :not_owned_by, ->(owner) { where.not(owner: owner) }
   scope :on_days, lambda { |days|
     joins(:time_slots).where("date_trunc('day', started_at) in (?)", days)
   }

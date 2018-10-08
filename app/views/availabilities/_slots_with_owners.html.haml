@@ -1,0 +1,7 @@
+- if slots.any?
+  .avatar-list.justify-content-center
+    - slots.each do |slot|
+      = image_tag(avatar_icon_url(slot.owner), title: slot.owner.name, class: "avatar avatar-sm")
+  %small
+    %strong= slots.size
+    #{"runner".pluralize(slots.size)} nearby

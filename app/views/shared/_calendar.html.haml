@@ -4,7 +4,7 @@
       %span <
       = calendar.date.to_s(:month_year)
       %span >
-  %table.table.table-sm.w-100
+  %table.table.table-sm.w-100.mb-0{ style: "table-layout: fixed;" }
     %thead.text-uppercase
       %tr
         %th.text-center Mon
@@ -18,5 +18,5 @@
       - calendar.weeks.each do |week|
         %tr
           - week.each do |day|
-            %td.text-center
+            %td.text-center{ class: day.month == calendar.date.month ? "bg-light" : "" }
               = yield(day)
