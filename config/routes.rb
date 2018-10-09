@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resource :sessions, only: %i[create destroy]
   resources :runners
   resources :availabilities
+  resources :listings
 
   resources :dashboards do
     collection do
