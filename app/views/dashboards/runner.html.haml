@@ -1,6 +1,19 @@
 .container
   %h1 Hello #{current_user.name}
 
+  .alert.alert-info.mission-on-call
+    .d-flex.justify-content-between.mb-1
+      %span.small.text-uppercase Mission On Call
+      = link_to(nil, class: "small text-uppercase") do
+        %i.fa.fa-cog
+        Settings
+    .form-check.checkbox-slider--default.checkbox-slider-md
+      %label.d-flex
+        %input{ type: "checkbox" }
+        %span
+          %span.mission-on-call__label Turn on to get alerted to missions near
+          %strong E97JX
+
   - if current_user.availabilities.any?
     %h2 Your mission bookings
     .list-group.mb-2= render partial: "availabilities/availability", collection: current_user.availabilities
