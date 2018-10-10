@@ -13,6 +13,10 @@ module ApplicationHelper
 
   def avatar_icon_url(object, size = 50)
     key = object.cache_key.tr("/", "-")
-    "https://api.adorable.io/avatars/#{size}/#{key}"
+    if object.is_a?(Referrer)
+      "https://robohash.org/#{key}"
+    else
+      "https://api.adorable.io/avatars/#{size}/#{key}"
+    end
   end
 end

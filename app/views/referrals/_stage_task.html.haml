@@ -1,0 +1,44 @@
+= simple_form_for(@referral) do |f|
+  = f.error_notification
+  = f.input :postcode_str, as: :hidden
+  = f.input :urgent, as: :hidden
+
+  .card.mb-2
+    .card-header
+      %h2.mb-0 Who is the task for?
+    .card-body
+      = f.simple_fields_for(:coach) do |cf|
+        = cf.input :title
+        = cf.input :name
+        = cf.input :alias, label: "Likes to be known as"
+        = cf.input :telephone_number
+        = cf.simple_fields_for(:address) do |af|
+          = af.input :address_line_1
+          = af.input :address_line_2
+          = af.input :postcode
+          = af.input :city
+
+  .card.mb-2
+    .card-header
+      %h2.mb-0 Describe the task
+    .card-body
+      = f.input :title, hint: "e.g. Weeding and trimming plants for Mr A"
+      = f.input :subtitle, hint: "e.g. Mr A would like to enjoy his patio area again but due to his health he can't do it himself"
+      = f.input :description, hint: "e.g. The weeds need pulling up and the plants trimmed. There are weeds coming up through the patio floor which can be cleared and there are plants all around the patio that need to be trimmed. Mr A has all the tools required."
+
+  .card.mb-2
+    .card-header
+      %h2.mb-0 Task details
+    .card-body
+      = f.input :contact_details
+      = f.input :task_notes, required: true
+      = f.input :risk, as: :radio_buttons, required: true,
+        label: "Does this person’s behaviour or home pose any risk of offense or harm to a volunteer?",
+        collection: [["Yes", :yes], ["No", :no], ["I don’t know them well enough to say", :unknown]]
+      = f.input :confirm_tools, as: :boolean, required: true,
+        label: "Please confirm that appropriate tools and equipment will be provided if necessary",
+        hint: "Due to health and safety reasons our runners cannot bring tools, therefore any equipment needed for the task must be provided."
+
+  %p.lead
+    By referring the above named person to GoodGym you are confirming that you have explained GoodGym to them and have gained their consent to make this referral on their behalf.
+  %p= f.submit "Submit task", class: "btn btn-primary btn-lg btn-block"

@@ -1,0 +1,26 @@
+.container
+  %h1 New task referral
+
+  - if stage != :first
+    .card.mb-2
+      .card-body.py-1
+        %small.text-muted.text-uppercase.d-flex.justify-content-between.mb-1
+          %span Referral details
+          = link_to "Edit", nil
+        %dl.mb-0.row
+          %dt.col-5 Location
+          %dd.col-7.text-muted= @referral.postcode
+          %dt.col-5 Preferences
+          %dd.col-7.text-muted Heavy lifting, cats, dogs
+          - if @times.present?
+            %dt.col-5 Times slots
+            %dd.col-7.text-muted
+              %ul.list-unstyled.small.mb-0
+                - @times.each do |time|
+                  %li= time.to_s(:short)
+
+  = case stage
+  - when :first then render "stage_first"
+  - when :date then render "stage_date"
+  - when :time then render "stage_time"
+  - when :task then render "stage_task"

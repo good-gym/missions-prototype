@@ -1,0 +1,8 @@
+.container
+  %h1 Hello #{current_user.name}
+
+  %h2 Practical tasks for Older People
+  %p.lead
+    GoodGym runners can help with basic household and garden tasks for people aged over 60.
+
+  %p= link_to "Make a new task request", new_referral_path, class: "btn btn-secondary btn-lg btn-block"

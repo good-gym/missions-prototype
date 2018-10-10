@@ -16,14 +16,13 @@ ActiveRecord::Schema.define(version: 2018_10_05_144202) do
   enable_extension "plpgsql"
 
   create_table "availabilities", force: :cascade do |t|
-    t.string "owner_type"
-    t.bigint "owner_id"
+    t.bigint "runner_id"
     t.bigint "postcode_id"
     t.float "radius"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["owner_type", "owner_id"], name: "index_availabilities_on_owner_type_and_owner_id"
     t.index ["postcode_id"], name: "index_availabilities_on_postcode_id"
+    t.index ["runner_id"], name: "index_availabilities_on_runner_id"
   end
 
   create_table "coaches", force: :cascade do |t|
@@ -66,16 +65,17 @@ ActiveRecord::Schema.define(version: 2018_10_05_144202) do
   end
 
   create_table "time_slots", force: :cascade do |t|
-    t.bigint "availability_id"
+    t.string "booking_type"
+    t.bigint "booking_id"
     t.datetime "started_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["availability_id"], name: "index_time_slots_on_availability_id"
+    t.index ["booking_type", "booking_id"], name: "index_time_slots_on_booking_type_and_booking_id"
   end
 
   add_foreign_key "availabilities", "postcodes"
+  add_foreign_key "availabilities", "runners"
   add_foreign_key "referrals", "coaches"
   add_foreign_key "referrals", "postcodes"
   add_foreign_key "referrals", "referrers"
-  add_foreign_key "time_slots", "availabilities"
 end

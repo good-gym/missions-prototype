@@ -1,24 +1,9 @@
 class Availability < ApplicationRecord
   include Postcodeable
-  belongs_to :owner, polymorphic: true
+  include TimeSlotable
 
-  has_many :time_slots, dependent: :destroy
-  accepts_nested_attributes_for :time_slots
+  belongs_to :runner
 
-  validates :time_slots, length: { minimum: 1 }
-
-  scope :owned_by, ->(owner) { where(owner: owner) }
-  scope :not_owned_by, ->(owner) { where.not(owner: owner) }
-  scope :on_days, lambda { |days|
-    joins(:time_slots).where("date_trunc('day', started_at) in (?)", days)
-  }
-  scope :in_month, lambda { |date|
-    joins(:time_slots).where(time_slots: { started_at: (date.beginning_of_month..date.end_of_month) })
-  }
-  scope :grouped_by_time, lambda { group(:started_at).count("*") }
-  scope :grouped_by_date, lambda {
-    group("date_trunc('day', started_at)")
-    .count("*")
-    .map { |t, value| [t.to_date, value] }.to_h
-  }
+  scope :owned_by, ->(runner) { where(runner: runner) }
+  scope :not_owned_by, ->(runner) { where.not(runner: runner) }
 end

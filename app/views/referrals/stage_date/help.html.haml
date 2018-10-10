@@ -1,0 +1,25 @@
+.alert.alert-warning
+  %h5
+    %i.fa.fa-info-circle
+    %span Tips on booking a mission
+  %p
+    The more slots you choose the more likely it will be that we will find
+    runners available to.
+  %ul.list-unstyled.mb-0
+    - if matches.any?
+      %li.mb-1
+        .d-flex.align-items-center
+          %span.badge.badge-info.mr-1
+            %i.fa.fa-walking{ style: "width: 15px;" }
+            = 2
+          %small
+            Indicates that 2 volunteers are available to help so your mission is
+            extremley likely to go ahead
+      %li.mb-1
+        .d-flex.align-items-center
+          %span.badge.badge-secondary.mr-1
+            %i.fa.fa-walking{ style: "width: 15px;" }
+            = 1
+          %small
+            Indicates that 1 volunteer is available to help - if you select this
+            slot then it's likely that another volunteer will join in.

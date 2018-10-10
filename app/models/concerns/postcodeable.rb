@@ -10,6 +10,6 @@ module Postcodeable
   end
 
   def postcode_str=(string)
-    self.postcode = Postcode.first_or_initialize(postcode: string)
+    self.postcode = Postcode.find_or_initialize_by(postcode: string)
   end
 end

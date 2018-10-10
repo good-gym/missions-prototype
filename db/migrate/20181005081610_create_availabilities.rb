@@ -1,7 +1,7 @@
 class CreateAvailabilities < ActiveRecord::Migration[5.2]
   def change
     create_table :availabilities do |t|
-      t.references :owner, index: true, polymorphic: true
+      t.references :runner, foreign_key: true
       t.references :postcode, foreign_key: true
       t.float :radius
 

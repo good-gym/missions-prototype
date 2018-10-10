@@ -17,3 +17,8 @@
     align-items: flex-start;
   }
 }
+
+.alert-placeholder {
+  border: 1px solid #e83e8c;
+  background: repeating-linear-gradient(135deg, rgba(1.0,0,0,0.1), rgba(1.0,0,0,0.1) 5px, white 5px, white 20px);
+}
