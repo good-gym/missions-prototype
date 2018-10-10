@@ -26,3 +26,8 @@ popper.js@^1.14.4:
   version "1.14.4"
   resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.14.4.tgz#8eec1d8ff02a5a3a152dd43414a15c7b79fd69b6"
   integrity sha1-juwdj/AqWjoVLdQ0FKFce3n9abY=
+
+titatoggle@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/titatoggle/-/titatoggle-2.1.2.tgz#2ff80117eebd40042db98bfe057fe95e135b6f58"
+  integrity sha1-L/gBF+69QAQtuYv+BX/pXhNbb1g=
