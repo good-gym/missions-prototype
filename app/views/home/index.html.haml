@@ -1,4 +1,22 @@
 .container
-  %h1 Hello
+  %h1 Missions Prototype
 
-  = link_to "Book a mission", new_availability_path, class: "btn btn-secondary"
+  .row
+    .col
+      .title-with-button
+        %h3 Runners
+        = link_to "New runner", new_runner_path, class: "btn btn-secondary btn-sm"
+      .list-group
+        - @runners.each do |runner|
+          .list-group-item.title-with-button.align-items-center
+            = link_to runner.name, runner
+            = login_as_button(runner, "Login", class: "btn btn-secondary btn-sm")
+    .col
+      .title-with-button
+        %h3 Referrers
+        = link_to "New referrer", new_referrer_path, class: "btn btn-secondary btn-sm"
+      .list-group
+        - @referrers.each do |referrer|
+          .list-group-item.title-with-button.align-items-center
+            = link_to referrer.name, referrer
+            = login_as_button(referrer, "Login", class: "btn btn-secondary btn-sm")

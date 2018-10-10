@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
       type, id = session[:current_user_id].split("/")
       case type
       when "runners" then Runner.find(id)
+      when "referrers" then Referrer.find(id)
       end
     end
   rescue ActiveRecord::RecordNotFound

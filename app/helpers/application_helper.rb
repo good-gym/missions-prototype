@@ -1,9 +1,9 @@
 module ApplicationHelper
-  def login_as_button(user)
+  def login_as_button(user, label=nil, options = {})
     button_to(
-      "Login as #{user.name}",
+      label || "Login as #{user.name}",
       sessions_path(id: user.cache_key),
-      class: "btn btn-secondary"
+      class: options[:class] || "btn btn-secondary"
     )
   end
 

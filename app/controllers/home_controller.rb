@@ -1,7 +1,9 @@
 class HomeController < ApplicationController
   def index
-    if current_user.is_a?(Runner)
-      redirect_to runner_dashboards_path
-    end
+    return redirect_to runner_dashboards_path if current_user.is_a?(Runner)
+    return redirect_to referrer_dashboards_path if current_user.is_a?(Referrer)
+
+    @runners = Runner.all
+    @referrers = Referrer.all
   end
 end
