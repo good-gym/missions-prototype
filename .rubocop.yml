@@ -1,0 +1,64 @@
+# Inherit from rubocp defaults
+
+AllCops:
+  TargetRubyVersion: 2.5
+
+Bundler/OrderedGems:
+  Enabled: false
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+Layout/MultilineMethodCallBraceLayout:
+  Enabled: false
+
+Lint/EmptyInterpolation:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: true
+  Max: 25
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: true
+  Max: 250
+
+Metrics/LineLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: true
+  Max: 30
+
+Performance/FlatMap:
+  EnabledForFlattenWithoutParams: true
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: true
+  Exclude:
+    - 'app/controllers/**/*'
+    - 'app/jobs/*'
+    - 'app/models/*'
+    - 'app/mailers/*'
+    - 'spec/**/*'
+    - 'test/**/*'
+
+Style/EmptyMethod:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: false
+
+# Disabled because it's hitting lots of false positives
+# See https://github.com/bbatsov/rubocop/pull/5230
+Style/FormatStringToken:
+  Enabled: false
