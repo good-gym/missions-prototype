@@ -1,6 +1,7 @@
 - calendar = Calendar.new
 - matches = Availability.not_owned_by(current_user).in_month(calendar.date).grouped_by_date
 - owner_matches = Availability.owned_by(current_user).in_month(calendar.date).grouped_by_date
+- referrals = Referral.in_month(calendar.date).grouped_by_date
 
 %h3 When do you want to do your mission?
 %p.lead
@@ -27,6 +28,10 @@
               %i.far.fa-clock.text-muted{ title: "Deadline past" }
             - else
               = check_box_tag("dates[]", day, false, disabled: day.past?)
+          - if referrals[day].present?
+            %span.badge.badge-success
+              %i.fa.fa-user
+              = referrals[day]
           - if matches[day].present?
             %span.badge.badge-info
               %i.fa.fa-walking

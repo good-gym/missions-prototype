@@ -1,5 +1,6 @@
 class DashboardsController < ApplicationController
   def referrer
+    @referrals = current_user.referrals
   end
 
   def runner

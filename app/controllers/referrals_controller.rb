@@ -4,7 +4,21 @@ class ReferralsController < ApplicationController
   def new
     @referral = Referral.new(default_referral_params)
     @dates = params[:dates].map { |d| Date.parse(d) } if params[:dates]
-    @times = params[:times].map { |t| Time.parse(t) } if params[:times]
+    if params[:times]
+      params[:times].sort.each { |d| @referral.time_slots.build(started_at: Time.parse(d)) }
+    end
+  end
+
+  def create
+    @referral = Referral.new(default_referral_params)
+    if @referral.save
+      redirect_to root_path
+    else
+      @dates = params[:dates].map { |d| Date.parse(d) } if params[:dates]
+      @times = params[:times].map { |d| Time.parse(d) } if params[:times]
+
+      render :new
+    end
   end
 
   private
@@ -22,9 +36,15 @@ class ReferralsController < ApplicationController
   end
 
   def default_referral_params
-    return referral_params if params.key?(:referral)
-
-    { postcode: Postcode.new, urgent: false }
+    if params.key?(:referral)
+      data = referral_params
+      data[:coach] ||= Coach.fake
+      data[:task_notes] ||= Faker::Lorem.sentence
+      data[:risk] ||= :unknown
+      data
+    else
+      { postcode: Postcode.new, urgent: false }
+    end
   end
 
   def referral_params

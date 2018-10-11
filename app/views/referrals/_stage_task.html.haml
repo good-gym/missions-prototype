@@ -2,6 +2,8 @@
   = f.error_notification
   = f.input :postcode_str, as: :hidden
   = f.input :urgent, as: :hidden
+  = f.simple_fields_for :time_slots do |tsf|
+    = tsf.input :started_at, as: :hidden
 
   .card.mb-2
     .card-header
@@ -12,11 +14,10 @@
         = cf.input :name
         = cf.input :alias, label: "Likes to be known as"
         = cf.input :telephone_number
-        = cf.simple_fields_for(:address) do |af|
-          = af.input :address_line_1
-          = af.input :address_line_2
-          = af.input :postcode
-          = af.input :city
+        = cf.input :address_line_1
+        = cf.input :address_line_2
+        = cf.input :postcode
+        = cf.input :city
 
   .card.mb-2
     .card-header

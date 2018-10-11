@@ -24,4 +24,8 @@
             %p.small
               = time_slot.started_at.strftime("%A")
               %span.text-muted= time_slot.started_at.to_s(:time_of_day)
-            = render "availabilities/slots_with_owners", slots: time_slot.nearby_slots
+            = render "availabilities/slots_with_owners", slots: time_slot.nearby_runner_slots
+            - time_slot.nearby_referral_slots.each do |time_slot|
+              %span.badge.badge-success
+                %i.fa.fa-user
+                1

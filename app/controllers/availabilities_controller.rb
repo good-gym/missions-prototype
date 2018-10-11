@@ -25,7 +25,7 @@ class AvailabilitiesController < ApplicationController
     @availability = Availability.find(params[:id])
 
     message =
-      if @availability.owner == current_user && @availability.destroy
+      if @availability.runner == current_user && @availability.destroy
         "Cancelled mission booking"
       else
         "Unable to cancel mission booking"
@@ -60,6 +60,6 @@ class AvailabilitiesController < ApplicationController
         :postcode_str, :radius,
         time_slots_attributes: %i[started_at]
       )
-      .merge(owner: current_user)
+      .merge(runner: current_user)
   end
 end

@@ -12,12 +12,12 @@
           %dd.col-7.text-muted= @referral.postcode
           %dt.col-5 Preferences
           %dd.col-7.text-muted Heavy lifting, cats, dogs
-          - if @times.present?
+          - if @referral.time_slots.any?
             %dt.col-5 Times slots
             %dd.col-7.text-muted
               %ul.list-unstyled.small.mb-0
-                - @times.each do |time|
-                  %li= time.to_s(:short)
+                - @referral.time_slots.each do |time_slot|
+                  %li= time_slot.started_at.to_s(:short)
 
   = case stage
   - when :first then render "stage_first"

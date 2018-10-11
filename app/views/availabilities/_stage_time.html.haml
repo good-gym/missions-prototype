@@ -5,6 +5,7 @@
 
   - matches = Availability.not_owned_by(current_user).on_days(@dates).grouped_by_time
   - owner_matches = Availability.owned_by(current_user).on_days(@dates).grouped_by_time
+  - referrals = Referral.on_days(@dates).grouped_by_time
 
   %h3 When do you want to do your mission to start?
   %p.lead
@@ -32,7 +33,6 @@
                     = image_tag(avatar_icon_url(current_user), title: current_user.name, class: "avatar avatar-sm")
                   %small.text-success
                     You've booked this slot.
-
                 - else
                   %label
                     #{8 + i}:00
@@ -40,7 +40,13 @@
                     .mb-1= check_box_tag("times[]", time, false)
 
                     - if matches[time].present?
-                      - slots = TimeSlot.where(started_at: time).joins(:availability).where.not(availabilities: { owner: current_user })
+                      - runners = Availability.joins(:time_slots).where(time_slots: { started_at: time }).where.not(runner: current_user).map(&:runner).uniq
+                      = render "shared/avatar_list", avatars:
                       = render "slots_with_owners", slots: slots
+
+                  - if referrals[time].present?
+                    %span.badge.badge-success.d-block
+                      %i.fa.fa-user
+                      = referrals[time]
 
   %p= f.submit "Next step", class: "btn btn-secondary btn-block btn-lg"

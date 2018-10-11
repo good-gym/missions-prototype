@@ -6,3 +6,24 @@
     GoodGym runners can help with basic household and garden tasks for people aged over 60.
 
   %p= link_to "Make a new task request", new_referral_path, class: "btn btn-secondary btn-lg btn-block"
+
+  - if @referrals.any?
+    %h3 Your task requests
+    .list-group
+      - @referrals.each do |referral|
+        .list-group-item
+          .d-flex.small.justify-content-between.mb-2
+            %div
+              Beneficiary
+              %span.text-muted= referral.coach.name
+            %div
+              Referred on
+              %span.text-muted= referral.created_at.to_s(:short)
+          - if referral.time_slots.any?
+            %dl.mb-0
+              %dt
+                Scheduled for
+              %dd
+                %ul.list-unstyled.small.mb-0
+                  - referral.time_slots.each do |time_slot|
+                    %li= time_slot.started_at.to_s(:short)
