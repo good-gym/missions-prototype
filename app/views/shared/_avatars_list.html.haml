@@ -3,5 +3,5 @@
     - avatars.each do |avatar|
       = image_tag(avatar_icon_url(avatar), title: avatar.name, class: "avatar avatar-sm")
   %small
-    %strong= avatar.size
+    %strong= avatars.size
     #{"runner".pluralize(avatars.size)} nearby

@@ -6,6 +6,8 @@
     GoodGym runners can help with basic household and garden tasks for people aged over 60.
 
   %p= link_to "Make a new task request", new_referral_path, class: "btn btn-secondary btn-lg btn-block"
+  %p= link_to "View volunteers availabilities' on a map", map_dashboards_referrer_path, class: "btn btn-link btn-block"
+
 
   - if @referrals.any?
     %h3 Your task requests

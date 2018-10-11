@@ -1,0 +1,47 @@
+.container
+  %h1 Volunteers available
+
+  #map.mb-2{ style: "height: 400px" }
+
+  %table.table
+    %thead
+      %tr
+        %th When
+        %th Who
+        %th Where
+    %tbody
+      - @available_slots.each do |slot|
+        %tr
+          %td= slot.started_at.to_s(:short)
+          %td.text-left= render "shared/avatars_list", avatars: slot.runners
+
+  - data = @available_slots.map { |s| s.availabilities.map(&:geometry) }
+  :javascript
+    function getRandomColor() {
+      var letters = '0123456789ABCDEF';
+      var color = '#';
+      for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    var center = { lat: 51.5362528, lng: -0.0488964 };
+    var map = L.map("map").setView([center.lat, center.lng], 11);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data © OpenStreetMap contributors',
+        maxZoom: 18
+    }).addTo(map);
+
+    var data = #{data.to_json.html_safe};
+    data.forEach(function(geometries) {
+      var color = getRandomColor();
+      console.log(geometries);
+      geometries.forEach(function(geometry) {
+        var point = new L.LatLng(geometry.lat, geometry.lng);
+        var marker = L.circle(point, {
+          radius: geometry.radius * 500,
+          color: color, fillColor: color, fillOpacity: 0.2
+        }).addTo(map);
+      });
+    });

@@ -4,11 +4,9 @@
   Note: you can choose multiple days.
 
 - calendar = Calendar.new
-- matches = Availability.not_owned_by(current_user).in_month(calendar.date).grouped_by_date
-- owner_matches = Availability.owned_by(current_user).in_month(calendar.date).grouped_by_date
-
-- if (matches.any? || owner_matches.any?) && current_user.availabilities.count <= 1
-  = render "referrals/stage_date/help", matches: matches, owner_matches: owner_matches
+- matches = Availability::Match.near(@referral.postcode).group_by(&:date)
+- if matches.any? && current_user.referrals.count <= 1
+  = render "referrals/stage_date/help", matches: matches
 
 = simple_form_for(@referral, url: new_referral_path, method: "get") do |f|
   = f.error_notification
@@ -29,13 +27,10 @@
             - else
               = check_box_tag("dates[]", day, false, disabled: day.past?)
           - if matches[day].present?
-            %span.badge.badge-info
-              %i.fa.fa-walking
-              = matches[day]
-          - elsif owner_matches[day].present?
-            %span.badge.badge-success
-              %i.fa.fa-thumbs-up
-              = owner_matches[day]
+            - matches[day].each do |match|
+              %span.badge.badge-info
+                %i.fa.fa-walking
+                = match.size
           - else
             %span &nbsp;
       - else

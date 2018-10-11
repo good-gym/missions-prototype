@@ -7,11 +7,16 @@ module TimeSlotable
 
     validates :time_slots, length: { minimum: 1 }
 
+    scope :upcoming, -> { joins(:time_slots).merge(TimeSlot.upcoming) }
+    scope :in_month, lambda { |date|
+      joins(:time_slots).merge(TimeSlot.in_month(date))
+    }
+    scope :starting_at, lambda { |started_at|
+      joins(:time_slots).where(time_slots: { started_at: started_at })
+    }
+
     scope :on_days, lambda { |days|
       joins(:time_slots).where("date_trunc('day', started_at) in (?)", days)
-    }
-    scope :in_month, lambda { |date|
-      joins(:time_slots).where(time_slots: { started_at: (date.beginning_of_month..date.end_of_month) })
     }
     scope :grouped_by_time, lambda { group(:started_at).count("*") }
     scope :grouped_by_date, lambda {

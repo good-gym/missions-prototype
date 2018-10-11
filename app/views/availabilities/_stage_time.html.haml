@@ -41,8 +41,7 @@
 
                     - if matches[time].present?
                       - runners = Availability.joins(:time_slots).where(time_slots: { started_at: time }).where.not(runner: current_user).map(&:runner).uniq
-                      = render "shared/avatar_list", avatars:
-                      = render "slots_with_owners", slots: slots
+                      = render "shared/avatars_list", avatars: runners
 
                   - if referrals[time].present?
                     %span.badge.badge-success.d-block
