@@ -9,16 +9,15 @@ Rails.application.routes.draw do
   resources :availabilities
   resources :listings
 
-
   namespace :dashboards do
     resource :referrer do
       get :map
     end
+    resource :runner
   end
   resources :dashboards do
     collection do
       get :map
-      get :runner
     end
   end
 end
