@@ -1,22 +1,27 @@
-.card
+.card.calendar
   .card-header
     .d-flex.justify-content-between
       %span <
       = calendar.date.to_s(:month_year)
       %span >
   %table.table.table-sm.w-100.mb-0{ style: "table-layout: fixed;" }
-    %thead.text-uppercase
+    %thead.text-uppercase.small
       %tr
-        %th.text-center Mon
-        %th.text-center Tue
-        %th.text-center Wed
-        %th.text-center Thu
-        %th.text-center Fri
-        %th.text-center Sat
-        %th.text-center Sun
+        %th Mon
+        %th Tue
+        %th Wed
+        %th Thu
+        %th Fri
+        %th.calendar__header-sat Sat
+        %th Sun
     %tbody
       - calendar.weeks.each do |week|
         %tr
           - week.each do |day|
-            %td.text-center{ class: day.month == calendar.date.month ? "bg-light" : "" }
+            - css_class = day.past? ? "calendar__day--past" : ""
+            - css_class += " calendar__day--today" if day == Date.today
+            - css_class += " calendar__day--soon" if day >= Date.today && (day - 3).past?
+            - css_class += " calendar__day--upcoming" if day >= Date.today + 3
+            - css_class += " calendar__day--saturday" if day.cwday == 5
+            %td.calendar__day{ class: css_class }
               = yield(day)

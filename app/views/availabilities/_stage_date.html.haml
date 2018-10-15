@@ -19,15 +19,24 @@
     = render_calendar(calendar: calendar, matches: matches) do |day|
       - if day.month == calendar.date.month
         %label.text-center{ class: day.past? ? "text-muted" : "" }
-          = day.day
+          %span{ class: day == Date.today ? "calendar__date--today" : "" }
+            = day.day
+
           %p.mb-0
             - if day.past?
               &nbsp;
               %br
-            - elsif (day - 3).past?
-              %i.far.fa-clock.text-muted{ title: "Deadline past" }
             - else
+              -# - if (day - 3).past?
+              -#   %small.d-block.text-uppercase.text-muted
+              -#     %i.fa.fa-clock
+              -#     %span.d-none.d-md-inline{ title: "On call" } On Call
+              -# - else
+              -#   %small.d-block.text-uppercase.text-muted
+              -#     %i.far.fa-calendar-check
+              -#     %span.d-none.d-md-inline{ title: "Booking" } Booking
               = check_box_tag("dates[]", day, false, disabled: day.past?)
+
           - if referrals[day].present?
             %span.badge.badge-success
               %i.fa.fa-user

@@ -12,19 +12,34 @@
     These are mission start times - you can select as many as you'd like.
 
   .text-center
-    %table.table.table-responsive
+    %table.table.table-responsive.table-bordered
       %thead
+        %tr
+          - @dates.each do |date|
+            - if (date - 3).past?
+              %th.alert.alert-warning
+                %i.fa.fa-clock
+                %span On Call
+                %p.small.mb-0.strikethrough
+                  We will send you missions if and when we hear about them
+            - else
+              %th.alert.alert-success
+                %i.far.fa-calendar-check
+                %span Booking
+                %p.small.mb-0
+                  We will try our best to find you a mission with our referrers
         %tr
           - @dates.each do |date|
             %th.text-center{ style: "width: #{100/@dates.size.to_f}%;" }
               %small.d-block.text-uppercase= date.strftime("%b")
               = date.day.ordinalize
+
       %tbody
         - 12.times do |i|
           %tr
             - @dates.each do |date|
               - time = Time.zone.parse("#{date} #{8+i}:00:00")
-              %td{ style: "width: #{100/@dates.size.to_f}%;", class: owner_matches[time].present? ? "bg-white" : "bg-light" }
+              %td{ class: owner_matches[time].present? ? "bg-white" : "bg-light" }
                 - if owner_matches[time].present?
                   = time.to_s(:time_of_day)
                   %p.mb-1

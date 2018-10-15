@@ -18,6 +18,7 @@
             %th.text-center{ style: "width: #{100/@dates.size.to_f}%;" }
               %small.d-block.text-uppercase= date.strftime("%b")
               = date.day.ordinalize
+
       %tbody
         - 12.times do |i|
           %tr
