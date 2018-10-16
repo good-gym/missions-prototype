@@ -1,0 +1,11 @@
+- if referrals.any?
+  .referrals-list{ class: local_assigns[:class] || "justify-content-center" }
+    - referrals.each do |referral|
+      = image_tag(avatar_icon_url(referral), title: referral.coach.public_name, class: "avatar avatar-sm")
+  %small
+    - if referrals.many?
+      %strong= referrals.size
+      older #{"person".pluralize(referrals.size)} available
+    - else
+      %strong= referrals.first.coach.public_name
+      available

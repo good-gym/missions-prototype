@@ -1,21 +1,47 @@
 .container
-  %h2 Book new mission
+  %h2 Book a mission
+
   - if stage != :first
-    .card.mb-2
+    .card.mb-2.sm-flush
       .card-body.py-1
         %small.text-muted.text-uppercase.d-flex.justify-content-between.mb-1
           %span Your mission options
-          = link_to "Edit", nil
-        Running
-        %strong #{@availability.radius}km
-        from
-        %strong= @availability.postcode
-        %br
-        Preferences:
-        %span.text-muted Heavy lifting, cats, dogs
 
-  = case stage
-  - when :first then render "stage_first"
-  - when :date then render "stage_date"
-  - when :time then render "stage_time"
-  - when :confirm then render "stage_confirm"
+          %button.btn.btn-sm.btn-link.p-0{"aria-controls" => "settings-collapse-1 settings-collapse-2", "aria-expanded" => "false", "data-target" => ".settings-collapse", "data-toggle" => "collapse", :type => "button"}
+            %i.fa.fa-cog
+            %span.text-uppercase Edit
+
+        .collapse.show.settings-collapse#settings-collapse-1
+          Running
+          %strong #{@availability.radius}km
+          from
+          %strong= @availability.postcode
+          %br
+          Preferences:
+          %span.text-muted Heavy lifting, cats, dogs
+        .collapse.settings-collapse#settings-collapse-2
+          = simple_form_for(@availability, url: new_availability_path, method: "get") do |f|
+            .mb-1
+              Running
+              = f.number_field :radius, min: 2, max: 50
+              km from
+              = f.text_field :postcode_str, size: 8
+              %br
+              Preferences:
+              %span.text-muted Heavy lifting, cats, dogs
+            .d-flex
+              %button.btn.btn-primary.btn-sm.btn-block.mr-1
+                %i.fa.fa-search
+                Search
+              %button.btn.btn-sm.btn-secondary{"aria-controls" => "settings-collapse-1 settings-collapse-2", "aria-expanded" => "false", "data-target" => ".settings-collapse", "data-toggle" => "collapse", :type => "button"}
+                Cancel
+            .text-center
+              .btn.btn-link.btn-sm.text-center
+                %i.fa.fa-cog
+                Change default settings
+
+= case stage
+- when :first then render "stage_first"
+- when :date then render "stage_date"
+- when :time then render "stage_time"
+- when :confirm then render "stage_confirm"

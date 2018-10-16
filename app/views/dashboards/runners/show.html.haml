@@ -1,15 +1,11 @@
 .container
   %h1 Hello #{current_user.name}
 
-  .row.mb-2
-    .col-lg-6
-      = render "mission_on_call_v2"
-    .col-lg-6
-      = render "book_missions_v1"
+  = render "panels_v3"
 
   - if current_user.availabilities.any?
     %h2 Your mission bookings
-    .list-group.mb-2= render partial: "availabilities/availability", collection: current_user.availabilities
+    .list-group.mb-2.sm-flush= render partial: "availabilities/availability", collection: current_user.availabilities
 
     %p= link_to "View listings", listings_path, class: "btn btn-link btn-block"
   - else
@@ -20,5 +16,7 @@
 
       %p.lead
         Please tell us when you want to do your first mission by
-        = link_to "booking a mission slot", listings_path
-        on our calendar.
+        = link_to "booking a mission slot", new_availability_path
+        on our calendar or
+        = link_to "signing up for alerts"
+        about urgent missions.

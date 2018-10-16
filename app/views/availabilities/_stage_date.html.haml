@@ -3,58 +3,53 @@
 - owner_matches = Availability.owned_by(current_user).in_month(calendar.date).grouped_by_date
 - referrals = Referral.in_month(calendar.date).grouped_by_date
 
-%h3 When do you want to do your mission?
-%p.lead
-  You can pick multiple days if you'd like.
+.container
+  .d-flex.justify-content-between.align-items-start
+    .lead
+      %strong.d-block Pick dates for your mission
+      %span.d-none.d-md-inline You can pick multiple days if you'd like.
+    = link_to "#help", class: "btn btn-warning btn-sm", title: "Help" do
+      %i.fa.fa-question-circle
+      %span.d-none.d-sm-inline Help
 
-  - if (matches.any? || owner_matches.any?) && current_user.availabilities.count <= 1
-    = render "availabilities/stage_date/help", matches: matches, owner_matches: owner_matches
+  = simple_form_for(@availability, url: new_availability_path, method: "get") do |f|
+    = f.error_notification
+    = f.input :postcode_str, as: :hidden
+    = f.input :radius, as: :hidden
 
-= simple_form_for(@availability, url: new_availability_path, method: "get") do |f|
-  = f.error_notification
-  = f.input :postcode_str, as: :hidden
-  = f.input :radius, as: :hidden
+    .mb-2.sm-flush
+      = render_calendar(calendar: calendar, matches: matches) do |day|
+        - if day.month == calendar.date.month
+          %label.text-center.mb-0{ class: day.past? ? "text-muted" : "" }
+            %span{ class: day == Date.today ? "calendar__date--today" : "" }
+              = day.day
 
-  .mb-2{ style: "margin-left: -15px; margin-right: -15px;"}
-    = render_calendar(calendar: calendar, matches: matches) do |day|
-      - if day.month == calendar.date.month
-        %label.text-center{ class: day.past? ? "text-muted" : "" }
-          %span{ class: day == Date.today ? "calendar__date--today" : "" }
-            = day.day
+            .mb-0.text-center
+              - if day.past?
+              - elsif (day - 3).past?
+                = link_to todo_path, class: "btn btn-link" do
+                  %i.far.fa-clock
+              - else
+                .mx-auto= check_box_tag("dates[]", day, false, disabled: day.past?)
+                - if referrals[day].present?
+                  %span.badge.badge-success
+                    %i.fa.fa-user
+                    = referrals[day]
+                - if matches[day].present?
+                  %span.badge.badge-info
+                    %i.fa.fa-walking
+                    = matches[day]
+                - elsif owner_matches[day].present?
+                  %span.badge.badge-success
+                    %i.fa.fa-thumbs-up
+                    = owner_matches[day]
+                - else
+                  %span &nbsp;
+        - else
+          .text-muted= day.day
 
-          %p.mb-0
-            - if day.past?
-              &nbsp;
-              %br
-            - else
-              -# - if (day - 3).past?
-              -#   %small.d-block.text-uppercase.text-muted
-              -#     %i.fa.fa-clock
-              -#     %span.d-none.d-md-inline{ title: "On call" } On Call
-              -# - else
-              -#   %small.d-block.text-uppercase.text-muted
-              -#     %i.far.fa-calendar-check
-              -#     %span.d-none.d-md-inline{ title: "Booking" } Booking
-              = check_box_tag("dates[]", day, false, disabled: day.past?)
+    %p= f.submit "Next step", class: "btn btn-secondary btn-block btn-lg"
 
-          - if referrals[day].present?
-            %span.badge.badge-success
-              %i.fa.fa-user
-              = referrals[day]
-          - if matches[day].present?
-            %span.badge.badge-info
-              %i.fa.fa-walking
-              = matches[day]
-          - elsif owner_matches[day].present?
-            %span.badge.badge-success
-              %i.fa.fa-thumbs-up
-              = owner_matches[day]
-          - else
-            %span &nbsp;
-      - else
-        .text-muted= day.day
-
-  %p= f.submit "Next step", class: "btn btn-secondary btn-block btn-lg"
-
-- if (matches.any? || owner_matches.any?) && current_user.availabilities.many?
+%hr
+.container#help
   = render "availabilities/stage_date/help", matches: matches, owner_matches: owner_matches

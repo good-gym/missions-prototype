@@ -16,4 +16,11 @@ class Availability < ApplicationRecord
   def geometry
     { type: "circle", lat: postcode.lat, lng: postcode.lng, radius: radius }
   end
+
+  def status
+    case time_slots.map { |t| t.nearby_runner_slots.size }.max
+    when 0 then :waiting
+    else :pending
+    end
+  end
 end

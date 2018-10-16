@@ -1,31 +1,25 @@
-- form ||= nil
-
 .list-group-item
-  .small.text-muted.d-flex.justify-content-between
-    %span Running #{availability.radius}km from #{availability.postcode}
-    - if availability.created_at.present?
-      %span Booked on #{availability.created_at.to_s(:short)}
-    - if availability.persisted?
-      = button_to(availability_path(availability), method: :delete, class: "btn btn-secondary btn-sm d-inline") do
-        %i.fa.fa-trash
-        Cancel
+  .row
+    .col-12.col-md-9
+      .lead= availability_status(availability)
+      %p= availability_time_slot_status_description(availability)
 
-  .row.flex-wrap
-    - availability.time_slots.each_with_index do |time_slot, i|
-      .col-6.col-md-3.col-xl-2
-        .card.text-center.mb-1.availability__time-slot
-          .card-body.p-1
-            - if form.present?
-              %button.btn.btn-sm.btn-secondary.availability__time-slot-delete{ type: "button", title: "Remove" }
-                .fa.fa-times
-              = hidden_field_tag "availability[time_slots_attributes][#{i}][started_at]", time_slot.started_at
-            %small.text-uppercase.text-info= time_slot.started_at.strftime("%b")
-            %h2.mb-1= time_slot.started_at.day.ordinalize
-            %p.small
-              = time_slot.started_at.strftime("%A")
-              %span.text-muted= time_slot.started_at.to_s(:time_of_day)
-            = render "availabilities/slots_with_owners", slots: time_slot.nearby_runner_slots
-            - time_slot.nearby_referral_slots.each do |time_slot|
-              %span.badge.badge-success
-                %i.fa.fa-user
-                1
+      .small.text-muted.mb-1
+        %span.d-block Running #{availability.radius}km from #{availability.postcode}
+        %span Booked #{availability.created_at.to_s(:short)}
+
+      %dl.small.mt-1.mb-0.row
+        - availability.time_slots.order(:started_at).each do |time_slot|
+          .col-6
+            %dt= time_slot.started_at.to_s(:short)
+            %dd
+              = time_slot.nearby_runner_slots.size
+              #{ "runner".pluralize time_slot.nearby_runner_slots.size } available
+    .col-12.col-md-3.d-flex.flex-row.flex-md-column
+      = link_to(todo_path, class: "btn btn-secondary btn-sm btn-block") do
+        %i.fa.fa-edit
+        Edit
+      .ml-1.ml-md-0.mt-0.mt-md-1.w-100
+        = button_to(availability_path(availability), method: :delete, class: "btn btn-secondary btn-sm btn-block") do
+          %i.fa.fa-trash
+          Cancel

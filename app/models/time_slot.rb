@@ -8,6 +8,8 @@ class TimeSlot < ApplicationRecord
 
   validate :started_at_must_be_at_start_of_hour
 
+  delegate :postcode, to: :booking
+
   def owner
     case booking
     when Availability then booking.runner
@@ -17,17 +19,26 @@ class TimeSlot < ApplicationRecord
   end
 
   def nearby_runner_slots
-    TimeSlot
+    @nearby_runner_slots ||= TimeSlot
       .where(started_at: started_at)
       .joins("join availabilities on availabilities.id = booking_id and booking_type = 'Availability'")
       .where("runner_id != ?", owner.id)
   end
 
-  def nearby_referral_slots
-    TimeSlot
-      .where(started_at: started_at)
-      .joins("join referrals on referrals.id = booking_id and booking_type = 'Referral'")
-      .where.not(id: id)
+  def nearby_referrals
+    Referral
+      .near(booking.postcode, booking.radius)
+      .joins(:time_slots)
+      .where(time_slots: { started_at: started_at })
+      .where.not(time_slots: { id: id })
+      .uniq
+  end
+
+  def status
+    case nearby_runner_slots.size
+    when 0 then :waiting
+    else :pending
+    end
   end
 
   private

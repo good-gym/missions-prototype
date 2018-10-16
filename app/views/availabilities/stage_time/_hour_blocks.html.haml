@@ -1,0 +1,40 @@
+- matches = Availability.not_owned_by(current_user).on_days(@dates).grouped_by_time
+- owner_matches = Availability.owned_by(current_user).on_days(@dates).grouped_by_time
+- referrals = Referral.on_days(@dates).grouped_by_time
+
+- 4.times do |i|
+  %tr
+    - @dates.each do |date|
+      - time = Time.zone.parse("#{date} #{8+(i*3)}:00:00")
+      - end_time = time + 2.hours
+      %td.text-center{ class: owner_matches[time].present? ? "bg-white" : "bg-light" }
+        .collapse.show{ class: "time-#{time.hash}-collapse" }
+          %label.d-block.bg-light.text-nowrap
+            %small.text-uppercase.d-block Starting between
+            %span #{time.to_s(:time_of_day)} - #{end_time.to_s(:time_of_day)}
+            .mb-1= check_box_tag("times[]", time, false)
+
+          - times = 3.times.map { |j| time+j.hours }
+          - runners = Availability.joins(:time_slots).where(time_slots: { started_at: times }).where.not(runner: current_user).map(&:runner).uniq
+          = render "shared/avatars_list", avatars: runners if runners.any?
+
+          %button.btn.btn-sm.btn-link.p-0{"aria-controls" => "multiCollapseExample1 multiCollapseExample2", "aria-expanded" => "false", "data-target" => ".time-#{time.hash}-collapse", "data-toggle" => "collapse", :type => "button"}
+            %i.fas.fa-expand-arrows-alt
+            Expand
+
+        .collapse.multi-collapse{ class: "time-#{time.hash}-collapse" }
+          - 3.times do |j|
+            - if j>0
+              %hr
+            - subtime = time + j.hours
+            %label.d-block
+              %span #{subtime.to_s(:time_of_day)}
+              .mb-1= check_box_tag("times[]", time, false)
+
+              - if matches[subtime].present?
+                - runners = Availability.joins(:time_slots).where(time_slots: { started_at: subtime }).where.not(runner: current_user).map(&:runner).uniq
+                = render "shared/avatars_list", avatars: runners
+
+          %button.btn.btn-sm.btn-link.p-0{"aria-controls" => "multiCollapseExample1 multiCollapseExample2", "aria-expanded" => "false", "data-target" => ".time-#{time.hash}-collapse", "data-toggle" => "collapse", :type => "button"}
+            %i.fas.fa-compress
+            Collapse

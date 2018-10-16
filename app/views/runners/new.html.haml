@@ -3,6 +3,7 @@
 
   = simple_form_for(@runner) do |f|
     = f.error_notification
+    = f.object.errors.full_messages if f.object.errors.any?
 
     = f.input :name
     = f.input :postcode_str, required: true

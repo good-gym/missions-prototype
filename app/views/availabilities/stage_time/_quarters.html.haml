@@ -1,0 +1,56 @@
+:ruby
+  runner_matches = Availability.near(@availability.postcode, @availability.radius)
+    .not_owned_by(current_user)
+    .on_days(@dates)
+    .grouped_by_time
+  referral_matches = Referral.near(@availability.postcode, @availability.radius)
+    .on_days(@dates)
+    .grouped_by_time
+  owner_matches = Availability.owned_by(current_user).on_days(@dates).grouped_by_time
+
+- 4.times do |i|
+  %tr
+    - @dates.each do |date|
+      :ruby
+        time = Time.zone.parse("#{date} #{8+(i*3)}:00:00")
+        end_time = time + 2.hours
+        times = 3.times.map { |j| time+j.hours }
+
+      %td.text-center{ class: owner_matches[time].present? ? "bg-white" : "bg-light" }
+        .collapse.show{ class: "time-#{time.hash}-collapse" }
+          %label.d-block.bg-light.text-nowrap.small
+            .text-uppercase.d-block.text-muted Starting at
+            %span= 3.times.map { |j| (time+j.hours).to_s(:time_of_day) }.to_sentence(last_word_connector: " or ")
+
+          .d-flex
+          - if (runner_matches.keys & times).any?
+            %div= render "shared/avatars_list", avatars: other_runners_available_for(@availability, times)
+          - if (referral_matches.keys & times).any?
+            %div= render "shared/referrals_list", referrals: referrals_available_for(@availability, times)
+          - if (runner_matches.keys & times).none? && (referral_matches.keys & times).none?
+            .mb-2 &nbsp;
+
+          %button.btn.btn-sm.btn-link.p-0{"aria-controls" => "multiCollapseExample1 multiCollapseExample2", "aria-expanded" => "false", "data-target" => ".time-#{time.hash}-collapse", "data-toggle" => "collapse", :type => "button"}
+            %i.fas.fa-expand-arrows-alt
+            Expand
+
+        .collapse.multi-collapse{ class: "time-#{time.hash}-collapse" }
+          - 3.times do |j|
+            - if j>0
+              %hr
+            - subtime = time + j.hours
+            %label.d-block
+              %span #{subtime.to_s(:time_of_day)}
+              .mb-1= check_box_tag("times[]", subtime, false)
+
+              .d-flex
+              - if runner_matches[subtime].present?
+                = render "shared/avatars_list", avatars: other_runners_available_for(@availability, subtime)
+              - if referral_matches[subtime].present?
+                = render "shared/referrals_list", referrals: referrals_available_for(@availability, subtime)
+              - if runner_matches[subtime].nil? && referral_matches[subtime].nil?
+                .mb-2 &nbsp;
+
+          %button.btn.btn-sm.btn-link.p-0{"aria-controls" => "multiCollapseExample1 multiCollapseExample2", "aria-expanded" => "false", "data-target" => ".time-#{time.hash}-collapse", "data-toggle" => "collapse", :type => "button"}
+            %i.fas.fa-compress
+            Collapse

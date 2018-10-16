@@ -1,66 +1,40 @@
-= simple_form_for(@availability, url: new_availability_path, method: "get") do |f|
-  = f.error_notification
-  = f.input :postcode_str, as: :hidden
-  = f.input :radius, as: :hidden
+.container
+  .d-flex.justify-content-between.align-items-start
+    .lead
+      %strong.d-block Pick start times for your mission
+      %span.d-none.d-md-inline You can select as many as you'd like.
 
-  - matches = Availability.not_owned_by(current_user).on_days(@dates).grouped_by_time
-  - owner_matches = Availability.owned_by(current_user).on_days(@dates).grouped_by_time
-  - referrals = Referral.on_days(@dates).grouped_by_time
+  = simple_form_for(@availability, url: new_availability_path, method: "get") do |f|
+    = f.error_notification
+    = f.input :postcode_str, as: :hidden
+    = f.input :radius, as: :hidden
 
-  %h3 When do you want to do your mission to start?
-  %p.lead
-    These are mission start times - you can select as many as you'd like.
-
-  .text-center
-    %table.table.table-responsive.table-bordered
-      %thead
-        %tr
-          - @dates.each do |date|
-            - if (date - 3).past?
-              %th.alert.alert-warning
-                %i.fa.fa-clock
-                %span On Call
-                %p.small.mb-0.strikethrough
-                  We will send you missions if and when we hear about them
-            - else
-              %th.alert.alert-success
-                %i.far.fa-calendar-check
-                %span Booking
-                %p.small.mb-0
-                  We will try our best to find you a mission with our referrers
+    %table.table.table-responsive.table-bordered.border-0{ style: "table-layout: fixed;" }
+      %thead.text-center
+        - on_call_vs_bookings = @dates.group_by { |date| (date - 3).past? }
+        - if on_call_vs_bookings.has_key?(true)
+          %tr
+            - on_call_vs_bookings.each do |on_call, days|
+              - if on_call
+                %th.alert.alert-warning.align-top{ colspan: days.size }
+                  %i.fa.fa-clock
+                  %span On Call
+                  %p.small.mb-0.strikethrough
+                    We'll send you alerts about emergency missions
+              - else
+                %th.alert.alert-success.align-top{ colspan: days.size }
+                  %i.far.fa-calendar-check
+                  %span Booking
+                  %p.small.mb-0
+                    We'll try to book you a mission with our referrers
         %tr
           - @dates.each do |date|
             %th.text-center{ style: "width: #{100/@dates.size.to_f}%;" }
               %small.d-block.text-uppercase= date.strftime("%b")
               = date.day.ordinalize
-
       %tbody
-        - 12.times do |i|
-          %tr
-            - @dates.each do |date|
-              - time = Time.zone.parse("#{date} #{8+i}:00:00")
-              %td{ class: owner_matches[time].present? ? "bg-white" : "bg-light" }
-                - if owner_matches[time].present?
-                  = time.to_s(:time_of_day)
-                  %p.mb-1
-                    %i.fa.fa-check.text-success.lead
-                  .avatar-list.justify-content-center
-                    = image_tag(avatar_icon_url(current_user), title: current_user.name, class: "avatar avatar-sm")
-                  %small.text-success
-                    You've booked this slot.
-                - else
-                  %label
-                    #{8 + i}:00
-                    %br
-                    .mb-1= check_box_tag("times[]", time, false)
+        = render "availabilities/stage_time/quarters"
+        -# = render "availabilities/stage_time/hour_blocks"
+        -# = render "availabilities/stage_time/full_hours"
 
-                    - if matches[time].present?
-                      - runners = Availability.joins(:time_slots).where(time_slots: { started_at: time }).where.not(runner: current_user).map(&:runner).uniq
-                      = render "shared/avatars_list", avatars: runners
-
-                  - if referrals[time].present?
-                    %span.badge.badge-success.d-block
-                      %i.fa.fa-user
-                      = referrals[time]
-
-  %p= f.submit "Next step", class: "btn btn-secondary btn-block btn-lg"
+    %p= f.submit "Next step", class: "btn btn-secondary btn-block btn-lg"

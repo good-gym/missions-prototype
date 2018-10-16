@@ -1,11 +1,68 @@
-%h3 Your selected mission start times
+.container
+  .lead
+    %strong.d-block Confirm your chosen time slots
 
-= simple_form_for(@availability) do |f|
-  = f.error_notification
-  = f.input :postcode_str, as: :hidden
-  = f.input :radius, as: :hidden
+  = simple_form_for(@availability) do |f|
+    = f.error_notification
+    = f.input :postcode_str, as: :hidden
+    = f.input :radius, as: :hidden
 
-  .list-group.mb-2
-    = render partial: "availabilities/availability",
-      collection: [@availability], locals: { form: f }
-  %p= f.submit "Confirm", class: "btn btn-primary btn-lg btn-block"
+    .list-group.mb-2.sm-flush
+      - @availability.time_slots.each_with_index do |time_slot, i|
+        .list-group-item.availability__time-slot
+          .d-flex.justify-content-between.align-items-start.text-muted.mb-1
+            %div
+              %span.text-uppercase= time_slot.started_at.to_s(:short)
+            %button.btn.btn-sm.btn-link.p-0.m-0.availability__time-slot-delete
+              %i.fa.fa-trash
+              %span.text-uppercase Remove
+            = hidden_field_tag "availability[time_slots_attributes][#{i}][started_at]", time_slot.started_at
+
+          .d-flex.align-items-center.mb-1
+            %span.lead.mr-1= availability_time_slot_status(time_slot)
+            %small= availability_time_slot_status_description(time_slot)
+
+          - nearby_referrals = time_slot.nearby_referrals
+          - if nearby_referrals.any?
+            .d-flex.justify-content-between.align-items-top
+              .mr-1.text-left
+                %h6.mb-0
+                  - if nearby_referrals.size == 1
+                    %strong #{nearby_referrals.first.coach.public_name}
+                    available
+                  - else
+                    #{nearby_referrals.size} older #{"person".pluralize(nearby_slots.size)} available
+              .avatar-list
+                - nearby_referrals.each do |referral|
+                  = image_tag(avatar_icon_url(referral), title: referral.coach.public_name, class: "avatar avatar-sm")
+
+          - nearby_slots = time_slot.nearby_runner_slots
+          - if nearby_slots.any?
+            .d-flex.justify-content-between.align-items-top
+              .mr-1.text-left
+                %h6.mb-0 #{nearby_slots.size} #{"runner".pluralize(nearby_slots.size)} available
+                %button.btn.btn-link.btn-sm.pl-0{"aria-controls" => "multiCollapseExample1 multiCollapseExample2", "aria-expanded" => "false", "data-target" => ".buddies-#{time_slot.started_at.hash}-collapse", "data-toggle" => "collapse", :type => "button"}
+                  Want to book with a friend?
+              .avatar-list
+                - nearby_slots.each do |other_slot|
+                  = image_tag(avatar_icon_url(other_slot.owner), title: other_slot.owner.name, class: "avatar avatar-sm")
+
+            .collapse{ class: "buddies-#{time_slot.started_at.hash}-collapse" }
+              %p.small
+                Let us know who you want to do the mission with so we can assign you together.
+              .row
+                - nearby_slots.each do |other_slot|
+                  .col-6.col-sm-4.col-md-3
+                    .card.mb-1.text-center
+                      %label.card-body.p-1.m-0
+                        .mb-0.text-center
+                          = image_tag(avatar_icon_url(other_slot.owner), title: other_slot.owner.name, class: "avatar avatar-sm d-block m-auto")
+                          %small= other_slot.owner.name
+
+                        = check_box_tag "foo", "bar"
+                      .card-footer
+                        %a.small{ href: "" }
+                          #{time_slot.postcode.distance_to(other_slot.postcode).round(1)}km
+                          %span.d-none.d-sm-inline away
+                          %i.fa.fa-map
+    %p= f.submit "Confirm", class: "btn btn-primary btn-lg btn-block"

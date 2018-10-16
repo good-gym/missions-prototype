@@ -1,0 +1,31 @@
+- matches = Availability.not_owned_by(current_user).on_days(@dates).grouped_by_time
+- owner_matches = Availability.owned_by(current_user).on_days(@dates).grouped_by_time
+- referrals = Referral.on_days(@dates).grouped_by_time
+
+- 12.times do |i|
+  %tr
+    - @dates.each do |date|
+      - time = Time.zone.parse("#{date} #{8+i}:00:00")
+      %td{ class: owner_matches[time].present? ? "bg-white" : "bg-light" }
+        - if owner_matches[time].present?
+          = time.to_s(:time_of_day)
+          %p.mb-1
+            %i.fa.fa-check.text-success.lead
+          .avatar-list.justify-content-center
+            = image_tag(avatar_icon_url(current_user), title: current_user.name, class: "avatar avatar-sm")
+          %small.text-success
+            You've booked this slot.
+        - else
+          %label
+            #{8 + i}:00
+            %br
+            .mb-1= check_box_tag("times[]", time, false)
+
+            - if matches[time].present?
+              - runners = Availability.joins(:time_slots).where(time_slots: { started_at: time }).where.not(runner: current_user).map(&:runner).uniq
+              = render "shared/avatars_list", avatars: runners
+
+          - if referrals[time].present?
+            %span.badge.badge-success.d-block
+              %i.fa.fa-user
+              = referrals[time]

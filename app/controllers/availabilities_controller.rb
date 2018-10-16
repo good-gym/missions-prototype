@@ -41,17 +41,15 @@ class AvailabilitiesController < ApplicationController
       :confirm
     elsif params.key?(:dates)
       :time
-    elsif params.key?(:availability)
-      :date
     else
-      :first
+      :date
     end
   end
 
   def default_availability_params
     return availability_params if params.key?(:availability)
 
-    { postcode: Postcode.new, radius: 5 }
+    { postcode: current_user.postcode, radius: 5 }
   end
 
   def availability_params
