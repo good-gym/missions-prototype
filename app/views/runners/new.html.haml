@@ -5,4 +5,9 @@
     = f.error_notification
 
     = f.input :name
+    = f.input :postcode_str, required: true
+    = f.input :default_radius, required: true
+
+    = render "shared/mission_preferences", form: f
+
     = f.submit class: "btn btn-primary"

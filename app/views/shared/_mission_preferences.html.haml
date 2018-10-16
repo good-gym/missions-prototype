@@ -1,0 +1,16 @@
+%label.form-control-label Mission preferences
+.d-flex
+  = form.simple_fields_for :preferences, OpenStruct.new(form.object.preferences) do |pf|
+    %label.mr-1
+      = pf.check_box :lifting
+      Heavy lifting
+    %label.mr-1
+      = pf.check_box :cats
+      Cats
+    %label
+      = pf.check_box :dogs
+      Dogs
+
+%small.form-text.text-muted.mb-2
+  Please note that unchecking these will reduce your chances
+  of being assigned missions.

@@ -23,6 +23,7 @@ class RunnersController < ApplicationController
   private
 
   def runner_params
-    params.require(:runner).permit(:name)
+    params.require(:runner)
+      .permit(:name, :postcode_str, :default_radius, preferences: {})
   end
 end
