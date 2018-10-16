@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 2018_10_05_144202) do
     t.bigint "runner_id"
     t.bigint "postcode_id"
     t.float "radius"
+    t.jsonb "preferences", default: "{}", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["postcode_id"], name: "index_availabilities_on_postcode_id"
@@ -60,8 +61,12 @@ ActiveRecord::Schema.define(version: 2018_10_05_144202) do
 
   create_table "runners", force: :cascade do |t|
     t.string "name"
+    t.bigint "postcode_id"
+    t.float "default_radius"
+    t.jsonb "preferences", default: "{}", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["postcode_id"], name: "index_runners_on_postcode_id"
   end
 
   create_table "time_slots", force: :cascade do |t|
@@ -78,4 +83,5 @@ ActiveRecord::Schema.define(version: 2018_10_05_144202) do
   add_foreign_key "referrals", "coaches"
   add_foreign_key "referrals", "postcodes"
   add_foreign_key "referrals", "referrers"
+  add_foreign_key "runners", "postcodes"
 end

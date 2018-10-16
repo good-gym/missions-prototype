@@ -2,7 +2,7 @@ module Postcodeable
   extend ActiveSupport::Concern
 
   included do
-    belongs_to :postcode
+    belongs_to :postcode, autosave: true
   end
 
   def postcode_str
