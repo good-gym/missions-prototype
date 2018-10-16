@@ -1,0 +1,10 @@
+.alert.alert-dark.sm-flush
+  .d-flex.justify-content-between.align-items-center.flex-wrap
+    %div
+      %h5.mb-0.alert-heading
+        %i.fa.fa-calendar
+        Missions Calendar
+      %small Book a mission in advance
+    = link_to new_availability_path, class: "btn btn-secondary btn-sm" do
+      Book
+      %span.d-none.d-sm-inline a mission

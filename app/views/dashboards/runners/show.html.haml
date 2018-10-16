@@ -1,12 +1,24 @@
 .container
   %h1 Hello #{current_user.name}
 
-  = render "mission_on_call_v1"
-  
+  .row.mb-2
+    .col-lg-6
+      = render "mission_on_call_v2"
+    .col-lg-6
+      = render "book_missions_v1"
+
   - if current_user.availabilities.any?
     %h2 Your mission bookings
     .list-group.mb-2= render partial: "availabilities/availability", collection: current_user.availabilities
 
-  %p= link_to "Book a mission", new_availability_path, class: "btn btn-secondary btn-block"
+    %p= link_to "View listings", listings_path, class: "btn btn-link btn-block"
+  - else
+    .text-center
+      %h3 Your missions
+      %p.lead
+        You haven't booked a mission yet - once you have the details will show up here.
 
-  %p= link_to "View listings", listings_path, class: "btn btn-link btn-block"
+      %p.lead
+        Please tell us when you want to do your first mission by
+        = link_to "booking a mission slot", listings_path
+        on our calendar.
