@@ -19,8 +19,9 @@
                 - @referral.time_slots.each do |time_slot|
                   %li= time_slot.started_at.to_s(:short)
 
-  = case stage
-  - when :first then render "stage_first"
-  - when :date then render "stage_date"
-  - when :time then render "stage_time"
-  - when :task then render "stage_task"
+= case stage
+- when :first then render "stage_first"
+- when :when then render "stage_when"
+- when :date then render "stage_date"
+- when :time then render "stage_time"
+- when :task then render "stage_task"

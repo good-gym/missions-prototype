@@ -29,7 +29,7 @@ class ReferralsController < ApplicationController
     elsif params.key?(:dates)
       :time
     elsif params.key?(:referral)
-      :date
+      :when
     else
       :first
     end

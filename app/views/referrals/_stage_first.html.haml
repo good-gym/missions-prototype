@@ -1,23 +1,24 @@
-%p.lead
-  We can organise 2+ volunteers to come to an older person's house to help
-  with a physical task.
+.container
+  %p.lead
+    We can organise 2+ volunteers to come to an older person's house to help
+    with a physical task.
 
-= simple_form_for(@referral, url: new_referral_path, method: "get") do |f|
-  = f.error_notification
-  = f.input :postcode_str, required: true,
-    label: "Where does the older person live?", placeholder: "Please enter a postcode"
+  = simple_form_for(@referral, url: new_referral_path, method: "get") do |f|
+    = f.error_notification
+    = f.input :postcode_str, required: true,
+      label: "Where does the older person live?", placeholder: "Please enter a postcode"
 
-  = f.input :urgent, as: :radio_buttons, required: true,
-    label: "When does this task need to be done by?",
-    collection: [["In the next 2-4 weeks", false],["It must be done in the 24-48 hours", true]]
+    -# = f.input :urgent, as: :radio_buttons, required: true,
+    -#   label: "When does this task need to be done by?",
+    -#   collection: [["In the next 2-4 weeks", false],["It must be done in the 24-48 hours", true]]
+    -#
+    .alert.alert-placeholder
+      %code
+        %strong Preferences:
+        We need to ask whether the task has any heavy lifting or pets.
 
-  .alert.alert-placeholder
-    %code
-      %strong Preferences:
-      We need to ask whether the task has any heavy lifting or pets.
+    = f.input :confirm_age, as: :boolean, required: true,
+      label: "I confirm that the older person is aged 60 or over",
+      hint: "Their D.O.B. must be earlier than #{(Date.today-60.years)}. #{link_to("Why is this?", todo_path)}".html_safe
 
-  = f.input :confirm_age, as: :boolean, required: true,
-    label: "I confirm that the older person is aged 60 or over",
-    hint: "Their D.O.B. must be earlier than #{(Date.today-60.years)}. #{link_to("Why is this?", todo_path)}".html_safe
-
-  %p= f.submit "Next step", class: "btn btn-secondary btn-block btn-lg"
+    %p= f.submit "Next step", class: "btn btn-secondary btn-block btn-lg"

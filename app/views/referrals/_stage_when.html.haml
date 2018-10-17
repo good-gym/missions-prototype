@@ -1,0 +1,19 @@
+.container
+  %p.lead
+    %strong.d-block When does this need to happen?
+
+  .card-deck
+    %label.card
+      .card-header.d-flex
+        = radio_button_tag :when, :asap, false, class: "mr-1"
+        %h6.mb-0 In the next 24-48 hours
+      .card-body
+        %p.lead 4 runners on call
+        Runners available at
+
+    %label.card
+      .card-header.d-flex
+        = radio_button_tag :when, :wait, false, class: "mr-1"
+        %h6.mb-0
+          It the next 2-4 weeks
+      .card-body
