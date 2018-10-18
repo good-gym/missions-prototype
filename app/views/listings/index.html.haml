@@ -5,6 +5,16 @@
 
   %p.lead
     GoodGym missions coming up near you - meet others, get fit and do good.
+  = form_tag(nil, method: :get) do |f|
+    .d-flex.align-items-end
+      %div
+        = number_field_tag :radius, radius, class: "form-control w-auto", min: 2, max: 50
+      %span.flex-shrink-0.mr-1 &nbsp; km from
+      .d-flex.align-items-end.input-group
+        = text_field_tag :postcode, postcode, class: "form-control", placeholder: "Postcode"
+        .input-group-append
+          %button.btn.btn-secondary
+            %i.fa.fa-search
 
   - matches = Availability.not_owned_by(current_user).in_month(Date.today).grouped_by_date
 

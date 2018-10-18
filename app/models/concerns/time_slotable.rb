@@ -16,7 +16,7 @@ module TimeSlotable
     }
 
     scope :on_days, lambda { |days|
-      joins(:time_slots).where("date_trunc('day', started_at) in (?)", days)
+      joins(:time_slots).where("date_trunc('day', started_at) in (?)", days).distinct
     }
     scope :grouped_by_time, lambda { group(:started_at).count("*") }
     scope :grouped_by_date, lambda {

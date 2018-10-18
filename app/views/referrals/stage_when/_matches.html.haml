@@ -1,0 +1,31 @@
+- matches.each do |match|
+  .custom-control.custom-radio
+    = radio_button_tag :started_at, match.started_at, nil, class: "custom-control-input"
+    %label.custom-control-label.mb-2{ for: "started_at_#{sanitize_to_id(match.started_at)}"}
+      %p.mb-1
+        %strong= match.started_at.to_s(:long)
+        - if match.runners.size == 1
+          %span.badge.badge-warning Pending
+        - else
+          %span.badge.badge-success Ready
+
+      .d-flex.small.align-items-center
+        %strong.d-block.mr-1
+          #{match.runners.size} #{"runner".pluralize(match.runners.size)} available
+        .avatar-list.justify-content-left
+          - match.runners.each do |avatar|
+            = image_tag(avatar_icon_url(avatar), title: avatar.name, class: "avatar avatar-sm")
+
+      %small
+        - if match.runners.size == 1
+          We need another volunteer in order for the mission to go ahead.
+        - else
+          This task is able to go ahead
+
+.custom-control.custom-radio
+  = radio_button_tag :started_at, nil, nil, class: "custom-control-input"
+  %label.custom-control-label{:for => "started_at_"}
+    %strong.d-block Select different day/time(s).
+    .alert-placeholder
+      There are 8 active mission runners in this area.
+      There is a <strong>50%</strong> chance that we can do this in the next 2 weeks.

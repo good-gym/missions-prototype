@@ -4,9 +4,11 @@ class ReferralsController < ApplicationController
   def new
     @referral = Referral.new(default_referral_params)
     @dates = params[:dates].map { |d| Date.parse(d) } if params[:dates]
-    if params[:times]
-      params[:times].sort.each { |d| @referral.time_slots.build(started_at: Time.parse(d)) }
-    end
+    @matches = setup_matches
+
+    params[:times]
+      &.sort
+      &.each { |d| @referral.time_slots.build(started_at: Time.parse(d)) }
   end
 
   def create
@@ -28,6 +30,8 @@ class ReferralsController < ApplicationController
       :task
     elsif params.key?(:dates)
       :time
+    elsif params[:started_at] == "on"
+      :date
     elsif params.key?(:referral)
       :when
     else
@@ -54,5 +58,16 @@ class ReferralsController < ApplicationController
         time_slots_attributes: %i[started_at]
       )
       .merge(referrer: current_user)
+  end
+
+  def setup_matches
+    if @dates.present?
+      Availability::Match.near(@referral.postcode, Availability.on_days(@dates))
+    elsif @referral.time_slots.any?
+      times = @referral.time_slots.map(&:started_at)
+      Availability::Match.near(@referral.postcode, Availability.starting_at(times))
+    else
+      Availability::Match.near(@referral.postcode)
+    end
   end
 end

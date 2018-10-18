@@ -11,6 +11,10 @@ module ApplicationHelper
     render(layout: "shared/calendar", locals: locals, &block)
   end
 
+  def render_time_picker(locals = {}, &block)
+    render(layout: "shared/time_picker", locals: locals, &block)
+  end
+
   def avatar_icon_url(object, size = 50)
     key = object.cache_key.tr("/", "-")
     if object.is_a?(Referrer)

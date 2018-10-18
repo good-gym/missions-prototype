@@ -1,37 +1,26 @@
-%p.lead.mb-0
-  At what time is the older person available to meet the volunteers?
-%p.small.text-muted
-  Note: you can choose multiple time slots.
+.container
+  %p.lead.mb-0
+    At what time is the older person available to meet the volunteers?
+  %p.small.text-muted
+    You will improve the chances of the task being completed if you pick multiple times
 
-= simple_form_for(@referral, url: new_referral_path, method: "get") do |f|
-  = f.error_notification
-  = f.input :postcode_str, as: :hidden
-  = f.input :urgent, as: :hidden
+  = simple_form_for(@referral, url: new_referral_path, method: "get") do |f|
+    = f.error_notification
+    = f.input :postcode_str, as: :hidden
+    = f.input :urgent, as: :hidden
 
-  - matches = Availability::Match.near(@referral.postcode, Availability.on_days(@dates)).group_by(&:started_at)
+    - matches_by_time = @matches.group_by(&:started_at)
 
-  .text-center
-    %table.table.table-responsive
-      %thead
-        %tr
-          - @dates.each do |date|
-            %th.text-center{ style: "width: #{100/@dates.size.to_f}%;" }
-              %small.d-block.text-uppercase= date.strftime("%b")
-              = date.day.ordinalize
+    = render_time_picker(dates: @dates) do |slot, slot_type|
+      - if slot_type == :block
 
-      %tbody
-        - 12.times do |i|
-          %tr
-            - @dates.each do |date|
-              - time = Time.zone.parse("#{date} #{8+i}:00:00")
-              %td{ style: "width: #{100/@dates.size.to_f}%;" }
-                %label
-                  #{8 + i}:00
-                  %br
-                  .mb-1= check_box_tag("times[]", time, false)
+        - runners = slot.map { |t| matches_by_time[t]&.map(&:runners) }.flatten.uniq.compact
+        - if runners.any?
+          = render "shared/avatars_list", avatars: runners
+      - else
+        - if matches_by_time[slot].present?
+          - runners = matches_by_time[slot].map(&:runners).flatten.uniq.compact
+          = render "shared/avatars_list", avatars: runners
 
-                  - if matches[time].present?
-                    - matches[time].each do |match|
-                      = render "shared/avatars_list", avatars: match.runners
 
-  %p= f.submit "Next step", class: "btn btn-secondary btn-block btn-lg"
+    %p= f.submit "Next step", class: "btn btn-secondary btn-block btn-lg"

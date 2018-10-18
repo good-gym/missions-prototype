@@ -16,8 +16,15 @@
             %dt.col-5 Times slots
             %dd.col-7.text-muted
               %ul.list-unstyled.small.mb-0
+                - matches_by_time = @matches.group_by(&:started_at)
                 - @referral.time_slots.each do |time_slot|
-                  %li= time_slot.started_at.to_s(:short)
+                  %li
+                    = time_slot.started_at.to_s(:short)
+                    - if matches_by_time[time_slot.started_at]
+                      - matches_by_time[time_slot.started_at].each do |match|
+                        %span.badge.badge-info
+                          %i.fa.fa-walking
+                          = match.size
 
 = case stage
 - when :first then render "stage_first"

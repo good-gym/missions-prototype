@@ -1,7 +1,7 @@
 - if avatars.any?
-  .avatar-list.justify-content-center
+  .avatar-list{ class: local_assigns[:class] || "justify-content-center" }
     - avatars.each do |avatar|
       = image_tag(avatar_icon_url(avatar), title: avatar.name, class: "avatar avatar-sm")
   %small
     %strong= avatars.size
-    #{"runner".pluralize(avatars.size)} nearby
+    #{"runner".pluralize(avatars.size)} available

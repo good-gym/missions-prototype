@@ -1,12 +1,15 @@
 class Availability::Match
   def self.near(postcode, relation = Availability.upcoming)
+    postcode.locate!
+
     relation
       .group("time_slots.started_at")
       .pluck(:started_at, "array_agg(availabilities.id)")
       .flat_map do |started_at, ids|
         in_range = Availability.find(ids).select { |a| a.in_range?(postcode) }
-        new(started_at: started_at, availabilities: in_range)
+        new(started_at: started_at, availabilities: in_range) if in_range.any?
       end
+      .compact
   end
 
   def self.all(relation = Availability.upcoming)

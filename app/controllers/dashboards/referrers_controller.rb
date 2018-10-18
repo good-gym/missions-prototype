@@ -20,6 +20,6 @@ class Dashboards::ReferrersController < ApplicationController
     return if params[:postcode].blank?
 
     str = UKPostcode.parse(params[:postcode]).to_s
-    @postcode ||= Postcode.find_or_initialize_by(postcode: str)
+    @postcode ||= Postcode.find_or_create_by(postcode: str)
   end
 end

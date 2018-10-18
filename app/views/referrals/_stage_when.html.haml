@@ -2,18 +2,41 @@
   %p.lead
     %strong.d-block When does this need to happen?
 
-  .card-deck
+  .card-deck.mb-2
     %label.card
-      .card-header.d-flex
-        = radio_button_tag :when, :asap, false, class: "mr-1"
-        %h6.mb-0 In the next 24-48 hours
-      .card-body
-        %p.lead 4 runners on call
-        Runners available at
+      .card-header
+        %h4.mb-0 In 24-48 hours
+      .card-body.alert-placeholder
+        %p.lead
+          %span.badge.badge-warning 3
+          Runners on call
+        %ul.mb-0
+          %li On-call time slots 1
+          %li On-call time slots 2
+      .card-footer
+        = link_to "Select", todo_path, class: "btn btn-secondary btn-lg btn-block"
 
-    %label.card
-      .card-header.d-flex
-        = radio_button_tag :when, :wait, false, class: "mr-1"
-        %h6.mb-0
-          It the next 2-4 weeks
-      .card-body
+    .card
+      = simple_form_for(@referral, url: new_referral_path, method: "get") do |f|
+        .card-header
+          %h4.mb-0
+            In 2-4 weeks
+        .card-body
+          - if @matches.any?
+            %p.lead We have runners available at the following times:
+            = render "referrals/stage_when/matches", matches: @matches
+          - else
+            = hidden_field_tag "when", true
+
+            %p.lead
+              No volunteers have told us they are available near
+              %strong= @referral.postcode
+              but if you list the task some may sign up.
+            %p.alert-placeholder
+              There are 8 active mission runners in this area.
+              There is a <strong>50%</strong> chance that we can do this in the next 2 weeks.
+
+          = f.input :postcode_str, as: :hidden
+        .card-footer
+          %button.btn.btn-secondary.btn-lg.btn-block
+            = @matches.any? ? "Select" : "List a task"

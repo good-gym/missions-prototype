@@ -1,39 +1,40 @@
-%p.lead.mb-0
-  When is the older person available?
-%p.small.text-muted
-  Note: you can choose multiple days.
+.container
+  %p.lead.mb-0
+    When is the older person available?
+  %p.small.text-muted
+    You will improve the chances of the task being completed if you pick multiple days
 
-- calendar = Calendar.new
-- matches = Availability::Match.near(@referral.postcode).group_by(&:date)
-- if matches.any? && current_user.referrals.count <= 1
-  = render "referrals/stage_date/help", matches: matches
+  - calendar = Calendar.new
+  - matches = Availability::Match.near(@referral.postcode).group_by(&:date)
+  - if matches.any? && current_user.referrals.count <= 1
+    = render "referrals/stage_date/help", matches: matches
 
-= simple_form_for(@referral, url: new_referral_path, method: "get") do |f|
-  = f.error_notification
-  = f.input :postcode_str, as: :hidden
-  = f.input :urgent, as: :hidden
+  = simple_form_for(@referral, url: new_referral_path, method: "get") do |f|
+    = f.error_notification
+    = f.input :postcode_str, as: :hidden
+    = f.input :urgent, as: :hidden
 
-  .mb-2{ style: "margin-left: -15px; margin-right: -15px;"}
-    = render_calendar(calendar: calendar, matches: matches) do |day|
-      - if day.month == calendar.date.month
-        %label.text-center{ class: day.past? ? "text-muted" : "" }
-          = day.day
-          %p.mb-0
-            - if day.past?
-              &nbsp;
-              %br
-            - elsif (day - 3).past?
-              %i.far.fa-clock.text-muted{ title: "Deadline past" }
+    .mb-2{ style: "margin-left: -15px; margin-right: -15px;"}
+      = render_calendar(calendar: calendar, matches: matches) do |day|
+        - if day.month == calendar.date.month
+          %label.text-center{ class: day.past? ? "text-muted" : "" }
+            = day.day
+            %p.mb-0
+              - if day.past?
+                &nbsp;
+                %br
+              - elsif (day - 3).past?
+                %i.far.fa-clock.text-muted{ title: "Deadline past" }
+              - else
+                = check_box_tag("dates[]", day, false, disabled: day.past?)
+            - if matches[day].present?
+              - matches[day].each do |match|
+                %span.badge.badge-info
+                  %i.fa.fa-walking
+                  = match.size
             - else
-              = check_box_tag("dates[]", day, false, disabled: day.past?)
-          - if matches[day].present?
-            - matches[day].each do |match|
-              %span.badge.badge-info
-                %i.fa.fa-walking
-                = match.size
-          - else
-            %span &nbsp;
-      - else
-        .text-muted= day.day
+              %span &nbsp;
+        - else
+          .text-muted= day.day
 
-  %p= f.submit "Next step", class: "btn btn-secondary btn-block btn-lg"
+    %p= f.submit "Next step", class: "btn btn-secondary btn-block btn-lg"
