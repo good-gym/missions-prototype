@@ -1,6 +1,12 @@
 class Availability::Match
   def self.near(postcode, relation = Availability.upcoming)
-    all(relation).select { |m| m.covers?(postcode) }
+    relation
+      .group("time_slots.started_at")
+      .pluck(:started_at, "array_agg(availabilities.id)")
+      .flat_map do |started_at, ids|
+        in_range = Availability.find(ids).select { |a| a.in_range?(postcode) }
+        new(started_at: started_at, availabilities: in_range)
+      end
   end
 
   def self.all(relation = Availability.upcoming)
@@ -40,9 +46,7 @@ class Availability::Match
   end
 
   def covers?(postcode)
-    availabilities
-      .map { |a| availability_covers_postcode?(a, postcode) }
-      .uniq == [true]
+    availabilities.map { |a| a.in_range?(postcode) }.uniq == [true]
   end
 
   def overlap?
@@ -51,11 +55,5 @@ class Availability::Match
       distance < a.radius && distance < b.radius
     end
     combos_overlap.uniq == [true]
-  end
-
-  private
-
-  def availability_covers_postcode?(availability, postcode)
-    availability.postcode.distance_to(postcode) <= availability.radius_in_m
   end
 end

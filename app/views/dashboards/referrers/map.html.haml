@@ -1,7 +1,18 @@
 .container
   %h1 Volunteers available
 
+  .mb-1
+    = form_tag(nil, method: :get) do |f|
+      .d-flex.align-items-end.input-group
+        = text_field_tag :postcode, postcode, class: "form-control", placeholder: "Postcode"
+        .input-group-append
+          %button.btn.btn-secondary
+            %i.fa.fa-search
+
   #map.mb-2{ style: "height: 400px" }
+
+  - colours = @available_slots.size.times.map { |i| "#%06x" % (Random.new(i).rand * 0xffffff) }
+  - data = @available_slots.map { |s| s.availabilities.map(&:geometry) }
 
   %table.table
     %thead
@@ -10,12 +21,14 @@
         %th Who
         %th Where
     %tbody
-      - @available_slots.each do |slot|
+      - @available_slots.each_with_index do |slot, i|
         %tr
           %td= slot.started_at.to_s(:short)
-          %td.text-left= render "shared/avatars_list", avatars: slot.runners
+          %td.text-left= render "shared/avatars_list", avatars: slot.runners, class: "justify-content-start"
+          %td
+            %button.btn.btn-secondary{ style: "background-color: #{colours[i]};"}
+              %i.fa.fa-map
 
-  - data = @available_slots.map { |s| s.availabilities.map(&:geometry) }
   :javascript
     function getRandomColor() {
       var letters = '0123456789ABCDEF';
@@ -34,14 +47,19 @@
     }).addTo(map);
 
     var data = #{data.to_json.html_safe};
-    data.forEach(function(geometries) {
-      var color = getRandomColor();
-      console.log(geometries);
+    var colours = #{colours.to_json.html_safe};
+    data.forEach(function(geometries, index) {
+      var colour = colours[index];
       geometries.forEach(function(geometry) {
         var point = new L.LatLng(geometry.lat, geometry.lng);
-        var marker = L.circle(point, {
+        L.circle(point, {
           radius: geometry.radius * 500,
-          color: color, fillColor: color, fillOpacity: 0.2
+          color: colour, fillColor: colour, fillOpacity: 0.2
         }).addTo(map);
       });
     });
+
+    var postcode = #{postcode&.point&.to_json&.html_safe || "null"};
+    if (postcode) {
+      var marker = L.marker([postcode.lat, postcode.lng]).addTo(map);
+    }

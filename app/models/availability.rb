@@ -13,6 +13,14 @@ class Availability < ApplicationRecord
     radius * 1000
   end
 
+  def in_range?(other)
+    case other
+    when Availability then postcode.distance_to(other.postcode) <= radius
+    when Postcode then postcode.distance_to(other) <= radius
+    else raise ArgumentError("Unable to see if other is in range")
+    end
+  end
+
   def geometry
     { type: "circle", lat: postcode.lat, lng: postcode.lng, radius: radius }
   end
