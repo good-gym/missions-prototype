@@ -3,6 +3,19 @@ module Postcodeable
 
   included do
     belongs_to :postcode, autosave: true
+
+    scope :near, lambda { |postcode, distance|
+      postcode.locate!
+      distance_sql = <<~SQL
+        (6371 * ACOS(
+          COS(RADIANS(#{postcode.lat})) * COS(RADIANS(postcodes.lat)) *
+          COS(RADIANS(#{postcode.lng}) - RADIANS(postcodes.lng)) +
+          SIN(RADIANS(#{postcode.lat})) * SIN(RADIANS(postcodes.lat)))
+        )
+      SQL
+
+      joins(:postcode).where("#{distance_sql} <= ?", distance)
+    }
   end
 
   def postcode_str

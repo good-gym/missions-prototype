@@ -2,6 +2,15 @@ class Postcode < ApplicationRecord
   validates :postcode, uniqueness: true, presence: true, postcode: true
   after_commit :locate!
 
+  def self.postcode!(postcode_string)
+    return if postcode_string.blank?
+
+    uk_postcode = UKPostcode.parse(postcode_string)
+    return unless uk_postcode.valid?
+
+    Postcode.find_or_create_by(postcode: uk_postcode.to_s)
+  end
+
   def postcode=(str)
     super UKPostcode.parse(str).to_s
   end

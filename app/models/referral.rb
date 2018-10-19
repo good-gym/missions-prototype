@@ -3,7 +3,7 @@ class Referral < ApplicationRecord
   include TimeSlotable
 
   belongs_to :referrer
-  
+
   belongs_to :coach
   accepts_nested_attributes_for :coach
 

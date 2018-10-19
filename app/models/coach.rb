@@ -17,4 +17,12 @@ class Coach < ApplicationRecord
       postcode: Faker::Address.zip_code
     )
   end
+
+  def public_name
+    [title || "Mr", first_name.first].join(" ")
+  end
+
+  def first_name
+    name.split.first
+  end
 end
