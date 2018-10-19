@@ -40,6 +40,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem "faker"
 gem 'geokit'
 gem "haml-rails", "~> 1.0"
+gem "ideal_postcodes"
 gem 'simple_form'
 gem "uk_postcode"
 
