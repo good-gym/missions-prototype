@@ -6,8 +6,17 @@
     = f.object.errors.full_messages if f.object.errors.any?
 
     = f.input :name
-    = f.input :postcode_str, required: true
-    = f.input :default_radius, required: true
+    = f.input :postcode_str, required: true,
+      label: "Where are you running from?", placeholder: "Please enter a postcode"
+
+    .form-group
+      = f.label :default_radius do
+        How far are you prepared to travel for a mission?
+        %abbr{ title: "required" } *
+      .d-flex.align-items-end
+        = f.number_field :default_radius, min: 2, max: 50, class: "form-control w-auto"
+        &nbsp; km
+      %small.form-text.text-muted Remeber that you'll have to get back too!
 
     = render "shared/mission_preferences", form: f
 
