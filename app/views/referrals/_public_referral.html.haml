@@ -1,2 +1,15 @@
-.list-group-item
-  = public_referral.coach.public_name
+.list-group-item.d-flex.justify-content-between
+  .row
+    .col-12.col-md-8
+      %h5= public_referral.title
+
+      %code= public_referral.inspect
+    .col-12.col-md-4
+      %small= public_referral.postcode.location
+
+      :ruby
+        data = {
+          point: public_referral.postcode.public_point.to_a,
+          bounds: public_referral.postcode.public_bounds.to_a
+        }
+      .leaflet-map--static.w-100.h-75{ data: data, style: "min-height: 150px;" }

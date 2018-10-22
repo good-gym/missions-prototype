@@ -4,3 +4,20 @@ L.Icon.Default.mergeOptions({
   shadowUrl: '../..<%= asset_path("leaflet/dist/images/marker-shadow.png") %>',
   shadowRetinaUrl: '../..<%= asset_path("leaflet/dist/images/marker-shadow.png") %>'
 });
+
+$(document).ready(function($) {
+  $(".leaflet-map--static").each(function(e) {
+    var center = $(this).data('point');
+    var map = L.map(this, {
+      dragging: false,
+      zoomControl: false,
+    }).fitBounds($(this).data('bounds'));
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data © OpenStreetMap contributors',
+        maxZoom: 18
+    }).addTo(map);
+
+    L.rectangle($(this).data('bounds'), {color: "#ff7800", weight: 1}).addTo(map);
+  });
+});

@@ -1,3 +1,5 @@
+require 'plus_codes/open_location_code'
+
 class Postcode < ApplicationRecord
   validates :postcode, uniqueness: true, presence: true, postcode: true
   after_commit :locate!
@@ -55,6 +57,21 @@ class Postcode < ApplicationRecord
     @point ||= Geokit::LatLng.new(lat, lng)
   end
 
+  def public_point
+    @public_point ||= begin
+      Geokit::LatLng.new(plus_code.latitude_center, plus_code.longitude_center)
+    end
+  end
+
+  def public_bounds
+    @public_bounds ||= begin
+      Geokit::Bounds.new(
+        Geokit::LatLng.new(plus_code.south_latitude, plus_code.west_longitude),
+        Geokit::LatLng.new(plus_code.north_latitude, plus_code.east_longitude)
+      )
+    end
+  end
+
   def distance_to(postcode)
     point.distance_to(postcode.point, units: :kms)
   end
@@ -63,5 +80,13 @@ class Postcode < ApplicationRecord
 
   def uk_postcode
     @uk_postcode ||= UKPostcode.parse(postcode)
+  end
+
+  def plus_code
+    @plus_code ||= begin
+      olc = PlusCodes::OpenLocationCode.new
+      code = olc.encode(lat, lng, 8)
+      code_area = olc.decode(code)
+    end
   end
 end

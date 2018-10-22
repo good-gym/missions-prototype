@@ -10,7 +10,7 @@ class Referral < ApplicationRecord
   attr_accessor :urgent
   attr_accessor :confirm_age
 
-  attr_accessor :title
+  attr_writer :title
   attr_accessor :subtitle
   attr_accessor :description
 
@@ -20,4 +20,8 @@ class Referral < ApplicationRecord
   attr_accessor :risk_details
 
   attr_accessor :confirm_tools
+
+  def title
+    ["Clearing the garden for #{coach.public_name}"].sample
+  end
 end
