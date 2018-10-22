@@ -10,7 +10,7 @@ class Referral < ApplicationRecord
   attr_accessor :urgent
   attr_accessor :confirm_age
 
-  attr_writer :title
+  attr_accessor :title
   attr_accessor :subtitle
   attr_accessor :description
 
@@ -21,7 +21,16 @@ class Referral < ApplicationRecord
 
   attr_accessor :confirm_tools
 
-  def title
-    ["Clearing the garden for #{coach.public_name}"].sample
+  private
+
+  DATA = YAML.load(File.read("config/fake_data.yml")).with_indifferent_access[:referrals]
+  after_initialize :setup_fake_data
+
+  def setup_fake_data
+    if persisted?
+      data = DATA[id]
+      data.each { |key, value| value.gsub!("COACH", coach.public_name) }
+      assign_attributes(data)
+    end
   end
 end
