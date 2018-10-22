@@ -1,9 +1,9 @@
 .card.calendar
   .card-header
     .d-flex.justify-content-between
-      %span <
+      %span= link_to("<", date: calendar.previous_month)
       = calendar.date.to_s(:month_year)
-      %span >
+      %span= link_to(">", date: calendar.next_month)
   %table.table.table-sm.w-100.mb-0{ style: "table-layout: fixed;" }
     %thead.text-uppercase.small
       %tr

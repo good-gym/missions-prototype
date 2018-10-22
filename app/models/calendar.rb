@@ -10,4 +10,12 @@ class Calendar
       Array.new(7) { |d| date.beginning_of_week + (w*7) + d }
     end
   end
+
+  def next_month
+    @date + 1.month
+  end
+
+  def previous_month
+    @date - 1.month
+  end
 end

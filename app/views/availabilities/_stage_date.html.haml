@@ -1,4 +1,4 @@
-- calendar = Calendar.new
+- calendar = Calendar.new(date)
 - matches = Availability.not_owned_by(current_user).in_month(calendar.date).grouped_by_date
 - owner_matches = Availability.owned_by(current_user).in_month(calendar.date).grouped_by_date
 - referrals = Referral.in_month(calendar.date).grouped_by_date

@@ -1,5 +1,5 @@
 class AvailabilitiesController < ApplicationController
-  helper_method :stage
+  helper_method :stage, :date
 
   def new
     @availability = Availability.new(default_availability_params)
@@ -35,6 +35,10 @@ class AvailabilitiesController < ApplicationController
   end
 
   private
+
+  def date
+    @date ||= params.has_key?(:date) ? Date.parse(params[:date]) : Date.today
+  end
 
   def stage
     if params.key?(:times)
