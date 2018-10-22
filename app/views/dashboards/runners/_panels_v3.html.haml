@@ -14,8 +14,18 @@
       %div
         %h5.text-info.mb-0.alert-heading
           %i.fa.fa-clock
-          Urgent Missions
+          Mission alerts
         %small Get alerts about urgent missions
+      = link_to todo_path, class: "btn btn-info btn-sm" do
+        Enable
+        %span.d-none.d-sm-inline.d-md-none.d-lg-inline alerts
+  .card.rounded-0.sm-flush.mb-1
+    .card-body.py-1.d-flex.justify-content-between.align-items-center.flex-wrap
+      %div
+        %h5.text-info.mb-0.alert-heading
+          %i.fa.fa-list
+          Mission listings
+        %small See missions near you
       .btn.btn-info.btn-sm
-        Mark
-        %span.d-none.d-sm-inline.d-md-none.d-lg-inline availability
+        Browse
+        %span.d-none.d-sm-inline.d-md-none.d-lg-inline listings

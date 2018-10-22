@@ -1,22 +1,10 @@
 .container
-  %h1 Hello #{current_user.name}
-
-  = render "panels_v3"
-
+  .mb-2= render "panels_v4"
   - if current_user.availabilities.any?
     %h2 Your mission bookings
     .list-group.mb-2.sm-flush= render partial: "availabilities/availability", collection: current_user.availabilities
-
-    %p= link_to "View listings", listings_path, class: "btn btn-link btn-block"
   - else
     .text-center
       %h3 Your missions
       %p.lead
         You haven't booked a mission yet - once you have the details will show up here.
-
-      %p.lead
-        Please tell us when you want to do your first mission by
-        = link_to "booking a mission slot", new_availability_path
-        on our calendar or
-        = link_to "signing up for alerts"
-        about urgent missions.

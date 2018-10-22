@@ -1,0 +1,36 @@
+.row
+  .col-12.col-md-4
+    .card.rounded-0.sm-flush.mb-1
+      .card-body.py-1.row.align-items-center
+        .col-8.col-md-12.col-lg-8
+          %h5.text-info.mb-0.mb-md-1.text-nowrap
+            %i.fa.fa-calendar
+            Mission calendar
+          %small.mb-0.mb-md-1 Book missions in advance
+        .col-4.col-md-12.col-lg-4
+          = link_to new_availability_path, class: "btn btn-info btn-sm btn-block" do
+            Book
+
+  .col-12.col-md-4
+    .card.rounded-0.sm-flush.mb-1
+      .card-body.py-1.row.align-items-center
+        .col-8.col-md-12.col-lg-8
+          %h5.text-info.mb-0.mb-md-1.text-nowrap
+            %i.fa.fa-clock
+            Mission alerts
+          %small.mb-0.mb-md-1 Get alerts about missions
+        .col-4.col-md-12.col-lg-4
+          = link_to todo_path, class: "btn btn-info btn-sm btn-block" do
+            Enable
+
+  .col-12.col-md-4
+    .card.rounded-0.sm-flush.mb-1
+      .card-body.py-1.row.align-items-center
+        .col-8.col-md-12.col-lg-8
+          %h5.text-info.mb-0.mb-md-1.text-nowrap
+            %i.fa.fa-list
+            Mission listings
+          %small.mb-0.mb-md-1 See missions near you
+        .col-4.col-md-12.col-lg-4
+          = link_to listings_path, class: "btn btn-info btn-sm btn-block" do
+            Browse
