@@ -41,6 +41,7 @@ gem "faker"
 gem 'geokit'
 gem "haml-rails", "~> 1.0"
 gem "ideal_postcodes"
+gem "plus_codes"
 gem 'simple_form'
 gem "uk_postcode"
 
