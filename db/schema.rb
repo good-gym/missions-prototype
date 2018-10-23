@@ -10,10 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_05_144202) do
+ActiveRecord::Schema.define(version: 2018_10_23_162651) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "alerts", force: :cascade do |t|
+    t.bigint "runner_id"
+    t.bigint "postcode_id"
+    t.float "radius"
+    t.datetime "expires_at"
+    t.datetime "cancelled_at"
+    t.jsonb "preferences", default: "{}", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["postcode_id"], name: "index_alerts_on_postcode_id"
+    t.index ["runner_id"], name: "index_alerts_on_runner_id"
+  end
 
   create_table "availabilities", force: :cascade do |t|
     t.bigint "runner_id"
@@ -78,6 +91,8 @@ ActiveRecord::Schema.define(version: 2018_10_05_144202) do
     t.index ["booking_type", "booking_id"], name: "index_time_slots_on_booking_type_and_booking_id"
   end
 
+  add_foreign_key "alerts", "postcodes"
+  add_foreign_key "alerts", "runners"
   add_foreign_key "availabilities", "postcodes"
   add_foreign_key "availabilities", "runners"
   add_foreign_key "referrals", "coaches"
