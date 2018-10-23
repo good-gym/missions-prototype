@@ -18,21 +18,72 @@
   - matches = Availability.not_owned_by(current_user).in_month(Date.today).grouped_by_date
 
   - @days.each_with_index do |date, i|
+    :ruby
+      referrals = @referrals.on_days(date).uniq
+      missions = Mission.on_days(date)
+      other_runners = Availability.near(postcode, radius)
+        .not_owned_by(current_user)
+        .on_days(date)
+        .map(&:runner)
+        .uniq
 
     %h5.mt-4
       %strong.text-uppercase= date.to_s(:long)
 
-    .list-group
-      = render partial: "referrals/public_referral", collection: @referrals.on_days(date)
+    - if other_runners.any?
+      .card.mb-3
+        .card-body
+          %h6 #{other_runners.size} runners are available - why not join them?
+          .d-flex.justify-content-between
+            .avatar-list{ class: local_assigns[:class] || "justify-content-center" }
+              - other_runners.each do |avatar|
+                = image_tag(avatar_icon_url(avatar), title: avatar.name, class: "avatar avatar-sm")
+            = link_to "Book a mission", todo_path, class: "btn btn-secondary btn-sm"
 
-    - if i == 3
-      .list-group
+    .list-group
+      = render partial: "referrals/public_referral", collection: referrals
+      - missions.each do |mission|
         .list-group-item
           .media
-            %img.mr-1{ src: "https://placekitten.com/200/139" }
-            .media-body
-              %h5 Mission details
-              %p.lead Ipsum lorem...
+            %img.mr-1{ src: mission.image_url, class: "w-100" }
+          .media-body
+            %h5= mission.title
+
+    - if referrals.none? && missions.none?
+      %p
+        No missions within #{radius}km of #{postcode}, but
+        - if other_runners.any?
+          there are #{other_runners.size} runners available -
+        - else
+          why not
+        = link_to "book a mission", new_availability_path(availability: { postcode_str: postcode.to_s, radius: radius }, dates: [date])
+        today?
+    - else
+      %p
+        - if other_runners.any?
+          There are #{other_runners.size} runners available -
+        = link_to "book a mission.", new_availability_path(availability: { postcode_str: postcode.to_s, radius: radius }, dates: [date])
+
+
+    -# - if other_runners.any?
+    -#   .card.mb-3
+    -#     .card-body.p-1
+    -#       %h6 #{other_runners.size} runners available
+    -#       .d-flex.justify-content-between
+    -#         .avatar-list{ class: local_assigns[:class] || "justify-content-center" }
+    -#           - other_runners.each do |avatar|
+    -#             = image_tag(avatar_icon_url(avatar), title: avatar.name, class: "avatar avatar-sm")
+    -#         = link_to "Book a mission", new_availability_path(availability: { postcode_str: postcode.to_s, radius: radius }, dates: [date]),
+    -#           class: "btn btn-secondary btn-sm"
+
+
+      -# .list-group
+      -#   .list-group-item
+      -#     .media
+      -#       %img.mr-1{ src: "https://placekitten.com/200/139" }
+      -#       .media-body
+      -#         %h5 Mission details
+      -#         %p.lead Ipsum lorem...
     -# - else
     -#   - slots = TimeSlot.where("date_trunc('day', started_at) = ?", date).joins(:availability).where.not(availabilities: { owner: current_user })
     -#   - owners = slots.map(&:owner).uniq

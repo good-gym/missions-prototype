@@ -1,4 +1,5 @@
 class Referral < ApplicationRecord
+  include FakeMissionData
   include Postcodeable
   include TimeSlotable
 
@@ -20,17 +21,4 @@ class Referral < ApplicationRecord
   attr_accessor :risk_details
 
   attr_accessor :confirm_tools
-
-  private
-
-  DATA = YAML.load(File.read("config/fake_data.yml")).with_indifferent_access[:referrals]
-  after_initialize :setup_fake_data
-
-  def setup_fake_data
-    if persisted?
-      data = DATA[id]
-      data.each { |key, value| value.gsub!("COACH", coach.public_name) }
-      assign_attributes(data)
-    end
-  end
 end

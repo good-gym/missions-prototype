@@ -16,7 +16,7 @@
         - public_referral.time_slots.each do |time_slot|
           %dt.col-6= time_slot.started_at.to_s(:short)
           %dd.col-6
-            %button.btn.btn-secondary Sign up
+            = link_to "Sign up", todo_path, class: "button btn btn-secondary" 
     .col-12.col-md-4
       %small= public_referral.postcode.location
 
