@@ -13,8 +13,16 @@
           .col-6
             %dt= time_slot.started_at.to_s(:short)
             %dd
-              = time_slot.nearby_runner_slots.size
-              #{ "runner".pluralize time_slot.nearby_runner_slots.size } available
+              - if time_slot.nearby_runner_slots.any?
+                .d-block
+                  = time_slot.nearby_runner_slots.size
+                  #{ "runner".pluralize time_slot.nearby_runner_slots.size } available
+
+              - if time_slot.nearby_referrals.any?
+                .d-block
+                  #{time_slot.nearby_referrals.size} older
+                  #{ "person".pluralize time_slot.nearby_referrals.size } available
+
     .col-12.col-md-3.d-flex.flex-row.flex-md-column
       = link_to(todo_path, class: "btn btn-secondary btn-sm btn-block") do
         %i.fa.fa-edit

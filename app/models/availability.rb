@@ -1,6 +1,7 @@
 class Availability < ApplicationRecord
   include Postcodeable
   include TimeSlotable
+  include MissionPreferences
 
   validates :radius, presence: true
 

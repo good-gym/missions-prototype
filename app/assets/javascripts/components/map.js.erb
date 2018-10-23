@@ -8,16 +8,14 @@ L.Icon.Default.mergeOptions({
 $(document).ready(function($) {
   $(".leaflet-map--static").each(function(e) {
     var center = $(this).data('point');
-    var map = L.map(this, {
-      dragging: false,
-      zoomControl: false,
-    }).fitBounds($(this).data('bounds'));
+    var map = L.map(this).setView(center, 13);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: 'Map data © OpenStreetMap contributors',
-        maxZoom: 18
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 18
     }).addTo(map);
 
-    L.rectangle($(this).data('bounds'), {color: "#ff7800", weight: 1}).addTo(map);
+    // L.rectangle($(this).data('bounds'), {color: "#ff7800", weight: 1}).addTo(map);
+    L.circle(center, {radius: 200}).addTo(map);
   });
 });

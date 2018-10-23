@@ -1,13 +1,16 @@
-- calendar = Calendar.new(date)
-- matches = Availability.not_owned_by(current_user).in_month(calendar.date).grouped_by_date
-- owner_matches = Availability.owned_by(current_user).in_month(calendar.date).grouped_by_date
-- referrals = Referral.in_month(calendar.date).grouped_by_date
+:ruby
+  calendar = Calendar.new(date)
+  matches = Availability.near(@availability.postcode, @availability.radius)
+    .in_month(calendar.date)
+    .grouped_by_date
+  owner_matches = Availability.owned_by(current_user).in_month(calendar.date).grouped_by_date
+  referrals = Referral.near(@availability.postcode, @availability.radius).in_month(calendar.date).grouped_by_date
 
 .container
   .d-flex.justify-content-between.align-items-start
     .lead
       %strong.d-block Pick dates for your mission
-      %span.d-none.d-md-inline You can pick multiple days if you'd like.
+      %span Select as many days as you'd like - we'll only assign 1 mission.
     = link_to "#help", class: "btn btn-warning btn-sm", title: "Help" do
       %i.fa.fa-question-circle
       %span.d-none.d-sm-inline Help
@@ -27,7 +30,7 @@
             .mb-0.text-center
               - if day.past?
               - elsif (day - 3).past?
-                = link_to todo_path, class: "btn btn-link" do
+                = modal_button("on-call-modal", class: "btn btn-link") do
                   %i.far.fa-clock
               - else
                 .mx-auto= check_box_tag("dates[]", day, false, disabled: day.past?)
@@ -53,3 +56,21 @@
 %hr
 .container#help
   = render "availabilities/stage_date/help", matches: matches, owner_matches: owner_matches
+
+= modal("on-call-modal") do
+  .modal-header.bg-warning
+    .d-flex.align-items-center
+      .display-4.mr-1
+        %i.far.fa-clock
+      %h4.mb-0 It's too late to book missions for this day
+    %button.close{ "data-dismiss" => "modal", type: "button" }
+      %span ×
+  .modal-body
+    %p.lead
+      You must book missions at least 3 days in advance.
+    %p
+      If you'd like to do missions at the last minute, why not
+      #{link_to("register for mission alerts", todo_path)}?
+  .modal-footer
+    %button.btn.btn-secondary{ "data-dismiss" => "modal", type: "button" }
+      Ok

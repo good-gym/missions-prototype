@@ -1,8 +1,16 @@
 .container
   %h1 Your mission preferences
   = simple_form_for(@runner, url: dashboards_runner_path) do |f|
+    :ruby
+      hint = <<~HINT
+        We need your postcode to locate missions near you.
+        <br>
+        We'll only share your approximate location with others.
+        #{link_to "Find out more", todo_path }.
+      HINT
     = f.input :postcode_str, required: true,
-      label: "Where are you running from?", placeholder: "Please enter a postcode"
+      label: "Where are you running from?", placeholder: "Please enter a postcode",
+      hint: hint.html_safe
 
     .form-group
       = f.label :default_radius do

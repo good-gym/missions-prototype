@@ -5,9 +5,11 @@
   - date = Time.parse(params[:time]) if params[:time]
   - calendar = Calendar.new(date || Date.today)
   - matches = Availability.in_month(calendar.date).grouped_by_date
+  - referrals = Referral.in_month(calendar.date).grouped_by_date
 
   - day_matches = Availability.on_days(date.to_date)
   - time_slots = day_matches.joins(:time_slots).group(:started_at).pluck("started_at, count(*)")
+  - referral_day_matches = Referral.on_days(date.to_date)
 
   %h2
     = date.to_s(:short)
@@ -43,7 +45,7 @@
   var center = { lat: 51.5362528, lng: -0.0488964 };
   var map = L.map("map").setView([center.lat, center.lng], 12);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: 'Map data © OpenStreetMap contributors',
+      attribution: '© OpenStreetMap contributors',
       maxZoom: 18
   }).addTo(map);
 
@@ -55,4 +57,9 @@
       radius: center_and_radius[2] * 500,
       color: color, fillColor: color, fillOpacity: 0.2
     }).addTo(map);
+  });
+
+  var referrals = #{referral_day_matches.map(&:postcode).map(&:public_point).to_json.html_safe};
+  referrals.forEach(function(referral) {
+    L.circle(referral, {radius: 200}).addTo(map);
   });

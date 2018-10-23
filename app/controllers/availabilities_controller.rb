@@ -55,7 +55,8 @@ class AvailabilitiesController < ApplicationController
   def default_availability_params
     return availability_params if params.key?(:availability)
 
-    { postcode: current_user.postcode, radius: 5 }
+    { postcode: current_user.postcode, radius: 5,
+      preferences: current_user.preferences }
   end
 
   def availability_params

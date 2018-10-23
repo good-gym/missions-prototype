@@ -13,6 +13,20 @@ module AvailabilityHelper
       .where(time_slots: { started_at: times }).uniq
   end
 
+  def preferences_summary(availability)
+    availability
+      .preferences.map do |key, value|
+        next if value == true
+
+        {
+          lifting: "heavy lifting"
+        }.with_indifferent_access[key] || key
+      end
+      .compact
+      .map { |c| content_tag(:strong, c.titleize) }
+      .to_sentence.html_safe
+  end
+
   def availability_status(availability)
     css_class = {
       confirmed: "badge-success",

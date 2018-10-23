@@ -25,13 +25,18 @@
 
 .sm-flush {
   @include media-breakpoint-down(sm) {
-    margin-left: -20px;
-    margin-right: -20px;
+    margin-left: -15px;
+    margin-right: -15px;
     border-radius: 0;
+    overflow: hidden;
   }
 }
 
 body {
   display: flex;
   flex-direction: column;
+}
+
+.table-bordered--thick th, .table-bordered--thick td {
+  border: 4px solid $table-border-color;
 }

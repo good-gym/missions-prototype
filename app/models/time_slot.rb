@@ -24,6 +24,7 @@ class TimeSlot < ApplicationRecord
       .joins(:time_slots)
       .not_owned_by(owner)
       .where(time_slots: { started_at: started_at })
+      .includes(:time_slots)
       .map(&:time_slots)
       .flatten
   end

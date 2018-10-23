@@ -21,7 +21,7 @@ module TimeSlotable
     scope :grouped_by_time, lambda { group(:started_at).count("*") }
     scope :grouped_by_date, lambda {
       group("date_trunc('day', started_at)")
-      .count("*")
+      .count("distinct booking_id")
       .map { |t, value| [t.to_date, value] }.to_h
     }
   end

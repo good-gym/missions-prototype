@@ -2,7 +2,7 @@
   %h2 Book a mission
 
   - if stage != :first
-    .card.mb-2.sm-flush
+    .card.mb-2.sm-flush.bg-light
       .card-body.py-1
         %small.text-muted.text-uppercase.d-flex.justify-content-between.mb-1
           %span Your mission options
@@ -16,9 +16,10 @@
           %strong #{@availability.radius}km
           from
           %strong= @availability.postcode
-          %br
-          Preferences:
-          %span.text-muted Heavy lifting, cats, dogs
+          - if preferences_summary(@availability).present?
+            .d-block
+              Opted out of:
+              = preferences_summary(@availability)
         .collapse.settings-collapse#settings-collapse-2
           = simple_form_for(@availability, url: new_availability_path, method: "get") do |f|
             .mb-1

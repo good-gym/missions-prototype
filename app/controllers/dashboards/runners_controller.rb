@@ -11,7 +11,7 @@ class Dashboards::RunnersController < ApplicationController
     if current_user.update(runner_params)
       redirect_to update_redirect_path, notice: "Preferences updated"
     else
-      render :settings
+      render :edit
     end
   end
 
