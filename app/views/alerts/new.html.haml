@@ -1,0 +1,32 @@
+.container
+  %h2 Get Mission Alerts
+
+  = render "runners/mission_options", resource: @alert
+
+  = simple_form_for(@alert, url: new_alert_path, method: "get") do |f|
+    %p.lead
+      Get alerts about emergency missions near you.
+
+    = f.input :expires_in, as: :select,
+      selected: "Always",
+      collection: ["Always", "Until tonight", "Until tomorrow evening", "For the next three days", "For one week"],
+      label: "Keep me posted", input_html: { class: "" }
+
+    -# = f.input :comms, as: :radio_buttons, collection: %w[Email Text Both],
+    -#   label: "Prefer to get alerts by"
+
+    .text-center.mb-2
+      %button.btn.btn-link.text-wrap{"aria-controls" => "times", "aria-expanded" => "false", "data-target" => "#times", "data-toggle" => "collapse", :type => "button"}
+        Are there any times in particular that you're free?
+
+    .collapse#times
+      - dates = 3.times.map { |j| Date.today + j }
+      = render_time_picker(dates: dates) do |slot, slot_type|
+        -# - if slot_type == :block
+        -#   %small Book this slot
+        -# - else
+        -#   %small Book this slot
+
+    .d-flex
+      = link_to "Cancel", root_path, class: "btn btn-secondary btn-lg mr-1"
+      = f.submit "Turn on alerts", class: "btn btn-primary btn-lg btn-block"

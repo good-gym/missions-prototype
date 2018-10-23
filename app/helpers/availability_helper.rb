@@ -23,8 +23,9 @@ module AvailabilityHelper
         }.with_indifferent_access[key] || key
       end
       .compact
-      .map { |c| content_tag(:strong, c.titleize) }
-      .to_sentence.html_safe
+      .map { |c| content_tag(:strong, c) }
+      .to_sentence(two_words_connector: " or ", last_word_connector: ", or ")
+      .html_safe
   end
 
   def availability_status(availability)

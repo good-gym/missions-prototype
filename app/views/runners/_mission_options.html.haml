@@ -1,0 +1,35 @@
+.card.mb-2.sm-flush.bg-light
+  .card-body.py-1
+    %small.text-muted.text-uppercase.d-flex.justify-content-between.mb-1
+      %span Your mission options
+
+      %button.btn.btn-sm.btn-link.p-0{"aria-controls" => "settings-collapse-1 settings-collapse-2", "aria-expanded" => "false", "data-target" => ".settings-collapse", "data-toggle" => "collapse", :type => "button"}
+        %i.fa.fa-cog
+        %span.text-uppercase Edit
+
+    .collapse.show.settings-collapse#settings-collapse-1
+      Running
+      %strong #{resource.radius}km
+      from
+      %strong #{resource.postcode}.
+      - if preferences_summary(resource).present?
+        .d-block No #{preferences_summary(resource)}.
+    .collapse.settings-collapse#settings-collapse-2
+      = simple_form_for(resource, url: [:new, resource.class.table_name.singularize], method: "get") do |f|
+        .mb-1
+          Running
+          = f.number_field :radius, min: 2, max: 50, step: 0.5
+          km from
+          = f.text_field :postcode_str, size: 10
+
+          - if preferences_summary(resource).present?
+            .d-block No #{preferences_summary(resource)}.
+        .d-flex
+          %button.btn.btn-primary.btn-sm.btn-block.mr-1
+            Update
+          %button.btn.btn-sm.btn-secondary{"aria-controls" => "settings-collapse-1 settings-collapse-2", "aria-expanded" => "false", "data-target" => ".settings-collapse", "data-toggle" => "collapse", :type => "button"}
+            Cancel
+        .text-center
+          = link_to(edit_dashboards_runner_path, class: "btn btn-link btn-sm text-center") do
+            %i.fa.fa-cog
+            Change default settings

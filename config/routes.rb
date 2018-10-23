@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   get :todo, to: "home#todo"
   resource :sessions, only: %i[create destroy]
 
+  resources :alerts
   resources :referrals
   resources :referrers
   resources :runners
