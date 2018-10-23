@@ -1,30 +1,48 @@
-%label.form-control-label.mb-0 Mission preferences
-%small.form-text.text-muted.mb-1
-  Please note that unchecking these will reduce your chances
-  of being assigned missions.
+.runner-preferences
+  %label.form-control-label
+    Are you comfortable with the following activities?
 
-= form.simple_fields_for :preferences, OpenStruct.new(form.object.preferences) do |pf|
-  .row.mb-1
-    .col-12.col-md-4
-      %label.mr-1.d-flex.align-items-start
-        .pb-1= pf.check_box :lifting
-        .ml-1
-          Heavy lifting
-          %small.d-block.text-muted
-            Only uncheck this if an injury prevents you from lifting weights
-    .col-12.col-md-4
-      %label.mr-1.d-flex.align-items-start
-        .pb-1= pf.check_box :cats
-        .ml-1
-          Cats
-          %small.d-block.text-muted
-            Cats will generally stay out of your way - only uncheck this if you have
-            an extreme problem with cats
-    .col-12.col-md-4
-      %label.mr-1.d-flex.align-items-start
-        .pb-1= pf.check_box :dogs
-        .ml-1
-          Dogs
-          %small.d-block.text-muted
-            Dogs will generally stay out of your way - only uncheck this if you have
-            an extreme problem with dogs
+  .alert.alert-warning.small.d-none
+    %i.fa.fa-info-circle
+    Please note that unchecking any of these will reduce your chances of being assigned missions.
+
+  = form.simple_fields_for :preferences, OpenStruct.new(form.object.preferences) do |pf|
+    = hidden_field_tag :next, params[:next]
+    .row.mb-1
+      .col-12.col-md-4
+        %label.mr-1.d-flex.align-items-start
+          .pb-1= pf.check_box :lifting
+          .ml-1
+            Heavy lifting
+            %small.d-block.text-muted
+              Only uncheck this if an injury prevents you from lifting weights
+      .col-12.col-md-4
+        %label.mr-1.d-flex.align-items-start
+          .pb-1= pf.check_box :cats
+          .ml-1
+            Cats
+            %small.d-block.text-muted
+              Cats will generally stay out of your way - only uncheck this if you have
+              an extreme problem with cats
+      .col-12.col-md-4
+        %label.mr-1.d-flex.align-items-start
+          .pb-1= pf.check_box :dogs
+          .ml-1
+            Dogs
+            %small.d-block.text-muted
+              Dogs will generally stay out of your way - only uncheck this if you have
+              an extreme problem with dogs
+
+:javascript
+  $(document).ready(function($) {
+    $('.runner-preferences input').on('change', function(e) {
+      var checked = $('.runner-preferences input[type=checkbox]')
+        .map(function(e) { return this.checked; }); //.makeArray();
+      var anyFalse = $.makeArray(checked).includes(false);
+      if (anyFalse) {
+        $('.runner-preferences .alert.alert-warning').removeClass('d-none');
+      } else {
+        $('.runner-preferences .alert.alert-warning').addClass('d-none');
+      }
+    });
+  });

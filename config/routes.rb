@@ -13,7 +13,9 @@ Rails.application.routes.draw do
     resource :referrer do
       get :map
     end
-    resource :runner
+    resource :runner do
+      get :settings
+    end
   end
   resources :dashboards do
     collection do

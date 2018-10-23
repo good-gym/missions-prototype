@@ -2,7 +2,7 @@ module Postcodeable
   extend ActiveSupport::Concern
 
   included do
-    belongs_to :postcode, autosave: true
+    belongs_to :postcode, autosave: true, optional: true
 
     scope :near, lambda { |postcode, distance|
       postcode.locate!

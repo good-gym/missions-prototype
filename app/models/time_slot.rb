@@ -19,10 +19,13 @@ class TimeSlot < ApplicationRecord
   end
 
   def nearby_runner_slots
-    @nearby_runner_slots ||= TimeSlot
-      .where(started_at: started_at)
-      .joins("join availabilities on availabilities.id = booking_id and booking_type = 'Availability'")
-      .where("runner_id != ?", owner.id)
+    Availability
+      .near(booking.postcode, booking.radius)
+      .joins(:time_slots)
+      .not_owned_by(owner)
+      .where(time_slots: { started_at: started_at })
+      .map(&:time_slots)
+      .flatten
   end
 
   def nearby_referrals

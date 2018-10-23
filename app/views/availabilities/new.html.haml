@@ -23,7 +23,7 @@
           = simple_form_for(@availability, url: new_availability_path, method: "get") do |f|
             .mb-1
               Running
-              = f.number_field :radius, min: 2, max: 50
+              = f.number_field :radius, min: 2, max: 50, step: 0.5
               km from
               = f.text_field :postcode_str, size: 10
               %br
@@ -36,7 +36,7 @@
               %button.btn.btn-sm.btn-secondary{"aria-controls" => "settings-collapse-1 settings-collapse-2", "aria-expanded" => "false", "data-target" => ".settings-collapse", "data-toggle" => "collapse", :type => "button"}
                 Cancel
             .text-center
-              .btn.btn-link.btn-sm.text-center
+              = link_to(edit_dashboards_runner_path, class: "btn btn-link btn-sm text-center") do
                 %i.fa.fa-cog
                 Change default settings
 
