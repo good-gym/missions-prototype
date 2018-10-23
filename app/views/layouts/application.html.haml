@@ -9,8 +9,8 @@
     = csp_meta_tag
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
-  %body
-    %nav.navbar.mb-1{ class: current_user.is_a?(Referrer) ? "bg-dark navbar-dark" : "bg-light navbar-light" }
+  %body.bg-light
+    %nav.navbar{ class: current_user.is_a?(Referrer) ? "bg-dark navbar-dark" : "bg-light navbar-light" }
       = link_to "Home", root_path, class: "navbar-brand"
 
       - if current_user
@@ -22,9 +22,14 @@
             = button_to "Signout", sessions_path, method: :delete, class: "dropdown-item btn btn-link"
       - else
         = link_to "Login", root_path
-    = yield
 
-    %footer.footer.bg-light.py-1.mt-4
+    %section.bg-white.pb-4
+      - if flash[:notice]
+        .alert.alert-success
+          .container= flash[:notice]
+      .mt-1= yield
+
+    %footer.footer.bg-light.py-1.border-top
       .container.small.d-flex.justify-content-between
         %p.mb-0
           This is a prototype for #{link_to("GoodGym", "https://www.goodgym.org")}.
