@@ -1,0 +1,30 @@
+.weekly-schedule {
+  table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    border-spacing: 0 0px;
+
+    td {
+      text-align: center;
+      vertical-align: middle;
+      padding: 0;
+    }
+    input[type='checkbox'] {
+      display: none;
+    }
+    label {
+      display: block;
+      width: 100%;
+      height: 0;
+      padding-bottom: 70%;
+      margin: 0;
+      background-color: theme-color("light");
+      @include media-breakpoint-up(md) {
+        padding-bottom: 50%;
+      }
+    }
+    input[type='checkbox']:checked + label {
+      background-color: theme-color-level("success", $alert-bg-level);
+    }
+  }
+}

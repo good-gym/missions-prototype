@@ -1,5 +1,28 @@
 .container
-  .mb-2= render "panels_v4"
+  .list-group
+    - current_user.alerts.each do |alert|
+      .alert.alert-info.mission-on-call.mb-0
+        .d-flex.justify-content-between.mb-1
+          .small.text-uppercase
+            %span Mission location:
+            %span.text-muted= alert.location
+          = link_to(edit_alert_path(alert), class: "small text-uppercase") do
+            %i.fa.fa-cog
+            Edit
+        .form-check.checkbox-slider--default.checkbox-slider-md
+          %label.d-flex.align-items-center
+            %input{ type: "checkbox" }
+            %span
+              %span.mission-on-call__label Get alerted to missions
+              %strong #{alert.radius}km from #{alert.postcode}
+
+  .text-center.mb-0
+    = link_to "Setup another location", new_alert_path, class: "btn btn-link btn-sm"
+
+%hr.mt-1
+.container
+  %p= link_to "Mission listings", listings_path, class: "btn btn-secondary btn-block"
+
   - if current_user.availabilities.any?
     %h2 Your mission bookings
     .list-group.mb-2.sm-flush= render partial: "availabilities/availability", collection: current_user.availabilities

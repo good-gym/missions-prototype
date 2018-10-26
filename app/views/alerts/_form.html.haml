@@ -1,0 +1,62 @@
+= simple_form_for(alert) do |f|
+  = f.error_notification
+
+  .form-sentence.lead.mb-2
+    %label I want to do missions within
+    = f.number_field :radius, min: 2, max: 50, step: 0.5, class: "form-control"
+    %label km of
+    = f.text_field :postcode_str, size: 10, class: "form-control", placeholder: "postcode"
+
+  .form-sentence.lead.input-group.mb-2
+    %label This is my
+    = f.select :location, %w[Home Work], {}, class: "custom-select"
+    %label and I am generally available
+    = f.select :availability_preset, Alert.availabilities, {},
+      class: "custom-select"
+    :javascript
+      $("#alert_location").select2({
+        tags: true, width: 'auto', style: "margin-right: 0.5rem;"
+      });
+
+    %button.btn.btn-link.btn-sm.btn-block{"aria-controls" => "weekly-schedule-collapse", "aria-expanded" => "false", "data-target" => ".weekly-schedule-collapse", "data-toggle" => "collapse", :type => "button"}
+      Customise my availability.
+
+  .collapse.weekly-schedule-collapse
+    .alert.alert-info.d-flex.align-items-center.small
+      .mr-1.text-justify
+        %p
+          To help us schedule missions, we need to know roughly when you are able
+          to do a mission from this location.
+        %p.mb-0
+          Please mark on the calender below when you're available to do a mission.
+      .display-4
+        %i.fa.fa-info-circle
+
+    .sm-flush.weekly-schedule
+      %table.table.table-bordered.table-sm.w-100
+        %thead
+          %tr
+            %th.text-center.align-middle
+              %a.small.d-block{ href: "#", title: "Select all" }
+                %i.fa.fa-check-double
+            - 7.times do |day|
+              %th.text-center
+                = %w[Mon Tue Wed Thu Fri Sat Sun][day]
+                %a.small.d-block{ href: "#", title: "Select all" }
+                  %i.fa.fa-check-double
+        %tbody
+          :ruby
+          - 12.times do |i|
+            - hour = 8 + i
+            - time = "%02d:00" % hour
+            %tr
+              %td
+                %small
+                  #{hour}<span class="d-none d-sm-inline">:00</span>
+              - 7.times do |day|
+                %td
+                  = check_box_tag "alert[weekly_schedule][#{day}][#{time}]", true, alert.weekly_schedule.dig(day, time)
+                  %label{ for: "alert_weekly_schedule_#{day}_#{time}"}
+
+  .d-flex
+    = f.submit "Setup location", class: "btn btn-primary btn-lg btn-block"

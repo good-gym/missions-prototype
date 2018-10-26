@@ -7,15 +7,24 @@ L.Icon.Default.mergeOptions({
 
 $(document).ready(function($) {
   $(".leaflet-map--static").each(function(e) {
-    var center = $(this).data('point');
-    var map = L.map(this).setView(center, 13);
+    var geometry = $(this).data('geometry');
 
+    var map = L.map(this).setView(geometry.center, 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       maxZoom: 18
     }).addTo(map);
 
-    // L.rectangle($(this).data('bounds'), {color: "#ff7800", weight: 1}).addTo(map);
-    L.circle(center, {radius: 200}).addTo(map);
+    var group = new L.featureGroup();
+    geometry.shapes.forEach(function(shape) {
+      var shape;
+      if (shape.type === 'circle') {
+        shape = L.circle(shape.point, { radius: shape.radius }).addTo(map);
+      } else if (shape.type === 'marker') {
+        shape = L.marker(shape.point).addTo(map);
+      }
+      group.addLayer(shape);
+    })
+    map.fitBounds(group.getBounds());
   });
 });

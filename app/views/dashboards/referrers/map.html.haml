@@ -9,57 +9,16 @@
           %button.btn.btn-secondary
             %i.fa.fa-search
 
-  #map.mb-2{ style: "height: 400px" }
+  :ruby
+    data = @available_alerts.geometry
+  .leaflet-map--static.w-100.h-100{ data: { geometry: data.to_json }, style: "min-height: 500px;" }
 
-  - colours = @available_slots.size.times.map { |i| "#%06x" % (Random.new(i).rand * 0xffffff) }
-  - data = @available_slots.map { |s| s.availabilities.map(&:geometry) }
+  - if @available_alerts.any?
+    #{@available_alerts.runners.size} volunteers available
 
-  %table.table
-    %thead
-      %tr
-        %th When
-        %th Who
-        %th Where
-    %tbody
-      - @available_slots.each_with_index do |slot, i|
-        %tr
-          %td= slot.started_at.to_s(:short)
-          %td.text-left= render "shared/avatars_list", avatars: slot.runners, class: "justify-content-start"
-          %td
-            %button.btn.btn-secondary{ style: "background-color: #{colours[i]};"}
-              %i.fa.fa-map
+    .alert-placeholder.pt-2.mt-2
+      .container
+        %h3 Debug
+        = render "shared/weekly_schedule_heat_map", schedule: @available_alerts.joint_schedule
 
-  :javascript
-    function getRandomColor() {
-      var letters = '0123456789ABCDEF';
-      var color = '#';
-      for (var i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-      }
-      return color;
-    }
-
-    var center = { lat: 51.5362528, lng: -0.0488964 };
-    var map = L.map("map").setView([center.lat, center.lng], 11);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: 'Map data © OpenStreetMap contributors',
-        maxZoom: 18
-    }).addTo(map);
-
-    var data = #{data.to_json.html_safe};
-    var colours = #{colours.to_json.html_safe};
-    data.forEach(function(geometries, index) {
-      var colour = colours[index];
-      geometries.forEach(function(geometry) {
-        var point = new L.LatLng(geometry.lat, geometry.lng);
-        L.circle(point, {
-          radius: geometry.radius * 500,
-          color: colour, fillColor: colour, fillOpacity: 0.2
-        }).addTo(map);
-      });
-    });
-
-    var postcode = #{postcode&.point&.to_json&.html_safe || "null"};
-    if (postcode) {
-      var marker = L.marker([postcode.lat, postcode.lng]).addTo(map);
-    }
+  = render "map_slots", slots: @available_slots if @available_slots.any?

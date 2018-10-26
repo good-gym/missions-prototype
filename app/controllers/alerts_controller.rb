@@ -1,8 +1,6 @@
 class AlertsController < ApplicationController
   helper_method :stage, :date
 
-  before_action :redirect_to_settings_if_necessary?, only: :new
-
   def new
     @alert = Alert.new(default_alert_params)
     @dates = params[:dates].map { |d| Date.parse(d) } if params[:dates]
@@ -13,6 +11,7 @@ class AlertsController < ApplicationController
 
   def create
     @alert = Alert.new(default_alert_params)
+
     if @alert.save
       redirect_to root_path
     else
@@ -20,6 +19,20 @@ class AlertsController < ApplicationController
       @times = params[:times].map { |d| Time.parse(d) } if params[:times]
 
       render :new
+    end
+  end
+
+  def edit
+    @alert = current_user.alerts.find(params[:id])
+  end
+
+  def update
+    @alert = current_user.alerts.find(params[:id])
+
+    if @alert.update(alert_params)
+      redirect_to root_path
+    else
+      render :edit
     end
   end
 
@@ -55,15 +68,19 @@ class AlertsController < ApplicationController
   def default_alert_params
     return alert_params if params.key?(:alert)
 
-    { postcode: current_user.postcode, radius: 5,
-      preferences: current_user.preferences }
+    default = %i[home work][current_user.alerts.size]
+
+    { location: default.to_s.titleize,
+      postcode: current_user.postcode, radius: 5,
+      weekly_schedule: WeeklySchedule.default(default) }
   end
 
   def alert_params
     params.require(:alert)
       .permit(
-        :postcode_str, :radius,
-        time_slots_attributes: %i[started_at]
+        :postcode_str, :radius, :location,
+        time_slots_attributes: %i[started_at],
+        weekly_schedule: {}
       )
       .merge(runner: current_user)
   end

@@ -1,0 +1,10 @@
+.container
+  .mb-2= render "dashboards/runners/old/panels_v4"
+  - if current_user.availabilities.any?
+    %h2 Your mission bookings
+    .list-group.mb-2.sm-flush= render partial: "availabilities/availability", collection: current_user.availabilities
+  - else
+    .text-center
+      %h3 Your missions
+      %p.lead
+        You haven't booked a mission yet - once you have the details will show up here.

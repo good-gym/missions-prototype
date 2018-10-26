@@ -1,0 +1,13 @@
+%table.table.table-sm
+  %thead
+    %tr
+      %th
+      - 7.times do |day|
+        %th.text-center
+          = %w[Mon Tue Wed Thu Fri Sat Sun][day]
+  %tbody
+    - schedule.hours.each do |hour|
+      %tr
+        %td.text-center.small= hour
+        - 7.times do |day|
+          %td.text-center= schedule.dig(day, hour)

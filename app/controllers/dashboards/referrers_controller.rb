@@ -6,12 +6,15 @@ class Dashboards::ReferrersController < ApplicationController
   end
 
   def map
-    @available_slots =
-      if postcode.present?
-        Availability::Match.near(postcode)
-      else
-        Availability::Match.all
-      end
+    if postcode.present?
+      @available_slots = Availability::Match.near(postcode)
+      @available_alerts = Alert::Finder.near(postcode)
+    else
+      @available_slots = Availability::Match.all
+      @available_alerts = Alert::Finder.near(
+        Postcode.located.order("random()").first
+      )
+    end
   end
 
   private

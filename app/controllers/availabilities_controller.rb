@@ -1,8 +1,6 @@
 class AvailabilitiesController < ApplicationController
   helper_method :stage, :date
 
-  before_action :redirect_to_settings_if_necessary?, only: :new
-
   def new
     @availability = Availability.new(default_availability_params)
     @dates = params[:dates].map { |d| Date.parse(d) } if params[:dates]
