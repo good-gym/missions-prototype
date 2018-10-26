@@ -5,13 +5,17 @@ class Postcode < ApplicationRecord
   after_commit :locate!
   serialize :geodata, HashSerializer
 
-  def self.postcode!(postcode_string)
+  scope :located, -> { where.not(lat: nil, lng: nil) }
+
+  def self.postcode!(postcode_string, attributes = {})
     return if postcode_string.blank?
 
     uk_postcode = UKPostcode.parse(postcode_string)
     return unless uk_postcode.valid?
 
-    Postcode.find_or_create_by(postcode: uk_postcode.to_s)
+    Postcode.find_or_create_by(postcode: uk_postcode.to_s) do |postcode|
+      postcode.assign_attributes(attributes)
+    end
   end
 
   def postcode=(str)
@@ -25,6 +29,7 @@ class Postcode < ApplicationRecord
   def locate!
     return if lat.present? && lng.present?
 
+    puts "Geocoding #{postcode}"
     geo = Geokit::Geocoders::GoogleGeocoder.geocode(postcode, components: { country: "UK" })
 
     update(lat: geo.lat, lng: geo.lng, geodata: geo.to_hash)

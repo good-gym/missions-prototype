@@ -15,12 +15,18 @@ runner = Runner.create(
   default_radius: 5.0,
   preferences: { lifting: true, cats: true, dogs: true }
 )
-runner.availabilities
-  .create!(
-    radius: 5.0,
-    postcode_str: "E9 7HW",
-    time_slots_attributes: times
-  )
+runner.alerts.create!(
+  enabled: true,
+  radius: 5.0,
+  postcode_str: "E9 7HW",
+  weekly_schedule: WeeklySchedule.default(:home)
+)
+# runner.availabilities
+#   .create!(
+#     radius: 5.0,
+#     postcode_str: "E9 7HW",
+#     time_slots_attributes: times
+#   )
 
 runner = Runner.create(
   name: "Ivo",
@@ -28,12 +34,19 @@ runner = Runner.create(
   default_radius: 7.5,
   preferences: { lifting: true, cats: true, dogs: true }
 )
-runner.availabilities
-  .create!(
-    radius: 5.0,
-    postcode_str: "E2 7RG",
-    time_slots_attributes: times
-  )
+runner.alerts.create!(
+  enabled: true,
+  radius: 5.0,
+  postcode: runner.postcode,
+  weekly_schedule: WeeklySchedule.default(:home)
+)
+
+# runner.availabilities
+#   .create!(
+#     radius: 5.0,
+#     postcode_str: "E2 7RG",
+#     time_slots_attributes: times
+#   )
 
 runner = Runner.create(
   name: "Polly",
@@ -41,12 +54,18 @@ runner = Runner.create(
   default_radius: 5.0,
   preferences: { lifting: false, cats: true, dogs: true }
 )
-runner.availabilities
-  .create!(
-    radius: 5.0,
-    postcode_str: "W12 7PJ",
-    time_slots_attributes: times
-  )
+runner.alerts.create!(
+  enabled: true,
+  radius: 5.0,
+  postcode: runner.postcode,
+  weekly_schedule: WeeklySchedule.default(:home)
+)
+# runner.availabilities
+#   .create!(
+#     radius: 5.0,
+#     postcode_str: "W12 7PJ",
+#     time_slots_attributes: times
+#   )
 
 runner = Runner.create(
   name: "James",
@@ -54,12 +73,18 @@ runner = Runner.create(
   default_radius: 5.0,
   preferences: { lifting: true, cats: true, dogs: true }
 )
-runner.availabilities
-  .create!(
-    radius: 5.0,
-    postcode_str: "W11 4UL",
-    time_slots_attributes: times
-  )
+runner.alerts.create!(
+  enabled: true,
+  radius: 5.0,
+  postcode: runner.postcode,
+  weekly_schedule: WeeklySchedule.default(:home)
+)
+# runner.availabilities
+#   .create!(
+#     radius: 5.0,
+#     postcode_str: "W11 4UL",
+#     time_slots_attributes: times
+#   )
 
 runner = Runner.create(
   name: "Paul",
@@ -67,12 +92,18 @@ runner = Runner.create(
   default_radius: 5.0,
   preferences: { lifting: true, cats: true, dogs: true }
 )
-runner.availabilities
-  .create!(
-    radius: 5.0,
-    postcode_str: "NW1 8QP",
-    time_slots_attributes: times
-  )
+runner.alerts.create!(
+  enabled: true,
+  radius: 5.0,
+  postcode: runner.postcode,
+  weekly_schedule: WeeklySchedule.default(:home)
+)
+# runner.availabilities
+#   .create!(
+#     radius: 5.0,
+#     postcode_str: "NW1 8QP",
+#     time_slots_attributes: times
+#   )
 
 referrer = Referrer.create(name: "Bob")
 referrer.referrals.create!(

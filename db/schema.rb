@@ -17,11 +17,11 @@ ActiveRecord::Schema.define(version: 2018_10_23_162651) do
 
   create_table "alerts", force: :cascade do |t|
     t.bigint "runner_id"
-    t.bigint "postcode_id"
+    t.string "location"
+    t.boolean "enabled", null: false
     t.float "radius"
-    t.datetime "expires_at"
-    t.datetime "cancelled_at"
-    t.jsonb "preferences", default: "{}", null: false
+    t.bigint "postcode_id"
+    t.jsonb "weekly_schedule", default: "{}", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["postcode_id"], name: "index_alerts_on_postcode_id"

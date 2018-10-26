@@ -23,6 +23,6 @@ module Postcodeable
   end
 
   def postcode_str=(string)
-    self.postcode = Postcode.find_or_initialize_by(postcode: string)
+    self.postcode = Postcode.postcode!(string)
   end
 end
