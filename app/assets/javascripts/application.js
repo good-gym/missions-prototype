@@ -17,7 +17,11 @@
 
 //= require leaflet/dist/leaflet.js
 
+//= require select2/dist/js/select2.min.js
+
 //= require rails-ujs
 //= require activestorage
 //= require turbolinks
 //= require_tree .
+
+$.fn.select2.defaults.set( "theme", "bootstrap4" );
