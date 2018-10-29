@@ -1,11 +1,9 @@
 .container
-  .title-with-button.mb-2
-    %h2 Mission Locations
-    = link_to(new_alert_path, class: "btn btn-secondary btn-sm") do
-      %i.fa.fa-plus
-      New location
+  %h2 Mission Alerts
+  %p.lead
+    You are setup to receive mission alerts for the following locations.
 
-  .list-group
+  .list-group.mb-2
     - @alerts.each do |alert|
       .list-group-item.d-flex-bc
         %span
@@ -18,3 +16,7 @@
           = button_to(alert_path(alert), method: :delete, class: "btn btn-secondary btn-sm btn-block") do
             %i.fa.fa-trash
             Delete
+
+  = link_to(new_alert_path, class: "btn btn-secondary btn-block") do
+    %i.fa.fa-plus
+    New alert location

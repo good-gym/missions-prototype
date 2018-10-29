@@ -1,7 +1,10 @@
 class WeeklySchedule
-  DEFAULTS = YAML.load(File.read("config/weekly_schedules.yml"))
-  def self.default(type)
-    DEFAULTS[type]
+  DEFAULTS = YAML
+    .safe_load(File.read("config/weekly_schedules.yml"))
+    .with_indifferent_access
+
+  def self.default(type = nil)
+    DEFAULTS[type || DEFAULTS.keys.sample]
   end
 
   attr_reader :schedule
@@ -16,7 +19,7 @@ class WeeklySchedule
   end
 
   def days
-    %[Mon Tue Wed Thu Fri Sat Sun]
+    %w[Mon Tue Wed Thu Fri Sat Sun]
   end
 
   def hours

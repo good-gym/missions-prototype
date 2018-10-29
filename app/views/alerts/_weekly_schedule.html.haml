@@ -1,0 +1,38 @@
+.collapse.weekly-schedule-collapse
+  .alert.alert-info.d-flex.align-items-center.small.mt-1
+    .mr-1.text-justify
+      %p.mb-0
+        Please mark on the calender below when you're available to do a mission.
+    .lead
+      %i.fa.fa-info-circle
+
+  .sm-flush.weekly-schedule
+    %table.table.table-bordered.table-sm.w-100
+      %thead
+        %tr
+          %th.text-center.align-middle
+            %a.small.d-block{ href: "#", title: "Select all" }
+          - 7.times do |day|
+            %th.text-center
+              %button.btn.btn-sm.btn-link.px-0{ href: "#", title: "Select all", type: "button", data: { day: day } }
+                = %w[Mon Tue Wed Thu Fri Sat Sun][day]
+      %tbody
+        - 12.times do |i|
+          - hour = 8 + i
+          - time = "%02d:00" % hour
+          %tr
+            %td
+              %button.btn.btn-sm.btn-link.p-0{ href: "#", title: "Select all", type: "button", data: { time: time } }
+                #{hour}<small>:00</small>
+            - 7.times do |day|
+              %td
+                = check_box_tag "alert[weekly_schedule][#{day}][#{time}]", 1, alert.weekly_schedule.dig(day, time), data: { day: day, time: time }
+                %label{ for: "alert_weekly_schedule_#{day}_#{time}"}
+
+%small.form-text.text-muted.mb-2
+  We need to know your weekly schedule so that we can send you alerts
+  about missions near you. We will also use this data to suggest times to
+  referrers for them to book missions.
+
+  %button.btn.btn-link.btn-sm.btn-block{"aria-controls" => "weekly-schedule-collapse", "aria-expanded" => "false", "data-target" => ".weekly-schedule-collapse", "data-toggle" => "collapse", :type => "button"}
+    Customise my availability.

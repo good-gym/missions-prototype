@@ -74,9 +74,10 @@ class AlertsController < ApplicationController
 
     default = %i[home work][current_user.alerts.size]
 
-    { location: default.to_s.titleize,
-      postcode: current_user.postcode, radius: 5,
-      weekly_schedule: WeeklySchedule.default(default) }
+    {
+      location: default.to_s.titleize,
+      postcode: current_user.postcode, radius: 5
+    }
   end
 
   def alert_params

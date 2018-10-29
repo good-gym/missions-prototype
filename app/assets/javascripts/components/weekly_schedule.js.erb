@@ -1,0 +1,47 @@
+$(document).ready(function($) {
+  var defaultSchedules = <%= WeeklySchedule::DEFAULTS.to_json.html_safe %>;
+
+
+  $('.weekly-schedule button[data-day]').on('click', function(e) {
+    var day = $(this).data('day');
+    var days = $('.weekly-schedule input[type=checkbox][data-day='+day+']');
+    var daysChecked = days.map(function(e) { return this.checked; });
+    var anyChecked = $.makeArray(daysChecked).includes(true);
+    if (anyChecked) {
+      days.prop('checked', false);
+    } else {
+      days.prop('checked', true);
+    }
+  });
+  $('.weekly-schedule button[data-time]').on('click', function(e) {
+    var time = $(this).data('time');
+    var times = $('.weekly-schedule input[type=checkbox][data-time="'+time+'"]');
+    var timesChecked = times.map(function(e) { return this.checked; });
+    var anyChecked = $.makeArray(timesChecked).includes(true);
+    if (anyChecked) {
+      times.prop('checked', false);
+    } else {
+      times.prop('checked', true);
+    }
+  });
+
+  $('#alert_availability_preset').on('change', function(e) {
+    $('.weekly-schedule input[type=checkbox]').prop('checked', false);
+
+    if (this.value == "none") {
+      $('.weekly-schedule-collapse').collapse('show');
+    }
+
+    var defaults = defaultSchedules[this.value];
+    if (defaults === null) { return; }
+
+    Object.keys(defaults).forEach(function(day) {
+      var hours = defaults[day];
+      Object.keys(hours).forEach(function(hour) {
+        if (hours[hour] > 0) {
+          $('input[name="alert[weekly_schedule]['+day+']['+hour+']"]').prop('checked', true);
+        }
+      });
+    });
+  });
+});
