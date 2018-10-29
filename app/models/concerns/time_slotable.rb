@@ -20,9 +20,14 @@ module TimeSlotable
     }
     scope :grouped_by_time, lambda { group(:started_at).count("*") }
     scope :grouped_by_date, lambda {
-      group("date_trunc('day', started_at)")
-      .count("distinct booking_id")
-      .map { |t, value| [t.to_date, value] }.to_h
+      joins(:time_slots)
+        .select("DISTINCT date_trunc('day', started_at)::date as date, referrals.*")
+        .group("date_trunc('day', started_at), referrals.id")
+        .group_by(&:date)
     }
+  end
+
+  def dates
+    time_slots.map(&:started_at).map(&:to_date).uniq
   end
 end

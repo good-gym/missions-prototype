@@ -26,13 +26,12 @@ class WeeklySchedule
   private
 
   def add_schedule(a, b)
-    result = Hash.new { |hash, key| hash[key] = {} }
+    result = Hash.new { |hash, key| hash[key] = Hash.new(0) }
 
     7.times.map do |day|
       hours.each do |hour|
-        result[day][hour] ||= 0
-        result[day][hour] += 1 if a[day][hour]
-        result[day][hour] += 1 if b[day][hour]
+        result[day][hour] += a[day][hour] || 0
+        result[day][hour] += b[day][hour] || 0
       end
     end
 
@@ -40,6 +39,8 @@ class WeeklySchedule
   end
 
   def parse_hash(data)
-    data.map { |key, value| [key.to_i, value] }.to_h
+    data.map do |day, hours|
+      [day.to_i, hours.map { |hour, value| [hour, value.to_i] }.to_h]
+    end.to_h
   end
 end

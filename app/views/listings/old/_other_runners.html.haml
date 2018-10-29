@@ -1,0 +1,10 @@
+- if other_runners.any?
+  .card.mb-3
+    .card-body.p-1
+      %h6 #{other_runners.size} runners available
+      .d-flex.justify-content-between
+        .avatar-list{ class: local_assigns[:class] || "justify-content-center" }
+          - other_runners.each do |avatar|
+            = image_tag(avatar_icon_url(avatar), title: avatar.name, class: "avatar avatar-sm")
+        = link_to "Book a mission", new_availability_path(availability: { postcode_str: postcode.to_s, radius: radius }, dates: [date]),
+          class: "btn btn-secondary btn-sm"

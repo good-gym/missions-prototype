@@ -1,6 +1,7 @@
 class TimeSlot < ApplicationRecord
   belongs_to :booking, polymorphic: true
 
+  default_scope { order(:started_at) }
   scope :upcoming, -> { where("started_at > now()") }
   scope :in_month, lambda { |date|
     where(time_slots: { started_at: (date.beginning_of_month..date.end_of_month) })

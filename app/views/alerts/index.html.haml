@@ -1,0 +1,20 @@
+.container
+  .title-with-button.mb-2
+    %h2 Mission Locations
+    = link_to(new_alert_path, class: "btn btn-secondary btn-sm") do
+      %i.fa.fa-plus
+      New location
+
+  .list-group
+    - @alerts.each do |alert|
+      .list-group-item.d-flex-bc
+        %span
+          = alert.location
+          .text-muted.small.d-block #{alert.radius}km from #{alert.postcode}
+        %div
+          = link_to(edit_alert_path(alert), class: "btn btn-secondary btn-sm btn-block mb-1") do
+            %i.fa.fa-edit
+            Edit
+          = button_to(alert_path(alert), method: :delete, class: "btn btn-secondary btn-sm btn-block") do
+            %i.fa.fa-trash
+            Delete

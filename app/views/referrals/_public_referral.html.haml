@@ -14,15 +14,14 @@
       %p #{public_referral.coach.public_name} is available:
       %dl.row.mb-0
         - public_referral.time_slots.each do |time_slot|
+          - next if time_slot.started_at.to_date != date
           %dt.col-6= time_slot.started_at.to_s(:short)
           %dd.col-6
             = link_to "Sign up", todo_path, class: "button btn btn-secondary"
+
+      - other_dates = public_referral.dates - [date]
+      - if other_dates.any?
+        Also available on #{other_dates.map { |d| d.to_s(:short) }.to_sentence}
     .col-12.col-md-4
       %small= public_referral.postcode.location
-
-      :ruby
-        data = {
-          point: public_referral.postcode.public_point.to_a,
-          bounds: public_referral.postcode.public_bounds.to_a
-        }
-      .leaflet-map--static.w-100.h-75{ data: data, style: "min-height: 150px;" }
+      .leaflet-map--static.w-100.h-75{ data: { geometry: public_referral.geometry.to_json }, style: "min-height: 150px;" }

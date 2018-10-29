@@ -5,15 +5,21 @@ class Alert < ApplicationRecord
 
   attribute :enabled, :boolean, default: true
 
-  belongs_to :runner
+  belongs_to :runner, touch: true
   attr_accessor :availability_preset
   scope :enabled, -> { where(enabled: true) }
 
   def self.availabilities
     [
-      ["Weekends and before/after work"],
-      ["Lunch and before/after work"],
-      ["All the time"]
+      nil,
+      ["Weekends", :weekend],
+      ["Weekends and before work", :weekend_before_work],
+      ["Weekends and after work", :weekend_after_work],
+      ["Weekends and before/after work", :weekend_before_after_work],
+      ["Lunch times", :lunchtimes],
+      ["Lunch and before/after work", :lunchtimes_before_after_work],
+      ["All the time", :all],
+      ["Specific times", :none]
     ]
   end
 

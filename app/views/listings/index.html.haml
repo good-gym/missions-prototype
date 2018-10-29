@@ -1,97 +1,35 @@
 .container
   .title-with-button.mt-2
-    %h1 Missions
+    %h1 Find a mission
 
-  %p.lead
-    GoodGym missions coming up near you - meet others, get fit and do good.
-  = form_tag(nil, method: :get) do |f|
-    .d-flex.align-items-end
-      %div
-        = number_field_tag :radius, radius, class: "form-control w-auto", min: 2, max: 50
-      %span.flex-shrink-0.mr-1 &nbsp; km from
-      .d-flex.align-items-end.input-group
-        = text_field_tag :postcode, postcode, class: "form-control", placeholder: "Postcode"
-        .input-group-append
-          %button.btn.btn-secondary
-            %i.fa.fa-search
+  .mb-4
+    %p.lead
+      GoodGym missions coming up near you - meet others, get fit and do good.
+    = form_tag(nil, method: :get) do |f|
+      .d-flex.align-items-center
+        %div
+          = number_field_tag :radius, radius, class: "form-control w-auto", min: 2, max: 50
+        %span.flex-shrink-0.mr-1 &nbsp; km from
+        .d-flex.align-items-end.input-group
+          = text_field_tag :postcode, postcode, class: "form-control", placeholder: "Postcode"
+          .input-group-append
+            %button.btn.btn-secondary
+              %i.fa.fa-search
 
-  - matches = Availability.not_owned_by(current_user).in_month(Date.today).grouped_by_date
-
-  - @days.each_with_index do |date, i|
-    :ruby
-      referrals = @referrals.on_days(date).uniq
-      missions = Mission.on_days(date)
-      other_runners = Availability.near(postcode, radius)
-        .not_owned_by(current_user)
-        .on_days(date)
-        .map(&:runner)
-        .uniq
-
-    %h5.mt-4
-      %strong.text-uppercase= date.to_s(:wday_long_ordinal)
-
-    - if other_runners.any?
-      .card.mb-3
-        .card-body.p-1
-          %h6 #{other_runners.size} runners available
-          .d-flex.justify-content-between
-            .avatar-list{ class: local_assigns[:class] || "justify-content-center" }
-              - other_runners.each do |avatar|
-                = image_tag(avatar_icon_url(avatar), title: avatar.name, class: "avatar avatar-sm")
-            = link_to "Book a mission", new_availability_path(availability: { postcode_str: postcode.to_s, radius: radius }, dates: [date]),
-              class: "btn btn-secondary btn-sm"
-
-    .list-group
-      = render partial: "referrals/public_referral", collection: referrals
-      - missions.each do |mission|
-        .list-group-item
-          .media
-            %img.mr-1{ src: mission.image_url, class: "w-100" }
-          .media-body
-            %h5= mission.title
-
-    - if referrals.none? && missions.none?
-      %p
-        No missions within #{radius}km of #{postcode}, but
-        - if other_runners.any?
-          there are #{other_runners.size} runners available -
-        - else
-          why not
-        = link_to "book a mission", new_availability_path(availability: { postcode_str: postcode.to_s, radius: radius }, dates: [date])
-        today?
-    - else
-      %p
-        - if other_runners.any?
-          There are #{other_runners.size} runners available -
-        = link_to "book a mission.", new_availability_path(availability: { postcode_str: postcode.to_s, radius: radius }, dates: [date])
+  - if @referrals_by_day.none?
+    %h3 No missions found.
+    - nearby_referrals = Referral.near(postcode, radius * 2).count
+    - if nearby_referrals.positive?
+      %p.lead
+        Can you run a little further? There are #{nearby_referrals} missions available if
+        = link_to("you search for missions further away.", { radius: radius * 2 })
 
 
-    -# - if other_runners.any?
-    -#   .card.mb-3
-    -#     .card-body.p-1
-    -#       %h6 #{other_runners.size} runners available
-    -#       .d-flex.justify-content-between
-    -#         .avatar-list{ class: local_assigns[:class] || "justify-content-center" }
-    -#           - other_runners.each do |avatar|
-    -#             = image_tag(avatar_icon_url(avatar), title: avatar.name, class: "avatar avatar-sm")
-    -#         = link_to "Book a mission", new_availability_path(availability: { postcode_str: postcode.to_s, radius: radius }, dates: [date]),
-    -#           class: "btn btn-secondary btn-sm"
 
+  - @referrals_by_day.each do |date, referrals|
+    .mb-3
+      %h5
+        %strong.text-uppercase= date.to_s(:wday_long_ordinal)
 
-      -# .list-group
-      -#   .list-group-item
-      -#     .media
-      -#       %img.mr-1{ src: "https://placekitten.com/200/139" }
-      -#       .media-body
-      -#         %h5 Mission details
-      -#         %p.lead Ipsum lorem...
-    -# - else
-    -#   - slots = TimeSlot.where("date_trunc('day', started_at) = ?", date).joins(:availability).where.not(availabilities: { owner: current_user })
-    -#   - owners = slots.map(&:owner).uniq
-    -#   .avatar-list.mb-1
-    -#     - owners.each do |owner|
-    -#       = image_tag(avatar_icon_url(owner), title: owner.name, class: "avatar avatar-sm")
-    -#   %p #{owners.size} #{"runner".pluralize(owners.size)} have booked a mission slot - get involved!
-    -#   .btn.btn-secondary.btn-sm Make it happen
-
-  %p.text-center= link_to "Book a mission", nil, class: "btn btn-secondary btn-lg"
+      .list-group
+        = render partial: "referrals/public_referral", collection: referrals, locals: { date: date }

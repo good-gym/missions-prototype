@@ -1,6 +1,10 @@
 class AlertsController < ApplicationController
   helper_method :stage, :date
 
+  def index
+    @alerts = current_user.alerts
+  end
+
   def new
     @alert = Alert.new(default_alert_params)
     @dates = params[:dates].map { |d| Date.parse(d) } if params[:dates]

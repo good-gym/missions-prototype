@@ -21,4 +21,11 @@ class Referral < ApplicationRecord
   attr_accessor :risk_details
 
   attr_accessor :confirm_tools
+
+  def geometry
+    {
+      center: postcode.public_point.to_a,
+      shapes: [{ type: "circle", point: postcode.public_point.to_a, radius: 200 }]
+    }
+  end
 end

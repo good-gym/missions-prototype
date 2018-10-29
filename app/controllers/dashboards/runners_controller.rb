@@ -32,7 +32,7 @@ class Dashboards::RunnersController < ApplicationController
 
   def redirect_to_settings_if_necessary?
     return unless current_user.is_a?(Runner)
-    return if current_user.postcode.present?
+    return if current_user.updated_at > current_user.created_at
 
     redirect_to(
       edit_dashboards_runner_path,
@@ -46,7 +46,7 @@ class Dashboards::RunnersController < ApplicationController
 
     redirect_to(
       new_alert_path,
-      notice: "Please setup a mission alert"
+      notice: "Let's setup your default location"
     )
   end
 end

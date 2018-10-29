@@ -1,13 +1,23 @@
 = simple_form_for(alert) do |f|
-  = f.error_notification
+  = f.error_notification message: f.object.errors.full_messages.to_sentence
 
-  .form-sentence.lead.mb-2
+  .form-sentence.lead
     %label I want to do missions within
     = f.number_field :radius, min: 2, max: 50, step: 0.5, class: "form-control"
     %label km of
-    = f.text_field :postcode_str, size: 10, class: "form-control", placeholder: "postcode"
+    = f.text_field :postcode_str, size: 10, class: "form-control", placeholder: "postcode", required: true
 
-  .form-sentence.lead.input-group.mb-2
+  %small.form-text.text-muted.mb-2
+    We need your postcode to locate missions near you.
+    We'll only share your approximate location with others.
+    = link_to "Find out more", todo_path
+
+  .alert.alert-warning.small.alert-radius-warning.d-none
+    %i.fa.fa-info-circle
+    Please note that by reducing your distance you will reduce your chances of
+    being assigned missions.
+
+  .form-sentence.lead.input-group
     %label This is my
     = f.select :location, %w[Home Work], {}, class: "custom-select"
     %label and I am generally available
@@ -17,6 +27,11 @@
       $("#alert_location").select2({
         tags: true, width: 'auto', style: "margin-right: 0.5rem;"
       });
+
+  %small.form-text.text-muted.mb-2
+    We need to know your weekly schedule so that we can send you alerts
+    about missions near you. We will also use this data to suggest times to
+    referrers for them to book missions.
 
     %button.btn.btn-link.btn-sm.btn-block{"aria-controls" => "weekly-schedule-collapse", "aria-expanded" => "false", "data-target" => ".weekly-schedule-collapse", "data-toggle" => "collapse", :type => "button"}
       Customise my availability.
@@ -45,7 +60,6 @@
                 %a.small.d-block{ href: "#", title: "Select all" }
                   %i.fa.fa-check-double
         %tbody
-          :ruby
           - 12.times do |i|
             - hour = 8 + i
             - time = "%02d:00" % hour
@@ -55,8 +69,19 @@
                   #{hour}<span class="d-none d-sm-inline">:00</span>
               - 7.times do |day|
                 %td
-                  = check_box_tag "alert[weekly_schedule][#{day}][#{time}]", true, alert.weekly_schedule.dig(day, time)
+                  = check_box_tag "alert[weekly_schedule][#{day}][#{time}]", 1, alert.weekly_schedule.dig(day, time)
                   %label{ for: "alert_weekly_schedule_#{day}_#{time}"}
 
   .d-flex
     = f.submit "Setup location", class: "btn btn-primary btn-lg btn-block"
+
+:javascript
+  $(document).ready(function($) {
+    $('#alert_radius').on('change', function(e) {
+      if (this.value <= 3.0) {
+        $('.alert-radius-warning').removeClass('d-none');
+      } else {
+        $('.alert-radius-warning').addClass('d-none');
+      }
+    });
+  });

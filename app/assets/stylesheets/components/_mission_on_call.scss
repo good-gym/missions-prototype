@@ -1,0 +1,11 @@
+.mission-on-call {
+  &.mission-on-call--enabled {
+    background-color: theme-color-level("success", $alert-bg-level);
+  }
+  .checkbox-slider-md input + span:after, .checkbox-slider-md input + span:before {
+    top: calc(50% - 15px);
+  }
+  label span {
+    line-height: 1.5rem;
+  }
+}
