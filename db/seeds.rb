@@ -16,10 +16,11 @@ runner = Runner.create(
   preferences: { lifting: true, cats: true, dogs: true }
 )
 runner.alerts.create!(
+  location: "Home",
   enabled: true,
   radius: 5.0,
   postcode_str: "E9 7HW",
-  weekly_schedule: WeeklySchedule.default(:home)
+  weekly_schedule: WeeklySchedule.default
 )
 # runner.availabilities
 #   .create!(
@@ -35,10 +36,11 @@ runner = Runner.create(
   preferences: { lifting: true, cats: true, dogs: true }
 )
 runner.alerts.create!(
+  location: "Home",
   enabled: true,
   radius: 5.0,
   postcode: runner.postcode,
-  weekly_schedule: WeeklySchedule.default(:home)
+  weekly_schedule: WeeklySchedule.default
 )
 
 # runner.availabilities
@@ -55,10 +57,11 @@ runner = Runner.create(
   preferences: { lifting: false, cats: true, dogs: true }
 )
 runner.alerts.create!(
+  location: "Home",
   enabled: true,
   radius: 5.0,
   postcode: runner.postcode,
-  weekly_schedule: WeeklySchedule.default(:home)
+  weekly_schedule: WeeklySchedule.default
 )
 # runner.availabilities
 #   .create!(
@@ -74,10 +77,11 @@ runner = Runner.create(
   preferences: { lifting: true, cats: true, dogs: true }
 )
 runner.alerts.create!(
+  location: "Home",
   enabled: true,
   radius: 5.0,
   postcode: runner.postcode,
-  weekly_schedule: WeeklySchedule.default(:home)
+  weekly_schedule: WeeklySchedule.default
 )
 # runner.availabilities
 #   .create!(
@@ -93,10 +97,11 @@ runner = Runner.create(
   preferences: { lifting: true, cats: true, dogs: true }
 )
 runner.alerts.create!(
+  location: "Home",
   enabled: true,
   radius: 5.0,
   postcode: runner.postcode,
-  weekly_schedule: WeeklySchedule.default(:home)
+  weekly_schedule: WeeklySchedule.default
 )
 # runner.availabilities
 #   .create!(
