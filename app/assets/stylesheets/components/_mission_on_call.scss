@@ -2,10 +2,23 @@
   &.mission-on-call--enabled {
     background-color: theme-color-level("success", $alert-bg-level);
   }
-  .checkbox-slider-md input + span:after, .checkbox-slider-md input + span:before {
-    top: calc(50% - 15px);
-  }
-  label span {
-    line-height: 1.5rem;
+  // .checkbox-slider--default input + span:after, .checkbox-slider--default input + span:before {
+  //   top: calc(50% - 15px);
+  // }
+  label {
+    margin-bottom: 0;
+
+    .checkbox-slider__label {
+      padding-left: 2rem;
+      &:before, &:after {
+        margin-top: 3px;
+      }
+    }
+    span {
+      // line-height: 1.5rem;
+      .badge {
+        line-height: 1;
+      }
+    }
   }
 }

@@ -5,10 +5,15 @@
 
   .list-group.mb-2
     - @alerts.each do |alert|
-      .list-group-item.d-flex-bc
-        %span
+      .list-group-item.d-flex-bc.mission-on-call{ class: alert.enabled? ? "mission-on-call--enabled" : "mission-on-call--disabled" }
+        %div
           = alert.location
           .text-muted.small.d-block #{alert.radius}km from #{alert.postcode}
+          .form-check.checkbox-slider--default
+            %label
+              %input{ type: "checkbox", checked: alert.enabled? }
+              %span.checkbox-slider__label
+                %span.badge.badge-success Enabled
         %div
           = link_to(edit_alert_path(alert), class: "btn btn-secondary btn-sm btn-block mb-1") do
             %i.fa.fa-edit

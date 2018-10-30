@@ -32,4 +32,8 @@ class Alert < ApplicationRecord
   def weekly_schedule=(data)
     super WeeklySchedule.new(data).to_h
   end
+
+  def to_s
+    "#{location} (within #{radius}km of #{postcode})"
+  end
 end

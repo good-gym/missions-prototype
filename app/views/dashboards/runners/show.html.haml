@@ -1,38 +1,24 @@
 .container
   .d-flex.justify-content-between.align-items-center.mb-1
     %strong.text-uppercase
-      Mission Alerts
-    = link_to(alerts_path, class: "small text-uppercase") do
-      %i.fa.fa-cog
-      Manage
-  .list-group.mb-2
-    - current_user.alerts.each do |alert|
-      .list-group-item.mission-on-call{ class: alert.enabled? ? "mission-on-call--enabled" : "mission-on-call--disabled" }
-        .form-check.checkbox-slider--default.checkbox-slider-md
-          %label.d-flex.mb-0
-            %input{ type: "checkbox", checked: alert.enabled? }
-            %span.small
-              = alert.location
-              .text-muted.d-block #{alert.radius}km from #{alert.postcode}
-
-%hr
-.container
-  .d-flex.justify-content-between.align-items-center.mb-1
-    %strong.text-uppercase
       Find a Mission
     = link_to(listings_path, class: "small text-uppercase") do
       %i.fa.fa-search
       Search
 
   %p.lead
-    There are #{10} missions coming up near you.
-    = link_to "Find a mission.", listings_path
+    -# There are #{10} missions coming up near you.
+    = link_to "Find a mission", listings_path
+    near you.
 
-  -# - if current_user.availabilities.any?
-  -#   %h2 Your mission bookings
-  -#   .list-group.mb-2.sm-flush= render partial: "availabilities/availability", collection: current_user.availabilities
-  -# - else
-  -#   .text-center
-  -#     %h3 Your missions
-  -#     %p.lead
-  -#       You haven't booked a mission yet - once you have the details will show up here.
+%hr
+.container
+  .d-flex.justify-content-between.align-items-center.mb-1
+    %strong.text-uppercase
+      Mission Alerts
+    = link_to(alerts_path, class: "small text-uppercase") do
+      %i.fa.fa-cog
+      Manage
+  %p
+    You are signed up to hear about missions near your
+    #{sentence_of_alerts(current_user.alerts.enabled)}.

@@ -1,6 +1,5 @@
-$(document).ready(function($) {
+$(document).on('ready turbolinks:load', function() {
   var defaultSchedules = <%= WeeklySchedule::DEFAULTS.to_json.html_safe %>;
-
 
   $('.weekly-schedule button[data-day]').on('click', function(e) {
     var day = $(this).data('day');

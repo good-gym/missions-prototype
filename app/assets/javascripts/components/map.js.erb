@@ -5,14 +5,15 @@ L.Icon.Default.mergeOptions({
   shadowRetinaUrl: '../..<%= asset_path("leaflet/dist/images/marker-shadow.png") %>'
 });
 
-$(document).ready(function($) {
+$(document).on('ready turbolinks:load', function() {
   $(".leaflet-map--static").each(function(e) {
     var geometry = $(this).data('geometry');
+    var zoom = $(this).data('zoom');
 
     var map = L.map(this).setView(geometry.center, 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      maxZoom: 18
+      maxZoom: zoom || 18
     }).addTo(map);
 
     var group = new L.featureGroup();
@@ -25,6 +26,8 @@ $(document).ready(function($) {
       }
       group.addLayer(shape);
     })
-    map.fitBounds(group.getBounds());
+    if (zoom == undefined) {
+      map.fitBounds(group.getBounds());
+    }
   });
 });
