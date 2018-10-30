@@ -14,7 +14,9 @@ module Postcodeable
         )
       SQL
 
-      joins(:postcode).where("#{distance_sql} <= ?", distance)
+      joins(:postcode)
+        .select("#{distance_sql} as distance", "#{table_name}.*")
+        .where("#{distance_sql} <= ?", distance)
     }
   end
 
