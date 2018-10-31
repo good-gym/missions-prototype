@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_23_162651) do
+ActiveRecord::Schema.define(version: 2018_10_30_112730) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,6 +72,24 @@ ActiveRecord::Schema.define(version: 2018_10_23_162651) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "reservation_time_slots", force: :cascade do |t|
+    t.bigint "reservation_id"
+    t.bigint "time_slot_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["reservation_id"], name: "index_reservation_time_slots_on_reservation_id"
+    t.index ["time_slot_id"], name: "index_reservation_time_slots_on_time_slot_id"
+  end
+
+  create_table "reservations", force: :cascade do |t|
+    t.bigint "runner_id"
+    t.bigint "referral_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["referral_id"], name: "index_reservations_on_referral_id"
+    t.index ["runner_id"], name: "index_reservations_on_runner_id"
+  end
+
   create_table "runners", force: :cascade do |t|
     t.string "name"
     t.bigint "postcode_id"
@@ -98,5 +116,9 @@ ActiveRecord::Schema.define(version: 2018_10_23_162651) do
   add_foreign_key "referrals", "coaches"
   add_foreign_key "referrals", "postcodes"
   add_foreign_key "referrals", "referrers"
+  add_foreign_key "reservation_time_slots", "reservations"
+  add_foreign_key "reservation_time_slots", "time_slots"
+  add_foreign_key "reservations", "referrals"
+  add_foreign_key "reservations", "runners"
   add_foreign_key "runners", "postcodes"
 end

@@ -8,6 +8,8 @@ class Referral < ApplicationRecord
   belongs_to :coach
   accepts_nested_attributes_for :coach
 
+  has_many :reservations
+
   attr_accessor :urgent
   attr_accessor :confirm_age
 
