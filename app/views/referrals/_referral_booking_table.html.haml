@@ -10,13 +10,16 @@
             %small #{runners.size} #{"runner".pluralize(runners.size)} signed up
             = render "shared/avatars_list", avatars: runners, class: "justify-content-start mb-1"
         %td
-          - if local_assigns[:checkbox] || time_slots.many?
-            .form-check
-              %label.w-100.h-100
-                - checked = reservation && reservation.time_slots.include?(time_slot)
-                = check_box_tag "reservation[time_slot_ids][]", time_slot.id, checked, class: "form-control"
-          - else
-            = hidden_field_tag "reservation[time_slot_ids][]", time_slot.id
+          - if reservation&.time_slots&.include? time_slot
+            %span.badge.badge-success Booked
+          - elsif !reservation&.persisted?
+            - if local_assigns[:checkbox] || time_slots.many?
+              .form-check
+                %label.w-100.h-100
+                  - checked = reservation && reservation.time_slots.include?(time_slot)
+                  = check_box_tag "reservation[time_slot_ids][]", time_slot.id, checked, class: "form-control"
+            - else
+              = hidden_field_tag "reservation[time_slot_ids][]", time_slot.id
   - if local_assigns[:other_dates]
     %tfoot
       %td.small.text-uppercase{ colspan: 3 }

@@ -2,7 +2,4 @@
   %h1 My reservations
 
   .list-group
-    - @reservations.each do |reservation|
-      .list-group-item
-        %h5= reservation.referral.title
-        = reservation.inspect
+    = render partial: "referrals/public_referral", collection: @reservations.map(&:referral)

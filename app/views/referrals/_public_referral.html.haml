@@ -9,9 +9,7 @@
 
       .mb-1= readmore(public_referral.description)
 
-      %p.text-muted.mb-1
-        #{public_referral.coach.public_name} is available at the following times:
-      = render "referrals/referral_booking", referral: public_referral, date: date
+      .mb-1= render "referrals/referral_booking", referral: public_referral, date: local_assigns[:date]
 
     .col-12.col-md-4
       = referral_map(public_referral)

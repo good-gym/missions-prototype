@@ -1,4 +1,6 @@
 class Reservation < ApplicationRecord
+  include TimeSlotable
+
   belongs_to :runner
   belongs_to :referral
   has_many :reservation_time_slots

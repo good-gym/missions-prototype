@@ -3,6 +3,7 @@ class Dashboards::RunnersController < ApplicationController
   before_action :redirect_to_setup_alerts_if_necessary?, only: :show
 
   def show
+    @reservations = current_user.reservations.upcoming
   end
 
   def edit

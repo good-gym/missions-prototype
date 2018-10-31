@@ -5,9 +5,20 @@
   = hidden_field_tag "date", date
   = f.association :referral, as: :hidden
 
-  .mb-1
-    = render "referrals/referral_booking_table",
-      reservation: reservation, time_slots: time_slots, other_dates: referral.dates - [date]
+  - if local_assigns[:date]
+    %p.text-muted.mb-1
+      #{referral.coach.public_name} is available at the following times:
+
+    .mb-1
+      = render "referrals/referral_booking_table",
+        reservation: reservation, time_slots: time_slots, other_dates: referral.dates - [date]
+  - else
+    %ul.list-unstyled.small.text-uppercase.text-muted
+      - referral.dates.each do |date|
+        %li
+          = date.to_s(:wday_long_ordinal)
+          - if reservation && reservation.dates.include?(date)
+            %span.badge.badge-success Booked
 
   - if reservation.present?
     = link_to reservation_path(reservation), class: "btn btn-success btn-sm btn-block" do
