@@ -1,0 +1,16 @@
+- reservation = current_user.reservations.find_by(referral: referral)
+- time_slots = referral.time_slots.select { |t| t.date == date }
+
+= simple_form_for(current_user.reservations.new(referral: referral), url: new_reservation_path, method: :get) do |f|
+  = hidden_field_tag "date", date
+  = f.association :referral, as: :hidden
+
+  .mb-1
+    = render "referrals/referral_booking_table",
+      reservation: reservation, time_slots: time_slots, other_dates: referral.dates - [date]
+
+  - if reservation.present?
+    = link_to reservation_path(reservation), class: "btn btn-success btn-sm btn-block" do
+      Booking details
+  - else
+    = f.submit("Signup", class: "btn btn-info btn-lg btn-block")

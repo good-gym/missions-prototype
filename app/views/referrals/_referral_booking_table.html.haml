@@ -1,0 +1,29 @@
+%table.table.table-striped.table-sm.mb-0
+  %tbody
+    - time_slots.each do |time_slot, i|
+      %tr
+        %td
+          %strong= time_slot.started_at.to_s(:time_of_day)
+        %td
+          %label.w-100{ for: "reservation_time_slots_#{time_slot.id}"}
+            - runners = time_slot.reservations.map(&:runner).uniq
+            %small #{runners.size} #{"runner".pluralize(runners.size)} signed up
+            = render "shared/avatars_list", avatars: runners, class: "justify-content-start mb-1"
+        %td
+          - if local_assigns[:checkbox] || time_slots.many?
+            .form-check
+              %label.w-100.h-100
+                - checked = reservation && reservation.time_slots.include?(time_slot)
+                = check_box_tag "reservation[time_slot_ids][]", time_slot.id, checked, class: "form-control"
+          - else
+            = hidden_field_tag "reservation[time_slot_ids][]", time_slot.id
+  - if local_assigns[:other_dates]
+    %tfoot
+      %td.small.text-uppercase{ colspan: 3 }
+        Also available on
+        %ul.list-unstyled.text-muted.mb-0
+          - other_dates.each do |other_date|
+            %li
+              = other_date.to_s(:wday_long_ordinal)
+              - if reservation && reservation.time_slots.map(&:date).include?(other_date)
+                %span.badge.badge-success Booked

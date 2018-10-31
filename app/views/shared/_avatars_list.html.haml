@@ -2,6 +2,3 @@
   .avatar-list{ class: local_assigns[:class] || "justify-content-center" }
     - avatars.each do |avatar|
       = image_tag(avatar_icon_url(avatar), title: avatar.name, class: "avatar avatar-sm")
-  %small
-    %strong= avatars.size
-    #{"runner".pluralize(avatars.size)} available

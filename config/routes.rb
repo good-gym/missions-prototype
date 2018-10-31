@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :alerts
   resources :referrals
   resources :referrers
+  resources :reservations
   resources :runners
   resources :availabilities
   resources :listings

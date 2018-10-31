@@ -1,0 +1,30 @@
+.container
+  .text-center
+    %h1 Confirm booking
+
+  .card.mb-2.sm-flush
+    .card-header.text-center
+      %h4.mb-1= @reservation.title
+      .mb-1.text-justify= readmore(@reservation.description)
+      %small.text-uppercase= @reservation.postcode.location
+
+    = simple_form_for(@reservation) do |f|
+      = f.association :referral, as: :hidden
+
+      .card-body
+        %p.text-muted.mb-1
+          Confirm your times
+
+        - @referral.time_slots.group_by(&:date).each do |date, time_slots|
+          %small.text-uppercase= date.to_s(:wday_long_ordinal)
+          = render "referrals/referral_booking_table",
+            reservation: @reservation, time_slots: time_slots, f: f, checkbox: true
+
+      .card-footer
+        .d-flex.justify-content-between.align-items-center
+          %button.btn.btn-secondary.btn-lg.mr-1.flex-shrink-1
+            Cancel
+          %button.btn.btn-primary.btn-lg.btn-block.mt-0.flex-grow-1
+            Confirm
+  .px-2
+    .mb-1= referral_map(@referral)

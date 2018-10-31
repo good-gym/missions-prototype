@@ -1,4 +1,4 @@
-.list-group-item.d-flex.justify-content-between
+.list-group-item.sm-flush
   .row
     .col-12.col-md-8
       %h5.mb-0= public_referral.title
@@ -7,25 +7,11 @@
         - if public_referral.respond_to? :distance
           &mdash; #{public_referral.distance.round(1)}km away
 
-      %p= public_referral.description
+      .mb-1= readmore(public_referral.description)
 
-      %p #{public_referral.coach.public_name} is available at the following times:
-      = simple_form_for(Alert.new, url: todo_path, method: "get") do |f|
-        %dl.row.mb-0
-          - public_referral.time_slots.each do |time_slot|
-            - next if time_slot.started_at.to_date != date
-            %dt.col-6
-              = time_slot.started_at.to_s(:short)
-            %dd.col-6
-              %label
-                = check_box_tag :time_slot, value: time_slot.id
-                I'm free
-
-        - other_dates = public_referral.dates - [date]
-        - if other_dates.any?
-          %p.small Also available on #{other_dates.map { |d| d.to_s(:short) }.to_sentence}
-
-        = f.submit "Sign up", class: "button btn btn-primary btn-block"
+      %p.text-muted.mb-1
+        #{public_referral.coach.public_name} is available at the following times:
+      = render "referrals/referral_booking", referral: public_referral, date: date
 
     .col-12.col-md-4
-      .leaflet-map--static.w-100.h-75{ data: { geometry: public_referral.geometry.to_json, zoom: 12 }, style: "min-height: 150px;" }
+      = referral_map(public_referral)

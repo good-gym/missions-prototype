@@ -16,20 +16,20 @@
             %button.btn.btn-secondary
               %i.fa.fa-search
 
-  - if @referrals_by_day.none?
-    %h3 No missions found.
-    - nearby_referrals = Referral.near(postcode, radius * 2).count("*")
-    - if nearby_referrals.positive?
-      %p.lead
-        Can you run a little further? There are #{nearby_referrals} missions available if
-        = link_to("you search for missions further away.", { radius: radius * 2 })
+.bg-light.pt-2
+  .container
+    - if @referrals_by_day.none?
+      %h3 No missions found.
+      - nearby_referrals = Referral.near(postcode, radius * 2).count("*")
+      - if nearby_referrals.positive?
+        %p.lead
+          Can you run a little further? There are #{nearby_referrals} missions available if
+          = link_to("you search for missions further away.", { radius: radius * 2 })
 
+    - @referrals_by_day.each do |date, referrals|
+      .mb-4
+        %h3.mb-2
+          %strong.text-uppercase= date.to_s(:wday_long_ordinal)
 
-
-  - @referrals_by_day.each do |date, referrals|
-    .mb-3
-      %h5
-        %strong.text-uppercase= date.to_s(:wday_long_ordinal)
-
-      .list-group
-        = render partial: "referrals/public_referral", collection: referrals, locals: { date: date }
+        .list-group.mb-4
+          = render partial: "referrals/public_referral", collection: referrals, locals: { date: date }

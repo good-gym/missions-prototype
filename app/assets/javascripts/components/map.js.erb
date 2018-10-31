@@ -10,10 +10,9 @@ $(document).on('ready turbolinks:load', function() {
     var geometry = $(this).data('geometry');
     var zoom = $(this).data('zoom');
 
-    var map = L.map(this).setView(geometry.center, 13);
+    var map = L.map(this).setView(geometry.center, zoom || 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      maxZoom: zoom || 18
     }).addTo(map);
 
     var group = new L.featureGroup();

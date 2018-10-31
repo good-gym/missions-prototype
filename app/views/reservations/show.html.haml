@@ -1,0 +1,29 @@
+.container
+  .text-center
+    %h1= LanguageGenerator.exclamation(@reservation.id)
+
+    %p.lead
+      You've signed up to do the following mission:
+
+  .card.mb-2.sm-flush
+    .card-header.text-center
+      %h4.mb-1= @reservation.title
+      .mb-1.text-justify= readmore(@reservation.description)
+      %small.text-uppercase= @reservation.postcode.location
+    .card-body
+
+    .card-footer
+      %p
+        You are booked at the following times:
+        %small.d-block.text-muted.text-uppercase= @reservation.reservation_time_slots.map { |ts| ts.started_at.to_s(:short) }.join(" &bullet; ").html_safe
+      .d-flex.justify-content-between.align-items-center
+        %button.btn.btn-secondary.btn-sm.btn-block.mr-1
+          %i.fa.fa-edit
+          Edit
+        %button.btn.btn-secondary.btn-sm.btn-block.mt-0
+          %i.fa.fa-trash
+          Cancel
+
+  .btn.btn-info.btn-lg.btn-block
+    Share with friends
+  = link_to "Back to listings", listings_path, class: "btn btn-link btn-sm btn-block"
