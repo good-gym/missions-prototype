@@ -1,0 +1,14 @@
+.readmore {
+  &.readmore--collapsed {
+    .readmore__content {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+  button {
+    line-height: 1rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
+}

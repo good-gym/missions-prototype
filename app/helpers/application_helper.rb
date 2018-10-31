@@ -23,4 +23,11 @@ module ApplicationHelper
       "https://api.adorable.io/avatars/#{size}/#{key}"
     end
   end
+
+  def readmore(content)
+    content_tag(:div, class: "readmore") do
+      concat content_tag(:div, content, class: "readmore__content")
+      concat content_tag(:button, "Read more", class: "btn btn-link btn-sm d-block px-0")
+    end
+  end
 end
