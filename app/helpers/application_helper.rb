@@ -30,4 +30,12 @@ module ApplicationHelper
       concat content_tag(:button, "Read more", class: "btn btn-link btn-sm d-block px-0")
     end
   end
+
+  def link_to_collapse(content, target)
+    link_to(
+      content, "#",
+      "aria-controls" => target, "aria-expanded" => "false",
+      data: { target: target, toggle: "collapse" }
+    )
+  end
 end

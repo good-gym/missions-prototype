@@ -33,7 +33,14 @@
       .container.small.d-flex.justify-content-between
         %p.mb-0
           This is a prototype for #{link_to("GoodGym", "https://www.goodgym.org")}.
+        - if content_for?(:debug)
+          %p.mb-0
+            = link_to_collapse("Debug", "#debug")
         %p.mb-0
           %a{ href: %[javascript:void((function(d){if(self!=top||d.getElementById('toolbar')&&d.getElementById('toolbar').getAttribute('data-resizer'))return false;d.write('<!DOCTYPE HTML><html style="opacity:0;"><head><meta charset="utf-8"/></head><body><a data-viewport="240x240" data-icon="handy">Mobile</a><a data-viewport="320x480" class="active" data-icon="mobile">Mobile (e.g. Apple iPhone)</a><a data-viewport="320x568" data-icon="mobile" data-version="5">Apple iPhone 5</a><a data-viewport="375%C3%97667" data-icon="mobile" data-version="7">Apple iPhone 7</a><a data-viewport="414%C3%97736" data-icon="mobile" data-version="7+">Apple iPhone 7 Plus</a><a data-viewport="600x800" data-icon="small-tablet">Small Tablet</a><a data-viewport="768x1024" data-icon="tablet">Tablet (e.g. Apple iPad 2-3rd, mini)</a><a data-viewport="1024x1366" data-icon="tablet">Apple iPad Pro</a><a data-viewport="1024x768" data-icon="display" data-version="17%E2%80%B3">17%E2%80%B3 Display</a><a data-viewport="1280x800" data-icon="notebook">Widescreen</a><a data-viewport="2560x1600" data-icon="display" data-version="30%E2%80%B3">30%E2%80%B3 Apple Cinema Display</a><script src="https://lab.maltewassermann.com/viewport-resizer/resizer.min.js"></script></body></html>')})(document));] }
             Mobile
             %i.fa.fa-mobile
+
+    - if content_for?(:debug)
+      .container.alert-placeholder.collapse#debug
+        = yield(:debug)
