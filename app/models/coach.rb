@@ -8,9 +8,14 @@ class Coach < ApplicationRecord
   attr_accessor :city
   attr_accessor :postcode
 
+  TITLES = %w[Capt Col Dr Lady Major Miss Mr Mrs Ms Mx Prof Rev Sir].freeze
+  def self.titles
+    TITLES
+  end
+
   def self.fake
     new(
-      title: %w[Mr Mrs Ms].sample,
+      title: TITLES.sample,
       name: Faker::Name.name,
       address_line_1: Faker::Address.street_address,
       city: Faker::Address.city,
@@ -20,6 +25,10 @@ class Coach < ApplicationRecord
 
   def public_name
     [title || "Mr", first_name.first].join(" ")
+  end
+
+  def private_name
+    [title, name, "of", postcode].join(" ")
   end
 
   def first_name

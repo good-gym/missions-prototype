@@ -5,13 +5,17 @@
 
   = simple_form_for(@referral, url: new_referral_path, method: "get") do |f|
     = f.error_notification
+
+    = f.simple_fields_for :coach do |cf|
+      %label{ for: "referral_coach_attributes_name" }
+        What is the older person called?
+      .d-flex.align-items-end
+        .mr-1= cf.input :title, label: false, hint: "Title", as: :select, collection: Coach.titles
+        .w-100= cf.input :name, label: false, hint: "Full name please"
+
     = f.input :postcode_str, required: true,
       label: "Where does the older person live?", placeholder: "Please enter a postcode"
 
-    -# = f.input :urgent, as: :radio_buttons, required: true,
-    -#   label: "When does this task need to be done by?",
-    -#   collection: [["In the next 2-4 weeks", false],["It must be done in the 24-48 hours", true]]
-    -#
     .alert.alert-placeholder
       %code
         %strong Preferences:

@@ -5,6 +5,8 @@ class Postcode < ApplicationRecord
   after_commit :locate!
   serialize :geodata, HashSerializer
 
+  delegate :blank?, to: :postcode
+
   scope :located, -> { where.not(lat: nil, lng: nil) }
 
   def self.postcode!(postcode_string, attributes = {})

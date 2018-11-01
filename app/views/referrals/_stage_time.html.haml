@@ -7,7 +7,6 @@
   = simple_form_for(@referral, url: new_referral_path, method: "get") do |f|
     = f.error_notification
     = f.input :postcode_str, as: :hidden
-    = f.input :urgent, as: :hidden
 
     - matches_by_time = @matches.group_by(&:started_at)
 

@@ -2,7 +2,6 @@
   = simple_form_for(@referral) do |f|
     = f.error_notification
     = f.input :postcode_str, as: :hidden
-    = f.input :urgent, as: :hidden
     = f.simple_fields_for :time_slots do |tsf|
       = tsf.input :started_at, as: :hidden
 

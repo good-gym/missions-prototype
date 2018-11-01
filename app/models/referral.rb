@@ -10,7 +10,6 @@ class Referral < ApplicationRecord
 
   has_many :reservations
 
-  attr_accessor :urgent
   attr_accessor :confirm_age
 
   attr_accessor :title

@@ -1,0 +1,50 @@
+.container
+  %h2 When is the older person available?
+
+  - date = params[:date] ? Date.parse(params[:date]) : Date.today
+  - weekly_calendar = WeeklyCalendar.new(date)
+  - scores = @result.scored_schedule(date)
+
+  .d-flex.justify-content-between.align-items-center.mb-1
+    - if weekly_calendar.current?
+      = link_to("<", params.to_unsafe_hash.merge(date: weekly_calendar.previous_week), class: "btn btn-secondary")
+    - else
+      .btn.btn-secondary.disabled
+        <
+    %span= weekly_calendar.to_s
+    %span= link_to(">", params.to_unsafe_hash.merge(date: weekly_calendar.next_week), class: "btn btn-secondary")
+
+  = simple_form_for(@referral, url: new_referral_path, method: "get") do |f|
+    = f.error_notification
+    = f.input :postcode_str, as: :hidden
+    = f.fields_for(:coach) do |cf|
+      = cf.input :name, as: :hidden
+      = cf.input :title, as: :hidden
+
+    .sm-flush.weekly-calendar
+      %table.table.table-bordered.table-sm.w-100
+        %thead
+          %tr
+            %th.text-center.align-middle
+              %a.small.d-block{ href: "#", title: "Select all" }
+            - weekly_calendar.days.each do |day|
+              %th.text-center
+                %button.btn.btn-sm.btn-link.px-0{ href: "#", title: "Select all", type: "button", data: { day: day } }
+                  = day.strftime("%a")
+                  %small.d-block= day.day.ordinalize
+        %tbody
+          - 12.times do |i|
+            - hour = 8 + i
+            %tr
+              %td
+                %button.btn.btn-sm.btn-link.p-0{ href: "#", title: "Select all", type: "button", data: { time: "%02d:00" % hour } }
+                  #{hour}<small>:00</small>
+              - weekly_calendar.days.each do |day|
+                - time = Time.zone.parse("#{day} #{hour}:00:00")
+                %td
+                  - score = scores[day.cwday-1][time.strftime("%H:%M")].round(1)
+                  %label{ data: { score: score } }
+                    = check_box_tag("referral[time_slots_attributes][#{time.to_i}][started_at]", time, nil, data: { day: day, time: time })
+                    - if score > 0
+                      %small.d-block #{(score*100).to_i}%
+      = f.submit "Continue", class: "btn btn-secondary btn-lg btn-block"

@@ -56,7 +56,7 @@ class TimeSlot < ApplicationRecord
   end
 
   def to_s
-    started_at.to_s(:short)
+    started_at&.to_s(:short)
   end
 
   private

@@ -3,12 +3,18 @@ class Alert::Finder
   delegate :any?, to: :alerts
 
   def self.near(postcode, relation = Alert.enabled)
+    return if postcode.blank?
+
     new(postcode, relation.in_range(postcode))
   end
 
   def initialize(postcode, alerts)
     @postcode = postcode
-    @alerts = alerts
+    @alerts = alerts.includes(:postcode, :runner)
+  end
+
+  def scored_schedule(_date)
+    joint_schedule.score
   end
 
   def joint_schedule

@@ -5,10 +5,7 @@ class ReferralsController < ApplicationController
     @referral = Referral.new(default_referral_params)
     @dates = params[:dates].map { |d| Date.parse(d) } if params[:dates]
     @matches = setup_matches
-
-    params[:times]
-      &.sort
-      &.each { |d| @referral.time_slots.build(started_at: Time.parse(d)) }
+    @result = Alert::Finder.near(@referral.postcode)
   end
 
   def create
@@ -26,12 +23,10 @@ class ReferralsController < ApplicationController
   private
 
   def stage
-    if params.key?(:times)
+    if @referral.time_slots.any?
       :task
-    elsif params.key?(:dates)
-      :time
-    elsif params[:started_at] == "on"
-      :date
+    elsif params[:when]
+      :calendar
     elsif params.key?(:referral)
       :when
     else
@@ -42,19 +37,22 @@ class ReferralsController < ApplicationController
   def default_referral_params
     if params.key?(:referral)
       data = referral_params
-      data[:coach] ||= Coach.fake
+      data[:coach_attributes] = Coach.fake.attributes
+        .merge(data[:coach_attributes] || {})
+        .merge(postcode: referral_params[:postcode_str])
       data[:task_notes] ||= Faker::Lorem.sentence
       data[:risk] ||= :unknown
       data
     else
-      { postcode: Postcode.new, urgent: false }
+      { postcode: Postcode.new, coach: Coach.fake }
     end
   end
 
   def referral_params
     params.require(:referral)
       .permit(
-        :postcode_str, :urgent,
+        :postcode_str,
+        coach_attributes: %i[name title],
         time_slots_attributes: %i[started_at]
       )
       .merge(referrer: current_user)

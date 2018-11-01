@@ -1,14 +1,15 @@
-- result = Alert::Finder.near(@referral.postcode)
-
 .container
   .row
     .col-12.col-md-6.mb-2
-      %h3 #{result.runners.size} volunteers nearby
+      %h3 #{@result.runners.size} volunteers nearby
 
       = simple_form_for(@referral, url: new_referral_path, method: "get") do |f|
         = f.input :postcode_str, as: :hidden
+        = f.fields_for(:coach) do |cf|
+          = cf.input :name, as: :hidden
+          = cf.input :title, as: :hidden
 
-        - if result.best_times.any?
+        - if @result.best_times.any?
           %p.lead
             They are generally available at the following times:
         - else
@@ -16,16 +17,11 @@
           %p.lead
             They are generally available:
             %ul
-              - result.summarise.each do |summary|
+              - @result.summarise.each do |summary|
                 %li= summary
 
         %button.btn.btn-secondary.btn-lg.btn-block
           Choose times
 
     .col-12.col-md-6
-      .leaflet-map--static.w-100.h-100{ data: { geometry: result.geometry.to_json }, style: "min-height: 150px;" }
-
-.alert-placeholder.pt-2.mt-2
-  .container
-    %h3 Debug
-    = render "shared/weekly_schedule_heat_map", schedule: result.joint_schedule
+      .leaflet-map--static.w-100.h-100{ data: { geometry: @result.geometry.to_json }, style: "min-height: 150px;" }

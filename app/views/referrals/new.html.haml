@@ -8,6 +8,8 @@
           %span Referral details
           = link_to "Edit", nil
         %dl.mb-0.row
+          %dt.col-5 Name
+          %dd.col-7.text-muted= @referral.coach.private_name
           %dt.col-5 Location
           %dd.col-7.text-muted= @referral.postcode
           %dt.col-5 Preferences
@@ -29,6 +31,16 @@
 = case stage
 - when :first then render "stage_first"
 - when :when then render "stage_when"
+- when :calendar then render "stage_calendar"
 - when :date then render "stage_date"
 - when :time then render "stage_time"
 - when :task then render "stage_task"
+
+- content_for(:debug) do
+  %code= params.inspect
+  %br
+  %code= @referral.inspect
+  %br
+  %code= @referral.time_slots.inspect
+
+  = render "shared/weekly_schedule_heat_map", schedule: @result.joint_schedule if @result
