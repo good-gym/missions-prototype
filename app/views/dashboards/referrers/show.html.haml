@@ -1,32 +1,35 @@
 .container
   %h1 Hello #{current_user.name}
 
-  %h2 Practical tasks for Older People
-  %p.lead
-    GoodGym runners can help with basic household and garden tasks for people aged over 60.
+  .card.sm-flush
+    .card-header.text-md-center
+      %h2.mb-1 Practical tasks for Older People
 
-  %p= link_to "Make a new task request", new_referral_path, class: "btn btn-secondary btn-lg btn-block"
-  %p= link_to "View volunteers availabilities' on a map", map_dashboards_referrer_path, class: "btn btn-link btn-block"
+      %p.lead
+        GoodGym runners can help with basic household and garden tasks for people aged over 60.
 
+      %p= link_to "Make a new task request", new_referral_path, class: "btn btn-secondary btn-lg btn-block"
 
-  - if @referrals.any?
-    %h3 Your task requests
-    .list-group
-      - @referrals.each do |referral|
-        .list-group-item
-          .d-flex.small.justify-content-between.mb-2
-            %div
-              Beneficiary
-              %span.text-muted= referral.coach.name
-            %span= referral.postcode
-            %div
-              Referred on
-              %span.text-muted= referral.created_at.to_s(:short)
-          - if referral.time_slots.any?
-            %dl.mb-0
-              %dt
-                Scheduled for
-              %dd
-                %ul.list-unstyled.small.mb-0
-                  - referral.time_slots.each do |time_slot|
-                    %li= time_slot.started_at.to_s(:short)
+      .text-center.small
+        = link_to "View volunteers availabilities' on a map", map_dashboards_referrer_path
+    .list-group.list-group-flush.lead
+      .list-group-item
+        = link_to(referrals_path, class: "d-flex-bc") do
+          New Referrals
+          %span.badge.badge-secondary= current_user.referrals.size
+      .list-group-item
+        = link_to(todo_path, class: "d-flex-bc") do
+          Scheduled
+          %span.badge.badge-secondary 0
+      .list-group-item
+        = link_to(todo_path, class: "d-flex-bc") do
+          Cancelled
+          %span.badge.badge-secondary 0
+      .list-group-item
+        = link_to(todo_path, class: "d-flex-bc") do
+          Completed
+          %span.badge.badge-secondary 0
+      .list-group-item
+        = link_to(todo_path, class: "d-flex-bc") do
+          All
+          %span.badge.badge-secondary 0

@@ -1,6 +1,10 @@
 class ReferralsController < ApplicationController
   helper_method :stage
 
+  def index
+    @referrals = current_user.referrals
+  end
+
   def new
     @referral = Referral.new(default_referral_params)
     @dates = params[:dates].map { |d| Date.parse(d) } if params[:dates]
