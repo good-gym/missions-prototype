@@ -2,6 +2,8 @@
   = simple_form_for(@referral) do |f|
     = f.error_notification
     = f.input :postcode_str, as: :hidden
+    = f.input :duration, as: :hidden
+    = f.input :volunteers_needed, as: :hidden
     = f.simple_fields_for :time_slots do |tsf|
       = tsf.input :started_at, as: :hidden
 
@@ -9,37 +11,109 @@
       .card-header
         %h2.mb-0 Who is the task for?
       .card-body
-        = f.simple_fields_for(:coach) do |cf|
-          = cf.input :title
-          = cf.input :name
-          = cf.input :alias, label: "Likes to be known as"
+        = f.simple_fields_for :coach do |cf|
+          %label{ for: "referral_coach_attributes_name" }
+            Full name
+          .d-flex.align-items-end
+            .flex-shrink-1.mr-1= cf.input :title, label: false, hint: "Title", as: :select, collection: Coach.titles
+            .flex-grow-1= cf.input :name, label: false, hint: "Full name please"
+
           = cf.input :telephone_number
-          = cf.input :address_line_1
-          = cf.input :address_line_2
-          = cf.input :postcode
-          = cf.input :city
+
+          %label Address
+          .address-finder.d-flex.mb-1.input-group
+            = text_field_tag "address-finder-postcode", @referral.postcode, class: "form-control"
+            .input-group-append
+              #address-finder-button.btn.btn-secondary
+                Find address
+                %i.fa.fa-search
+          .address-finder-results
+          .text-center
+            %button.btn.btn-sm.btn-link{ "aria-controls" => "address-finder-collapse", "aria-expanded" => "false", "data-target" => ".address-finder-collapse", "data-toggle" => "collapse", :type => "button"}
+              Or enter address manually
+
+          .address-finder-collapse.mt-2.collapse
+            = cf.input :address_line_1, input_html: { "data-address-finder": "address_line_1" }
+            = cf.input :address_line_2, input_html: { "data-address-finder": "address_line_2" }
+            = cf.input :postcode, input_html: { "data-address-finder": "postcode" }
+            = cf.input :city, input_html: { "data-address-finder": "city" }
+            = f.simple_fields_for(@referral.postcode) do |pf|
+              = pf.input :geodata, as: :hidden, input_html: { value: pf.object.geodata.to_json }
 
     .card.mb-2
       .card-header
         %h2.mb-0 Describe the task
       .card-body
-        = f.input :title, hint: "e.g. Weeding and trimming plants for Mr A"
-        = f.input :subtitle, hint: "e.g. Mr A would like to enjoy his patio area again but due to his health he can't do it himself"
-        = f.input :description, hint: "e.g. The weeds need pulling up and the plants trimmed. There are weeds coming up through the patio floor which can be cleared and there are plants all around the patio that need to be trimmed. Mr A has all the tools required."
+        :ruby
+          titles = [
+            "Clear the garden",
+            "Tidy the garden",
+            "Change a lightbulb",
+            "Move some furniture"
+          ]
+          impacts = [
+            "As they are unable to manage this themselves",
+            "So that they can come home from hospital",
+            "So they can enjoy their garden again",
+            "To allow them to remain at home and be comfortable",
+          ]
+
+        .mb-1= f.select :title, titles, {}, class: "form-control w-100 mb-1"
+        %label.mb-1
+          for
+          COACH
+        .mb-1= f.select :subtitle, impacts, {}, class: "form-control mw-100 mb-1"
+
+        .mb-0= f.input :description, as: :text, wrapper_html: { class: "mb-0" }
+        %small.form-text.text-muted
+          Let the volunteers know what to expect.
+          = link_to "See examples", todo_path
+
+        :javascript
+          $("#referral_title, #referral_subtitle").select2({
+            tags: true, width: 'auto', style: "margin-right: 0.5rem;"
+          });
 
     .card.mb-2
       .card-header
-        %h2.mb-0 Task details
+        %h2.mb-0 Further information
       .card-body
-        = f.input :contact_details
-        = f.input :task_notes, required: true
-        = f.input :risk, as: :radio_buttons, required: true,
+        = f.input :contact_details, label: "Alternative contact name and number"
+        = f.input :task_notes, as: :text, required: true,
+          label: "Is there anything else we should know?",
+          hint: "e.g. where should any waste be left, instructions on accessing the property, pets, etc."
+        = f.input :risk, as: :radio_buttons, required: true, wrapper_html: { class: "mb-0" },
           label: "Does this person’s behaviour or home pose any risk of offense or harm to a volunteer?",
           collection: [["Yes", :yes], ["No", :no], ["I don’t know them well enough to say", :unknown]]
-        = f.input :confirm_tools, as: :boolean, required: true,
-          label: "Please confirm that appropriate tools and equipment will be provided if necessary",
-          hint: "Due to health and safety reasons our runners cannot bring tools, therefore any equipment needed for the task must be provided."
+
+        .risk-details.collapse.mt-1
+          = f.input :risk_details, as: :text, wrapper_html: { class: "mb-0" },
+            label: "Does this person’s behaviour or home pose any risk of offense or harm to a visiting runner?",
+            hint: "We do not risk assess the environment so it is important that any risks are highlighted here"
+
+        :javascript
+          $('.referral_risk input').on('change', function() {
+            if ($(this).val() === 'no') {
+              $('.risk-details.collapse').collapse('hide');
+            } else {
+              $('.risk-details.collapse').collapse('show');
+            }
+          });
+
 
     %p.lead
       By referring the above named person to GoodGym you are confirming that you have explained GoodGym to them and have gained their consent to make this referral on their behalf.
+
+    .mb-1
+      :ruby
+        confirmation_by_times = [
+          ["Within 1 hour", :hour_1],
+          ["Within 3 hours", :hour_3],
+          ["By tomorrow morning", :tomorrow_morning],
+          ["By tomorrow evening", :tomorrow_evening],
+          ["I don't mind", nil],
+        ]
+      = f.input :confirmation_by_time, as: :select, collection: confirmation_by_times,
+        label: "I would need confirmation that the task is going ahead:"
+
     %p= f.submit "Submit task", class: "btn btn-primary btn-lg btn-block"

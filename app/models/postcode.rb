@@ -50,6 +50,14 @@ class Postcode < ApplicationRecord
     save!
   end
 
+  def ideal_geodata
+    geodata[:ideal]
+  end
+
+  def ideal_geodata=(data)
+    geodata[:ideal].deep_merge(data)
+  end
+
   def location
     @location ||= begin
       if geodata[:ideal].present?

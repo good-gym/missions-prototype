@@ -1,13 +1,17 @@
 .container
   .row
     .col-12.col-md-6.mb-2
-      %h3 #{@result.runners.size} volunteers nearby
+      %h3 #{@result.runners.size} volunteers available
 
       = simple_form_for(@referral, url: new_referral_path, method: "get") do |f|
         = f.input :postcode_str, as: :hidden
-        = f.fields_for(:coach) do |cf|
-          = cf.input :name, as: :hidden
-          = cf.input :title, as: :hidden
+        = f.input :duration, as: :hidden
+        = f.input :volunteers_needed, as: :hidden
+
+        = f.simple_fields_for :preferences, OpenStruct.new(f.object.preferences) do |pf|
+          = pf.input :lifting, as: :hidden
+          = pf.input :cats, as: :hidden
+          = pf.input :dogs, as: :hidden
 
         - if @result.best_times.any?
           %p.lead

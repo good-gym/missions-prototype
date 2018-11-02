@@ -4,7 +4,8 @@ class WeeklySchedule
     .with_indifferent_access
 
   def self.default(type = nil)
-    DEFAULTS[type || DEFAULTS.keys.sample]
+    type ||= (DEFAULTS.keys - ["none"]).sample
+    DEFAULTS[type]
   end
 
   attr_reader :schedule, :count

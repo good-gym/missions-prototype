@@ -16,10 +16,13 @@
 
   = simple_form_for(@referral, url: new_referral_path, method: "get") do |f|
     = f.error_notification
+    = f.input :duration, as: :hidden
+    = f.input :volunteers_needed, as: :hidden
     = f.input :postcode_str, as: :hidden
-    = f.fields_for(:coach) do |cf|
-      = cf.input :name, as: :hidden
-      = cf.input :title, as: :hidden
+    = f.simple_fields_for :preferences, OpenStruct.new(f.object.preferences) do |pf|
+      = pf.input :lifting, as: :hidden
+      = pf.input :cats, as: :hidden
+      = pf.input :dogs, as: :hidden
 
     .sm-flush.weekly-calendar
       %table.table.table-bordered.table-sm.w-100
@@ -41,10 +44,11 @@
                   #{hour}<small>:00</small>
               - weekly_calendar.days.each do |day|
                 - time = Time.zone.parse("#{day} #{hour}:00:00")
+                - time_s = time.strftime("%H:%M")
                 %td
-                  - score = scores[day.cwday-1][time.strftime("%H:%M")].round(1)
+                  - score = scores[day.cwday-1][time_s].round(1)
                   %label{ data: { score: score } }
-                    = check_box_tag("referral[time_slots_attributes][#{time.to_i}][started_at]", time, nil, data: { day: day, time: time })
+                    = check_box_tag("times[]", time.to_i, nil, data: { day: day.to_s, time: time_s })
                     - if score > 0
                       %small.d-block #{(score*100).to_i}%
       = f.submit "Continue", class: "btn btn-secondary btn-lg btn-block"

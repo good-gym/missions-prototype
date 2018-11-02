@@ -8,4 +8,16 @@ module ReferralHelper
       style: "min-height: 150px;"
     )
   end
+
+  def referral_preferences_summary(referral)
+    referral
+      .preferences.map do |key, value|
+        next if value == false
+
+        {
+          lifting: "heavy lifting"
+        }.with_indifferent_access[key] || key
+      end
+      .compact.map { |c| content_tag(:strong, c) }.to_sentence.html_safe
+  end
 end

@@ -8,12 +8,15 @@
           %span Referral details
           = link_to "Edit", nil
         %dl.mb-0.row
-          %dt.col-5 Name
-          %dd.col-7.text-muted= @referral.coach.private_name
           %dt.col-5 Location
           %dd.col-7.text-muted= @referral.postcode
-          %dt.col-5 Preferences
-          %dd.col-7.text-muted Heavy lifting, cats, dogs
+          %dt.col-5 Task details
+          %dd.col-7.text-muted
+            #{@referral.volunteers_needed} volunteers needed for #{@referral.duration} minutes
+            - if preferences_summary(@referral).present?
+              %br
+              Task involves
+              = referral_preferences_summary(@referral)
           - if @referral.time_slots.any?
             %dt.col-5 Times slots
             %dd.col-7.text-muted

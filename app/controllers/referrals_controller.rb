@@ -40,22 +40,36 @@ class ReferralsController < ApplicationController
 
   def default_referral_params
     if params.key?(:referral)
-      data = referral_params
-      data[:coach_attributes] = Coach.fake.attributes
-        .merge(data[:coach_attributes] || {})
-        .merge(postcode: referral_params[:postcode_str])
-      data[:task_notes] ||= Faker::Lorem.sentence
-      data[:risk] ||= :unknown
-      data
+      {
+        task_notes: Faker::Lorem.sentence,
+        coach_attributes: Coach.fake.attributes.merge(
+          postcode: referral_params[:postcode_str]
+        )
+      }.merge(time_slots_params)
+        .with_indifferent_access
+        .deep_merge(referral_params)
     else
-      { postcode: Postcode.new, coach: Coach.fake }
+      {
+        postcode: Postcode.new, coach: Coach.fake,
+        duration: 60, volunteers_needed: 2
+      }
     end
+  end
+
+  def time_slots_params
+    return {} unless params[:times]
+
+    times = params[:times].map do |t|
+      { started_at: Time.at(t.to_i) }
+    end
+    { time_slots_attributes: times }
   end
 
   def referral_params
     params.require(:referral)
       .permit(
-        :postcode_str,
+        :postcode_str, :duration, :volunteers_needed,
+        preferences: {},
         coach_attributes: %i[name title],
         time_slots_attributes: %i[started_at]
       )

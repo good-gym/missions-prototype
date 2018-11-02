@@ -13,6 +13,7 @@ class Dashboards::RunnersController < ApplicationController
 
   def update
     if current_user.update(runner_params)
+      current_user.touch if current_user.updated_at == current_user.created_at
       redirect_to update_redirect_path, notice: "Preferences updated"
     else
       render :edit

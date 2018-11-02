@@ -3,26 +3,53 @@
     We can organise 2+ volunteers to come to an older person's house to help
     with a physical task.
 
-  = simple_form_for(@referral, url: new_referral_path, method: "get") do |f|
-    = f.error_notification
+  .card.sm-flush
+    = simple_form_for(@referral, url: new_referral_path, method: "get") do |f|
+      .card-body
+        = f.error_notification
 
-    = f.simple_fields_for :coach do |cf|
-      %label{ for: "referral_coach_attributes_name" }
-        What is the older person called?
-      .d-flex.align-items-end
-        .mr-1= cf.input :title, label: false, hint: "Title", as: :select, collection: Coach.titles
-        .w-100= cf.input :name, label: false, hint: "Full name please"
+        = f.input :postcode_str, required: true,
+          label: "Where does the older person live?", placeholder: "Please enter a postcode"
 
-    = f.input :postcode_str, required: true,
-      label: "Where does the older person live?", placeholder: "Please enter a postcode"
+        .row
+          .col-12.col-md-6
+            = f.input :volunteers_needed, as: :integer, required: true, input_html: { min: 2, max: 5 },
+              label: "What is the maximum number of people that would be useful?", hint: "We need a minimum of 2 volunteers"
+          .col-12.col-md-6
+            = f.input :duration, as: :select, required: true, collection: Referral.durations,
+              label: "How long will this take 2 people to complete?", hint: "Our volunteers stay 1 hour if needed, but sometimes stay longer if they want to."
 
-    .alert.alert-placeholder
-      %code
-        %strong Preferences:
-        We need to ask whether the task has any heavy lifting or pets.
+        = f.simple_fields_for :preferences, OpenStruct.new(f.object.preferences) do |pf|
+          %label What does the task involve?
+          .row.mb-1
+            .col-12.col-md-4
+              %label.mr-1.d-flex.align-items-start
+                .pb-1= pf.check_box :lifting
+                .ml-1
+                  Heavy lifting
+                  %small.d-block.text-muted
+                    This task involves heavy lifting so is not appropriate for
+                    volunteers with injuries.
+            .col-12.col-md-4
+              %label.mr-1.d-flex.align-items-start
+                .pb-1= pf.check_box :cats
+                .ml-1
+                  This property has dogs
+                  %small.d-block.text-muted
+                    Some volunteers prefer not to do missions with dogs.
+            .col-12.col-md-4
+              %label.mr-1.d-flex.align-items-start
+                .pb-1= pf.check_box :dogs
+                .ml-1
+                  This property has cats
+                  %small.d-block.text-muted
+                    Some volunteers prefer not to do missions with cats.
+      .card-footer
+        = f.input :confirm_age, as: :boolean, required: true,
+          label: "I confirm that the older person is aged 60 or over",
+          hint: "Their D.O.B. must be earlier than #{(Date.today-60.years)}. #{link_to("Why is this?", todo_path)}".html_safe
+        = f.input :confirm_tools, as: :boolean, required: true,
+          label: "I confirm that appropriate tools and equipment will be provided if necessary",
+          hint: "Due to health and safety reasons our volunteers cannot bring tools, therefore any equipment needed for the task must be provided."
 
-    = f.input :confirm_age, as: :boolean, required: true,
-      label: "I confirm that the older person is aged 60 or over",
-      hint: "Their D.O.B. must be earlier than #{(Date.today-60.years)}. #{link_to("Why is this?", todo_path)}".html_safe
-
-    %p= f.submit "Next step", class: "btn btn-secondary btn-block btn-lg"
+        = f.submit "Next step", class: "btn btn-secondary btn-block btn-lg"

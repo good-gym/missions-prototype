@@ -56,9 +56,13 @@ ActiveRecord::Schema.define(version: 2018_10_30_112730) do
   end
 
   create_table "referrals", force: :cascade do |t|
+    t.jsonb "preferences", default: "{}", null: false
     t.bigint "coach_id"
     t.bigint "referrer_id"
     t.bigint "postcode_id"
+    t.integer "volunteers_needed", null: false
+    t.integer "duration", null: false
+    t.datetime "confirmation_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["coach_id"], name: "index_referrals_on_coach_id"
