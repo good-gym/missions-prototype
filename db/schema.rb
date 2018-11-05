@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_05_114131) do
+ActiveRecord::Schema.define(version: 2018_11_05_115612) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,6 +71,9 @@ ActiveRecord::Schema.define(version: 2018_11_05_114131) do
     t.datetime "confirmation_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "approved_by_id"
+    t.datetime "approved_at"
+    t.index ["approved_by_id"], name: "index_referrals_on_approved_by_id"
     t.index ["coach_id"], name: "index_referrals_on_coach_id"
     t.index ["postcode_id"], name: "index_referrals_on_postcode_id"
     t.index ["referrer_id"], name: "index_referrals_on_referrer_id"
@@ -124,6 +127,7 @@ ActiveRecord::Schema.define(version: 2018_11_05_114131) do
   add_foreign_key "availabilities", "postcodes"
   add_foreign_key "availabilities", "runners"
   add_foreign_key "referrals", "coaches"
+  add_foreign_key "referrals", "coordinators", column: "approved_by_id"
   add_foreign_key "referrals", "postcodes"
   add_foreign_key "referrals", "referrers"
   add_foreign_key "reservation_time_slots", "reservations"

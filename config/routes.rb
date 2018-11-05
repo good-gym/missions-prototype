@@ -14,7 +14,15 @@ Rails.application.routes.draw do
   resources :listings
 
   namespace :dashboards do
-    resource :coordinator
+    namespace :coordinator do
+      root to: "coordinators#show"
+      resources :referrals do
+        member do
+          patch :approve
+        end
+      end
+    end
+
     resource :referrer do
       get :map
     end

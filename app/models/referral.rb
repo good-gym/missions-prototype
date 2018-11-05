@@ -13,10 +13,15 @@ class Referral < ApplicationRecord
     }.to_a.map(&:reverse)
   end
 
+  scope :pending, -> { where(approved_by_id: nil, approved_at: nil) }
+  scope :approved, -> { where.not(approved_by_id: nil, approved_at: nil) }
+
   belongs_to :referrer
 
   belongs_to :coach
   accepts_nested_attributes_for :coach
+
+  belongs_to :approved_by, class_name: "Coordinator", optional: true
 
   has_many :reservations
 

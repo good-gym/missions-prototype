@@ -1,2 +1,24 @@
 .container
   %h1 Hello #{current_user.name}
+
+  - if @pending_referrals.any?
+    %table.table.table-responsive
+      %thead
+        %tr
+          %th Referrals
+          %th Area
+          %th Actions
+      %tbody
+        - @pending_referrals.each do |referral|
+          %tr
+            %td
+              %h5.mb-0= referral.title
+              %div{style: "max-width: 400px;"}
+                = readmore(referral.description)
+              %small.d-block
+                Referred by #{referral.referrer.name} on #{referral.created_at.to_s(:short)}
+            %td
+              = referral.postcode.location
+            %td
+              = button_to approve_dashboards_coordinator_referral_path(referral), method: :patch, class: "btn btn-primary" do
+                Approve
