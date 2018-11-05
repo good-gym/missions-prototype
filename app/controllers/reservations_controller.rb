@@ -16,9 +16,21 @@ class ReservationsController < ApplicationController
   def create
     @reservation = Reservation.new(reservation_params)
     if @reservation.save
+      alert_referrer if @reservation.referral.scheduled?
+
       redirect_to @reservation
     else
       render :new
+    end
+  end
+
+  def destroy
+    @reservation = current_user.reservations.find(params[:id])
+    if @reservation.destroy
+      redirect_to(root_path, notice: "Cancelled mission")
+    else
+      flash[:notice] = "Unable to delete reservation"
+      render :show
     end
   end
 
@@ -29,5 +41,15 @@ class ReservationsController < ApplicationController
       .require(:reservation)
       .permit(:referral_id, time_slot_ids: [])
       .merge(runner: current_user)
+  end
+
+  def alert_referrer
+    Email::Send.call(
+      from: current_user,
+      to: [@reservation.referral.referrer],
+      object: @reservation.referral,
+      subject: "Your referral has been scheduled",
+      body: "Good news, runners have signed up to your referral"
+    )
   end
 end

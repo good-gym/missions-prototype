@@ -1,0 +1,17 @@
+.card.mb-2.sm-flush
+  .card-header.text-center
+    %h4.mb-0 Mission Details
+
+  .card-body
+    %h5= referral.title
+    .mb-1.text-justify= readmore(referral.description)
+
+    %ul.list-unstyled.small.text-muted.text-uppercase.mb-0
+      %li
+        = referral.postcode.location
+        - if referral.respond_to? :distance
+          &mdash; #{referral.distance.round(1)}km away
+      %li
+        #{referral.volunteers_needed} runners needed for #{referral.duration} mins
+
+  = referral_map(referral)
