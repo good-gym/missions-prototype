@@ -20,3 +20,12 @@
           .list-group-item.title-with-button.align-items-center
             = link_to referrer.name, referrer
             = login_as_button(referrer, "Login", class: "btn btn-secondary btn-sm")
+    .col
+      .title-with-button
+        %h3 Coordinator
+        = link_to "New coordinator", new_coordinator_path, class: "btn btn-secondary btn-sm"
+      .list-group
+        - @coordinators.each do |coordinator|
+          .list-group-item.title-with-button.align-items-center
+            = link_to coordinator.name, coordinator
+            = login_as_button(coordinator, "Login", class: "btn btn-secondary btn-sm")

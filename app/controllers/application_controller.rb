@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
       case type
       when "runners" then Runner.find(id)
       when "referrers" then Referrer.find(id)
+      when "coordinators" then Coordinator.find(id)
       end
     end
   rescue ActiveRecord::RecordNotFound

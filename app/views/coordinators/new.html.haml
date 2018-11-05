@@ -1,0 +1,8 @@
+.container
+  %h1 New coordinator
+
+  = simple_form_for(@coordinator) do |f|
+    = f.error_notification
+
+    = f.input :name
+    = f.submit class: "btn btn-primary"
