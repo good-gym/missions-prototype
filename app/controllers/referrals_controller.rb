@@ -14,6 +14,9 @@ class ReferralsController < ApplicationController
 
   def create
     @referral = Referral.new(default_referral_params)
+    # wtf?
+    @referral.time_slots.each { |t| t.booking = @referral }
+
     if @referral.save
       redirect_to root_path
     else
@@ -60,7 +63,7 @@ class ReferralsController < ApplicationController
     return {} unless params[:times]
 
     times = params[:times].map do |t|
-      { started_at: Time.at(t.to_i) }
+      { booking: @referral, started_at: Time.at(t.to_i) }
     end
     { time_slots_attributes: times }
   end

@@ -11,7 +11,7 @@
 
     = render "referrals/referral_booking_table",
       reservation: @reservation, time_slots: time_slots, f: f,
-      checkbox: true, picker: true
+      checkbox: true, picker: true, referral: @referral
 
     - other_dates = @referral.time_slots.map(&:date).reject { |d| d == @date }.uniq.sort
     %p.text-center.small

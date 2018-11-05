@@ -20,10 +20,9 @@
   .container
     - if @referrals_by_day.none?
       %h3 No missions found.
-      - nearby_referrals = Referral.near(postcode, radius * 2).count("*")
-      - if nearby_referrals.positive?
+      - if @nearby_referrals.positive?
         %p.lead
-          Can you run a little further? There are #{nearby_referrals} missions available if
+          Can you run a little further? There are #{@nearby_referrals} missions available if
           = link_to("you search for missions further away.", { radius: radius * 2 })
 
     - @referrals_by_day.each do |date, referrals|

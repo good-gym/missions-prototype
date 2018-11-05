@@ -1,25 +1,37 @@
 %table.table.table-striped.table-sm.mb-0
   %tbody
+    :ruby
+      completable_time_slots = time_slots
+        .map { |time_slot| time_slot.reservations.map(&:runner).uniq.size }
+        .select { |n| n + 1 >= referral.volunteers_needed }
+      radio = completable_time_slots.size == time_slots.size
+
     - time_slots.each do |time_slot, i|
+      - runners = time_slot.reservations.map(&:runner).uniq
       %tr
         %td
           %strong= time_slot.started_at.to_s(:time_of_day)
         %td
           %label.w-100{ for: "reservation_time_slots_#{time_slot.id}"}
-            - runners = time_slot.reservations.map(&:runner).uniq
             %small #{runners.size} #{"runner".pluralize(runners.size)} signed up
             = render "shared/avatars_list", avatars: runners, class: "justify-content-start mb-1"
         %td
           - if reservation&.time_slots&.include? time_slot
             %span.badge.badge-success Booked
           - elsif picker
-            - if local_assigns[:checkbox] || time_slots.many?
+            - if local_assigns[:radio] || radio
+              .form-check
+                %label.w-100.h-100
+                  - checked = reservation && reservation.time_slots.include?(time_slot)
+                  = radio_button_tag "reservation[time_slot_ids][]", time_slot.id, checked, class: "form-control"
+            - elsif local_assigns[:checkbox] || time_slots.many?
               .form-check
                 %label.w-100.h-100
                   - checked = reservation && reservation.time_slots.include?(time_slot)
                   = check_box_tag "reservation[time_slot_ids][]", time_slot.id, checked, class: "form-control"
             - else
               = hidden_field_tag "reservation[time_slot_ids][]", time_slot.id
+
   - if local_assigns[:other_dates]
     %tfoot
       %td.small.text-uppercase{ colspan: 3 }

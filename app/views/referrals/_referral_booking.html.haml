@@ -12,7 +12,7 @@
     .mb-1
       = render "referrals/referral_booking_table",
         reservation: reservation, time_slots: time_slots, other_dates: referral.dates - [date],
-        picker: local_assigns[:picker]
+        picker: local_assigns[:picker], referral: referral
   - else
     %ul.list-unstyled.small.text-uppercase.text-muted
       - referral.dates.each do |date|

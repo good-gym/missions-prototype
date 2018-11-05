@@ -15,6 +15,16 @@ class Referral < ApplicationRecord
 
   scope :pending, -> { where(approved_by_id: nil, approved_at: nil) }
   scope :approved, -> { where.not(approved_by_id: nil, approved_at: nil) }
+  scope :scheduled, lambda {
+    joins(time_slots: :reservations)
+      .having("count(reservations.*) >= volunteers_needed")
+      .group("referrals.id, time_slots.started_at")
+  }
+  scope :not_scheduled, lambda {
+    joins(time_slots: :reservations)
+      .having("count(reservations.*) < volunteers_needed")
+      .group("referrals.id, time_slots.started_at")
+  }
 
   belongs_to :referrer
 
@@ -47,6 +57,29 @@ class Referral < ApplicationRecord
     when :tomorrow_morning then self.confirmation_by = Time.now.end_of_day + 8.hours
     when :tomorrow_evening then self.confirmation_by = Time.now.end_of_day + 16.hours
     end
+  end
+
+  def status
+    return :pending unless approved?
+
+    if scheduled?
+      :scheduled
+    elsif approved?
+      :approved
+    else
+      :pending
+    end
+  end
+
+  def approved?
+    approved_at.present? && approved_by.present?
+  end
+
+  def scheduled?
+    time_slots.joins(:reservations)
+      .having("count(reservations.*) >= ?", volunteers_needed)
+      .group("time_slots.started_at")
+      .any?
   end
 
   def geometry

@@ -22,9 +22,9 @@
           Approved
           %span.badge.badge-secondary= current_user.referrals.approved.size
       .list-group-item
-        = link_to(todo_path, class: "d-flex-bc") do
+        = link_to(referrals_path(state: :scheduled), class: "d-flex-bc") do
           Scheduled
-          %span.badge.badge-secondary 0
+          %span.badge.badge-secondary= current_user.referrals.scheduled.size
       .list-group-item
         = link_to(todo_path, class: "d-flex-bc") do
           Cancelled

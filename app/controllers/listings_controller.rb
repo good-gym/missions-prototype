@@ -4,8 +4,15 @@ class ListingsController < ApplicationController
   def index
     @referrals_by_day = Referral
       .approved
+      .where.not(id: Referral.scheduled)
       .near(postcode, radius)
       .grouped_by_date
+
+    @nearby_referrals = Referral
+      .approved
+      .where.not(id: Referral.scheduled)
+      .near(postcode, radius * 2)
+      .count("*")
   end
 
   private

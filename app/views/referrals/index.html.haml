@@ -14,6 +14,17 @@
             %div
               Referred on
               %span.text-muted= referral.created_at.to_s(:short)
+
+          %ul.list-unstyled.small.text-muted.text-uppercase
+            %li
+              = referral.postcode.location
+              - if referral.respond_to? :distance
+                &mdash; #{referral.distance.round(1)}km away
+            %li
+              #{referral.volunteers_needed} runners needed for #{referral.duration} mins
+
+          %span.badge.badge-secondary= referral.status
+
           - if referral.time_slots.any?
             %dl.mb-0
               %dt
@@ -21,4 +32,6 @@
               %dd
                 %ul.list-unstyled.small.mb-0
                   - referral.time_slots.each do |time_slot|
-                    %li= time_slot.started_at.to_s(:short)
+                    %li.border
+                      = time_slot.started_at.to_s(:short)
+                      = render "shared/avatars_list", avatars: time_slot.reservations.map(&:runner)
