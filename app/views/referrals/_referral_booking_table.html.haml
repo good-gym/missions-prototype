@@ -12,7 +12,7 @@
         %td
           - if reservation&.time_slots&.include? time_slot
             %span.badge.badge-success Booked
-          - elsif !reservation&.persisted?
+          - elsif picker
             - if local_assigns[:checkbox] || time_slots.many?
               .form-check
                 %label.w-100.h-100

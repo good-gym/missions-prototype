@@ -11,7 +11,8 @@
 
     .mb-1
       = render "referrals/referral_booking_table",
-        reservation: reservation, time_slots: time_slots, other_dates: referral.dates - [date]
+        reservation: reservation, time_slots: time_slots, other_dates: referral.dates - [date],
+        picker: local_assigns[:picker]
   - else
     %ul.list-unstyled.small.text-uppercase.text-muted
       - referral.dates.each do |date|
@@ -25,3 +26,9 @@
       Booking details
   - else
     = f.submit("Signup", class: "btn btn-info btn-lg btn-block")
+
+  - if referral.confirmation_by.present?
+    .text-center
+      %small.text-danger.uppercase
+        %strong= distance_of_time_in_words(referral.confirmation_by - Time.now)
+        left to sign up

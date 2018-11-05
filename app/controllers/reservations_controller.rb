@@ -10,6 +10,7 @@ class ReservationsController < ApplicationController
   def new
     @reservation = current_user.reservations.new(reservation_params)
     @referral = @reservation.referral
+    @date = Date.parse(params[:date]) if params[:date].present?
   end
 
   def create

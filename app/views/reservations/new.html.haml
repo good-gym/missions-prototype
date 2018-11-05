@@ -1,30 +1,48 @@
 .container
   .text-center
     %h1 Confirm booking
+    %h4= @date.to_s(:wday_long_ordinal)
 
-  .card.mb-2.sm-flush
+  = simple_form_for(@reservation) do |f|
+    = f.association :referral, as: :hidden
+
+    - time_slots = @referral.time_slots.select { |ts| ts.date == @date }
+    %small.text-uppercase
+
+    = render "referrals/referral_booking_table",
+      reservation: @reservation, time_slots: time_slots, f: f,
+      checkbox: true, picker: true
+
+    - other_dates = @referral.time_slots.map(&:date).reject { |d| d == @date }.uniq.sort
+    %p.text-center.small
+      Also available
+      = other_dates.map { |d| d.to_s(:wday_long_ordinal) }.to_sentence
+
+    -# - @referral.time_slots.group_by(&:date).each do |date, time_slots|
+    -#   = render "referrals/referral_booking_table",
+    -#     reservation: @reservation, time_slots: time_slots, f: f,
+    -#     checkbox: true, picker: true
+
+    .d-flex.justify-content-between.align-items-center
+      %button.btn.btn-secondary.btn-lg.mr-1.flex-shrink-1
+        Cancel
+      %button.btn.btn-primary.btn-lg.btn-block.mt-0.flex-grow-1
+        Confirm
+
+  .card.mb-2.sm-flush.mt-4
     .card-header.text-center
-      %h4.mb-1= @reservation.title
+      %h4.mb-0 Task details
+
+    .card-body
+      %h5= @reservation.title
       .mb-1.text-justify= readmore(@reservation.description)
-      %small.text-uppercase= @reservation.postcode.location
 
-    = simple_form_for(@reservation) do |f|
-      = f.association :referral, as: :hidden
+      %ul.list-unstyled.small.text-muted.text-uppercase.mb-0
+        %li
+          = @referral.postcode.location
+          - if @referral.respond_to? :distance
+            &mdash; #{@referral.distance.round(1)}km away
+        %li
+          #{@referral.volunteers_needed} runners needed for #{@referral.duration} mins
 
-      .card-body
-        %p.text-muted.mb-1
-          Confirm your times
-
-        - @referral.time_slots.group_by(&:date).each do |date, time_slots|
-          %small.text-uppercase= date.to_s(:wday_long_ordinal)
-          = render "referrals/referral_booking_table",
-            reservation: @reservation, time_slots: time_slots, f: f, checkbox: true
-
-      .card-footer
-        .d-flex.justify-content-between.align-items-center
-          %button.btn.btn-secondary.btn-lg.mr-1.flex-shrink-1
-            Cancel
-          %button.btn.btn-primary.btn-lg.btn-block.mt-0.flex-grow-1
-            Confirm
-  .px-2
-    .mb-1= referral_map(@referral)
+    = referral_map(@referral)

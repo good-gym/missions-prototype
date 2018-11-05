@@ -2,7 +2,10 @@ class ListingsController < ApplicationController
   helper_method :postcode, :radius
 
   def index
-    @referrals_by_day = Referral.near(postcode, radius).grouped_by_date
+    @referrals_by_day = Referral
+      .approved
+      .near(postcode, radius)
+      .grouped_by_date
   end
 
   private

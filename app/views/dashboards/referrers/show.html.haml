@@ -14,9 +14,13 @@
         = link_to "View volunteers availabilities' on a map", map_dashboards_referrer_path
     .list-group.list-group-flush.lead
       .list-group-item
-        = link_to(referrals_path, class: "d-flex-bc") do
+        = link_to(referrals_path(state: :pending), class: "d-flex-bc") do
           New Referrals
-          %span.badge.badge-secondary= current_user.referrals.size
+          %span.badge.badge-secondary= current_user.referrals.pending.size
+      .list-group-item
+        = link_to(referrals_path(state: :approved), class: "d-flex-bc") do
+          Approved
+          %span.badge.badge-secondary= current_user.referrals.approved.size
       .list-group-item
         = link_to(todo_path, class: "d-flex-bc") do
           Scheduled

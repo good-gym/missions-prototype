@@ -1,15 +1,21 @@
 .list-group-item.sm-flush
   .row
     .col-12.col-md-8
-      %h5.mb-0= public_referral.title
-      %p.small.text-muted.text-uppercase
-        = public_referral.postcode.location
-        - if public_referral.respond_to? :distance
-          &mdash; #{public_referral.distance.round(1)}km away
-
+      %h5.mb-1= public_referral.title
+      %h6.mb-1= public_referral.subtitle
       .mb-1= readmore(public_referral.description)
 
-      .mb-1= render "referrals/referral_booking", referral: public_referral, date: local_assigns[:date]
+      %ul.list-unstyled.small.text-muted.text-uppercase
+        %li
+          = public_referral.postcode.location
+          - if public_referral.respond_to? :distance
+            &mdash; #{public_referral.distance.round(1)}km away
+        %li
+          #{public_referral.volunteers_needed} runners needed for #{public_referral.duration} mins
+
+      .mb-1
+        = render "referrals/referral_booking",
+          referral: public_referral, date: local_assigns[:date], picker: false
 
     .col-12.col-md-4
       = referral_map(public_referral)

@@ -21,6 +21,7 @@ module TimeSlotable
     scope :grouped_by_time, lambda { group(:started_at).count("*") }
     scope :grouped_by_date, lambda {
       joins(:time_slots)
+        .where("started_at > now()")
         .select("date_trunc('day', started_at)::date as date")
         .distinct
         .group_by(&:date)
