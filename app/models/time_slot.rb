@@ -3,7 +3,6 @@ class TimeSlot < ApplicationRecord
   has_many :reservation_time_slots
   has_many :reservations, through: :reservation_time_slots
 
-  default_scope { order(:started_at) }
   scope :upcoming, -> { where("started_at > now()") }
   scope :in_month, lambda { |date|
     where(time_slots: { started_at: (date.beginning_of_month..date.end_of_month) })

@@ -2,12 +2,13 @@ module TimeSlotable
   extend ActiveSupport::Concern
 
   included do
-    has_many :time_slots, as: :booking, dependent: :destroy
+    has_many :time_slots, -> { order(started_at: :asc) },
+             as: :booking, dependent: :destroy
     accepts_nested_attributes_for :time_slots
 
     validates :time_slots, length: { minimum: 1 }
 
-    scope :upcoming, -> { joins(:time_slots).merge(TimeSlot.upcoming) }
+    scope :upcoming, -> { joins(:time_slots).merge(TimeSlot.upcoming).distinct }
     scope :in_month, lambda { |date|
       joins(:time_slots).merge(TimeSlot.in_month(date))
     }

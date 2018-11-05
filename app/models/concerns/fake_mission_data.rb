@@ -11,7 +11,6 @@ module FakeMissionData
   def setup_fake_data
     if persisted?
       data = DATA[id]
-      data[:subtitle] ||= "So that they can ..."
       data.each { |key, value| value.gsub!("COACH", coach.public_name) }
       assign_attributes(data)
     end
