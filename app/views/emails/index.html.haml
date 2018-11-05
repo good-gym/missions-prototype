@@ -1,0 +1,29 @@
+.container
+  %h1 All emails
+
+  %table.table
+    %thead
+      %tr
+        %th Object
+        %th From
+        %th To
+        %th Email
+    - @emails.each do |email|
+      %tr
+        %td
+          = link_to email.object do
+            - if email.object.to_s =~ /\A#<.+>\z/
+              %code #{email.object_type} #{email.object_id}
+            - else
+              %code= email.object.to_s
+
+        %td= link_to email.sender.name, email.sender
+        %td
+          %ul.list-unstyled
+            - email.recipients.each do |recipient|
+              %li
+                = link_to(recipient.name, recipient)
+                %small.text-uppercase.text-muted= recipient.class.name
+        %td
+          %h5= email.subject
+          = readmore(email.body)

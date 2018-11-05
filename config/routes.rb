@@ -13,6 +13,8 @@ Rails.application.routes.draw do
   resources :availabilities
   resources :listings
 
+  resources :emails
+
   namespace :dashboards do
     namespace :coordinator do
       root to: "coordinators#show"

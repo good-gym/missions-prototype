@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_05_115612) do
+ActiveRecord::Schema.define(version: 2018_11_05_124441) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,6 +49,29 @@ ActiveRecord::Schema.define(version: 2018_11_05_115612) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "email_recipients", force: :cascade do |t|
+    t.bigint "email_id"
+    t.string "recipient_type"
+    t.bigint "recipient_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email_id"], name: "index_email_recipients_on_email_id"
+    t.index ["recipient_type", "recipient_id"], name: "index_email_recipients_on_recipient_type_and_recipient_id"
+  end
+
+  create_table "emails", force: :cascade do |t|
+    t.string "sender_type"
+    t.bigint "sender_id"
+    t.string "object_type"
+    t.bigint "object_id"
+    t.string "subject"
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["object_type", "object_id"], name: "index_emails_on_object_type_and_object_id"
+    t.index ["sender_type", "sender_id"], name: "index_emails_on_sender_type_and_sender_id"
   end
 
   create_table "postcodes", force: :cascade do |t|
@@ -126,6 +149,7 @@ ActiveRecord::Schema.define(version: 2018_11_05_115612) do
   add_foreign_key "alerts", "runners"
   add_foreign_key "availabilities", "postcodes"
   add_foreign_key "availabilities", "runners"
+  add_foreign_key "email_recipients", "emails"
   add_foreign_key "referrals", "coaches"
   add_foreign_key "referrals", "coordinators", column: "approved_by_id"
   add_foreign_key "referrals", "postcodes"
