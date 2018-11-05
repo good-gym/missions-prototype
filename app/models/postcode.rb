@@ -2,7 +2,7 @@ require 'plus_codes/open_location_code'
 
 class Postcode < ApplicationRecord
   validates :postcode, uniqueness: true, presence: true, postcode: true
-  after_commit :locate!
+  after_commit :locate!, on: %i[create update]
   serialize :geodata, HashSerializer
 
   delegate :blank?, to: :postcode
@@ -31,8 +31,11 @@ class Postcode < ApplicationRecord
   def locate!
     return if lat.present? && lng.present?
 
-    puts "Geocoding #{postcode}"
-    geo = Geokit::Geocoders::GoogleGeocoder.geocode(postcode, components: { country: "UK" })
+    geo = Rails.cache.fetch("locate-postcode-#{postcode}") do
+      puts "Geocoding #{postcode}"
+
+      Geokit::Geocoders::GoogleGeocoder.geocode(postcode, components: { country: "UK" })
+    end
 
     update(lat: geo.lat, lng: geo.lng, geodata: geo.to_hash)
   end
