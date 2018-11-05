@@ -110,14 +110,17 @@ runner.alerts.create!(
 #     time_slots_attributes: times
 #   )
 
+coordinator = Coordinator.create(name: "Gillian")
+
 referrer = Referrer.create(name: "Bob")
 
-
-# areas = ["York", "Southwark", "Ealing", "Croydon"]
+# areas = ["Bristol", "Newham"]
 # postcodes = areas.map { |area| MissionReferral.joins(coaches: [:residence, :area]).where("areas.location": area).order("random()").limit(3).pluck(:post_code) }
 
 [
   ["E9 7JX"],
+  ["BS14 9SL", "BS5 6RP", "BS4 1UF"], # Bristol
+  ["E6 3LZ", "E6 3HT", "E7 0NN"], # Newham
   # ["YO32 3NL", "YO32 2QL", "YO10 3PA"],
   # ["SE1 5LP", "SE16 3QE", "SE5 7BB"],
   # ["W5 4ES", "W5 4BL", "W3 8JP"],
@@ -130,17 +133,19 @@ referrer = Referrer.create(name: "Bob")
   ]
 
   area_postcodes.each_with_index do |postcode, i|
-    referrer.referrals.create!(
+    referral = referrer.referrals.build(
       coach: Coach.create!(name: Faker::Name.name),
       volunteers_needed: [2, 2, 2, 2, 3].sample,
       duration: [30, 60, 90].sample,
       confirmation_by: times[i] - [1, 2, 3].sample.days,
       postcode_str: postcode,
-      time_slots_attributes: [
-        { started_at: (times[i] - 1.hours) },
-        { started_at: (times[i] - 2.hours) },
-        { started_at: (times[i] + 24.hours) }
-      ]
+      approved_by: coordinator, approved_at: Time.now
     )
+    referral.time_slots_attributes = [
+      { booking: referral, started_at: (times[i] - 1.hours) },
+      { booking: referral, started_at: (times[i] - 2.hours) },
+      { booking: referral, started_at: (times[i] + 24.hours) }
+    ]
+    referral.save!
   end
 end
