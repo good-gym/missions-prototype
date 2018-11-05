@@ -18,6 +18,7 @@
 //= require leaflet/dist/leaflet.js
 
 //= require select2/dist/js/select2.min.js
+//= require jquery-postcodes/dist/postcodes.min.js
 
 //= require rails-ujs
 //= require activestorage

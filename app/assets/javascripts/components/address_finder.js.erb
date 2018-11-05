@@ -1,0 +1,28 @@
+$(document).on('ready turbolinks:load', function() {
+  $('.address-finder-results').setupPostcodeLookup({
+    api_key: '<%= Rails.env.development? ? 'iddqd' : IdealPostcodes.api_key %>',
+    debug_mode: true,
+    input: '#address-finder-postcode',
+    button: '#address-finder-button',
+    dropdown_class: 'form-control',
+    output_fields: {
+      line_1: 'input[data-address-finder=address_line_1]',
+      line_2: 'input[data-address-finder=address_line_2]',
+      post_town: 'input[data-address-finder=city]',
+      postcode: 'input[data-address-finder=postcode]',
+    },
+    onAddressSelected: function(data) {
+      $('.address-finder-collapse').collapse();
+
+      console.log(data);
+      var element = $('#referral_postcode_geodata')[0];
+      var geoData = JSON.parse(element.value) || {};
+      geoData.ideal = {
+        lat: data.latitude, lng: data.longitude,
+        county: data.county, city: data.city, country: data.country,
+        district: data.district, ward: data.ward, thoroughfare: data.thoroughfare
+      };
+      $(element).val(JSON.stringify(geoData));
+    }
+  });
+});
