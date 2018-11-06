@@ -21,7 +21,7 @@ class Alert < ApplicationRecord
       ["Lunch and after work", :lunchtimes_after_work],
       ["Lunch and before/after work", :lunchtimes_before_after_work],
       ["All the time", :all],
-      ["At specific times", :none]
+      ["At specific times...", :none]
     ]
   end
 

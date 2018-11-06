@@ -22,7 +22,7 @@
     = f.select :location, %w[Home Work], {}, class: "custom-select"
     %label and I am generally available
     = f.select :availability_preset, Alert.availabilities, {},
-      class: "custom-select mw-100"
+      class: "form-control mb-1 mw-100"
     :javascript
       $("#alert_location").select2({
         tags: true, width: 'auto', style: "margin-right: 0.5rem;"
