@@ -2,10 +2,6 @@
   %label.form-control-label.lead
     Are you comfortable with the following activities?
 
-  .alert.alert-warning.small.d-none
-    %i.fa.fa-info-circle
-    Please note that unchecking any of these will reduce your chances of being assigned missions.
-
   = form.simple_fields_for :preferences, OpenStruct.new(form.object.preferences) do |pf|
     = hidden_field_tag :next, params[:next]
     .row.mb-1
@@ -41,6 +37,10 @@
             %small.d-block.text-muted
               Some mission beneficiaries smoke -
               we'll ask them not to while you're there but you can opt of these if you'd like
+
+  .alert.alert-warning.small.d-none
+    %i.fa.fa-info-circle
+    Please note that unchecking any of these will reduce your chances of being assigned missions.
 
 :javascript
   $(document).ready(function($) {
