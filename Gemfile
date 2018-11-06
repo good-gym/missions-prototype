@@ -43,6 +43,7 @@ gem "haml-rails", "~> 1.0"
 gem "ideal_postcodes"
 gem "plus_codes"
 gem 'simple_form'
+gem 'statesman'
 gem "uk_postcode"
 
 group :development, :test do
