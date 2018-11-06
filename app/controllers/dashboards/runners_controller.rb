@@ -48,7 +48,7 @@ class Dashboards::RunnersController < ApplicationController
 
     redirect_to(
       new_alert_path,
-      notice: "Let's setup your default location"
+      notice: "Let's setup your first mission location"
     )
   end
 end

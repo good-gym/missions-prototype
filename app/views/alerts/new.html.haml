@@ -1,10 +1,23 @@
 .container
   %h2 Mission Locations
+  - if current_user.alerts.none?
+    %p.lead
+      Tell us where you want to do missions from, and when you're generally
+      available to do them.
 
-  %h3
-    - if current_user.alerts.none?
-      Setup a mission location
-    - else
-      Add a new mission location
+    .alert.alert-info.alert-dismissible.fade.show.px-1{ role: "alert" }
+      %h5.mb-1.alert-heading
+        %i.fa.fa-info-circle
+        Multiple locations
+      %button.close{ data: { dismiss: "alert" }, aria: { label: "Close" } }
+        %span{ aria: { hidden: true } } &times;
 
+      .text-justify.small
+        %p
+          You'll be able to setup multiple locations.
+          For example you can setup one for your home, one for work and so on.
+        %p.mb-0
+          You'll also be able to search for missions by postcode.
+
+  %h3.mb-1 Add a new mission location
   = render "alerts/form", alert: @alert

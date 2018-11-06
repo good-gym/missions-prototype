@@ -31,7 +31,7 @@
   = render "weekly_schedule", alert: alert
 
   .d-flex
-    = f.submit "Setup location", class: "btn btn-primary btn-lg btn-block"
+    = f.submit "Setup #{'first' if current_user.alerts.none?} location", class: "btn btn-primary btn-lg btn-block"
 
 :javascript
   $(document).ready(function($) {
