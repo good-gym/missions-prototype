@@ -18,7 +18,7 @@ class ListingsController < ApplicationController
   private
 
   def radius
-    params[:radius]&.to_i || 5
+    params[:radius]&.to_f || current_user.alerts.first&.radius
   end
 
   def postcode
