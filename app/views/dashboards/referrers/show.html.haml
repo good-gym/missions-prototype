@@ -12,28 +12,14 @@
 
       .text-center.small
         = link_to "View volunteers availabilities' on a map", map_dashboards_referrer_path
+
     .list-group.list-group-flush.lead
-      .list-group-item
-        = link_to(referrals_path(state: :pending), class: "d-flex-bc") do
-          New Referrals
-          %span.badge.badge-secondary= current_user.referrals.pending.size
-      .list-group-item
-        = link_to(referrals_path(state: :approved), class: "d-flex-bc") do
-          Approved
-          %span.badge.badge-secondary= current_user.referrals.approved.size
-      .list-group-item
-        = link_to(referrals_path(state: :scheduled), class: "d-flex-bc") do
-          Scheduled
-          %span.badge.badge-secondary= current_user.referrals.scheduled.size
-      .list-group-item
-        = link_to(todo_path, class: "d-flex-bc") do
-          Cancelled
-          %span.badge.badge-secondary 0
-      .list-group-item
-        = link_to(todo_path, class: "d-flex-bc") do
-          Completed
-          %span.badge.badge-secondary 0
-      .list-group-item
-        = link_to(todo_path, class: "d-flex-bc") do
-          All
-          %span.badge.badge-secondary 0
+      - @states.each do |state, referrals|
+        - next if referrals.count.zero?
+        .list-group-item
+          = link_to(referrals_path(state: state), class: "d-flex-bc") do
+            = state.to_s.titleize
+            %div
+              - if referrals.where("updated_at > ?", 1.hour.ago).any?
+                %span.badge.badge-success New
+              %span.badge.badge-secondary= referrals.count

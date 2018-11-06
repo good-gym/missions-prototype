@@ -3,6 +3,7 @@ class Dashboards::ReferrersController < ApplicationController
   helper_method :postcode
 
   def show
+    @states = Referral.states(current_user.referrals)
     @referrals = current_user.referrals
   end
 

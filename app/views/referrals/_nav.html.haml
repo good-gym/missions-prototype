@@ -1,0 +1,7 @@
+%ul.nav.nav-tabs.mb-1
+  - states.each do |state, referrals|
+    - next if local_assigns[:hide_empty] && referrals.count.zero?
+    %li.nav-item
+      = link_to({ state: state}, class: "nav-link #{'active' if current_state == state}") do
+        = state.to_s.titleize
+        %span.badge.badge-light= referrals.count

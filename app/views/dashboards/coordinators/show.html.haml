@@ -1,15 +1,18 @@
 .container
   %h1 Hello #{current_user.name}
 
-  - if @pending_referrals.any?
+  %h2 Referrals
+  = render "referrals/nav", states: @states, current_state: @state, hide_empty: false
+
+  - if @referrals.any?
     %table.table.table-responsive
       %thead
         %tr
-          %th Referrals
+          %th Details
           %th Area
           %th Actions
       %tbody
-        - @pending_referrals.each do |referral|
+        - @referrals.each do |referral|
           %tr
             %td
               %h5.mb-0= referral.title
@@ -20,5 +23,16 @@
             %td
               = referral.postcode.location
             %td
-              = button_to approve_dashboards_coordinator_referral_path(referral), method: :patch, class: "btn btn-primary" do
-                Approve
+              .mb-1
+                = referral_status(referral, class: "w-100")
+                - if !referral.approved?
+                  = button_to approve_dashboards_coordinator_referral_path(referral), method: :patch, class: "btn btn-primary btn-block" do
+                    Approve
+                - elsif referral.scheduled?
+                  = button_to approve_dashboards_coordinator_referral_path(referral), method: :patch, class: "btn btn-primary btn-block" do
+                    List
+
+              - if !referral.cancelled?
+                = button_to approve_dashboards_coordinator_referral_path(referral), method: :patch, class: "btn btn-secondary btn-sm btn-block" do
+                  %i.fa.fa-trash
+                  Cancel

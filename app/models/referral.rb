@@ -13,17 +13,36 @@ class Referral < ApplicationRecord
     }.to_a.map(&:reverse)
   end
 
+  def self.states(relation = Referral.all)
+    {
+      pending: relation.pending,
+      approved: relation.approved,
+      scheduled: relation.scheduled,
+      all: relation
+    }
+  end
+
   scope :pending, -> { where(approved_by_id: nil, approved_at: nil) }
   scope :approved, -> { where.not(approved_by_id: nil, approved_at: nil) }
   scope :scheduled, lambda {
-    joins(time_slots: :reservations)
-      .having("count(reservations.*) >= volunteers_needed")
-      .group("referrals.id, time_slots.started_at")
+    sql = <<~SQL
+      join (
+        select distinct booking_id, count(reservation_time_slots.reservation_id) from time_slots
+        join reservation_time_slots on reservation_time_slots.time_slot_id = time_slots.id
+        group by booking_id, booking_type, started_at
+      ) t2 on t2.booking_id = referrals.id and t2.count >= referrals.volunteers_needed
+    SQL
+    joins(sql)
   }
   scope :not_scheduled, lambda {
-    joins(time_slots: :reservations)
-      .having("count(reservations.*) < volunteers_needed")
-      .group("referrals.id, time_slots.started_at")
+    sql = <<~SQL
+      join (
+        select distinct booking_id, count(reservation_time_slots.reservation_id) from time_slots
+        join reservation_time_slots on reservation_time_slots.time_slot_id = time_slots.id
+        group by booking_id, booking_type, started_at
+      ) t2 on t2.booking_id = referrals.id and t2.count < referrals.volunteers_needed
+    SQL
+    joins(sql)
   }
 
   belongs_to :referrer
@@ -80,6 +99,10 @@ class Referral < ApplicationRecord
       .having("count(reservations.*) >= ?", volunteers_needed)
       .group("time_slots.started_at")
       .any?
+  end
+
+  def cancelled?
+    false
   end
 
   def geometry

@@ -1,8 +1,9 @@
 .container
   %h1 My referrals
 
+  = render "referrals/nav", states: @states, current_state: @state, hide_empty: false
+
   - if @referrals.any?
-    %h3 Your task requests
     .list-group
       - @referrals.each do |referral|
         .list-group-item
@@ -35,3 +36,6 @@
                     %li.border
                       = time_slot.started_at.to_s(:short)
                       = render "shared/avatars_list", avatars: time_slot.reservations.map(&:runner)
+  - else
+    .text-center.mt-2
+      %p.lead No referrals

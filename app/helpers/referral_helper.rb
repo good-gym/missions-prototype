@@ -20,4 +20,17 @@ module ReferralHelper
       end
       .compact.map { |c| content_tag(:strong, c) }.to_sentence.html_safe
   end
+
+  def referral_status(referral, options = {})
+    status_class =
+      case referral.status
+      when :scheduled then "danger"
+      else "secondary"
+      end
+
+    content_tag(
+      :span, referral.status.to_s.titleize,
+      class: "badge badge-#{status_class} #{options[:class]}"
+    )
+  end
 end

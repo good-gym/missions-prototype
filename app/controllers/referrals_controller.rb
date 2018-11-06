@@ -2,7 +2,9 @@ class ReferralsController < ApplicationController
   helper_method :stage
 
   def index
-    @referrals = current_user.referrals
+    @states = Referral.states(current_user.referrals)
+    @state = params[:state].present? ? params[:state].to_sym : :all
+    @referrals = @states[@state]
   end
 
   def new

@@ -13,13 +13,17 @@
       = render "referrals/referral_booking_table",
         reservation: reservation, time_slots: time_slots, other_dates: referral.dates - [date],
         picker: local_assigns[:picker], referral: referral
+  - elsif reservation
+    %span.badge.badge-success Booked
+    %ul.list-unstyled.small.text-uppercase.text-muted
+      - reservation.dates.each do |date|
+        %li
+          = date.to_s(:wday_long_ordinal)
+          = reservation.time_slots.on_date(date).map { |t| t.started_at.to_s(:time_of_day) }.to_sentence
   - else
     %ul.list-unstyled.small.text-uppercase.text-muted
       - referral.dates.each do |date|
-        %li
-          = date.to_s(:wday_long_ordinal)
-          - if reservation && reservation.dates.include?(date)
-            %span.badge.badge-success Booked
+        %li= date.to_s(:wday_long_ordinal)
 
   - if reservation.present?
     = link_to reservation_path(reservation), class: "btn btn-success btn-sm btn-block" do
@@ -27,7 +31,7 @@
   - else
     = f.submit("Signup", class: "btn btn-info btn-lg btn-block")
 
-  - if referral.confirmation_by.present?
+  - if reservation.nil? && referral.confirmation_by.present?
     .text-center
       %small.text-danger.uppercase
         %strong= distance_of_time_in_words(referral.confirmation_by - Time.now)
