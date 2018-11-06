@@ -18,21 +18,46 @@
               %h5.mb-0= referral.title
               %div{style: "max-width: 400px;"}
                 = readmore(referral.description)
-              %small.d-block
-                Referred by #{referral.referrer.name} on #{referral.created_at.to_s(:short)}
+              %ul.list-unstyled.small
+                %li Referred by #{referral.referrer.name} on #{referral.created_at.to_s(:short)}
+                - referral.referral_transitions.each do |transition|
+                  %li
+                    #{transition.to_state.titleize} by #{transition.transitioner.name} on #{transition.created_at.to_s(:short)}
+
             %td
               = referral.postcode.location
             %td
-              .mb-1
-                = referral_status(referral, class: "w-100")
-                - if !referral.approved?
-                  = button_to approve_dashboards_coordinator_referral_path(referral), method: :patch, class: "btn btn-primary btn-block" do
+              .mb-2
+                .mb-1= referral_status(referral, class: "w-100")
+                - if referral.can_transition_to?(:approved)
+                  = button_to approve_dashboards_coordinator_referral_path(referral), method: :patch, class: "btn btn-primary btn-block mb-1" do
+                    %i.fa.fa-thumbs-up
                     Approve
+                - if referral.can_transition_to?(:rejected)
+                  = modal_button("reject-referral-#{referral.id}", class: "btn btn-secondary btn-sm btn-block mb-1") do
+                    %i.fa.fa-thumbs-down
+                    Reject
+
+                  = modal("reject-referral-#{referral.id}") do
+                    = simple_form_for(referral, url: reject_dashboards_coordinator_referral_path(referral)) do |f|
+                      .modal-header
+                        %h4.mb-0 Reject referral
+                        %button.close{ "data-dismiss" => "modal", type: "button" }
+                          %span ×
+                      .modal-body
+                        = f.input :rejection_note, as: :text,
+                          label: "Please leave a message for the referrer",
+                          input_html: { value: "Looks like it's not suitable because..." }
+                      .modal-footer
+                        %button.btn.btn-secondary{ "data-dismiss" => "modal", type: "button" }
+                          Cancel
+                        = f.submit "Reject referral", class: "btn btn-primary"
+
                 - elsif referral.scheduled?
                   = button_to approve_dashboards_coordinator_referral_path(referral), method: :patch, class: "btn btn-primary btn-block" do
                     List
 
-              - if !referral.cancelled?
+              - if referral.can_transition_to?(:cancelled)
                 = button_to approve_dashboards_coordinator_referral_path(referral), method: :patch, class: "btn btn-secondary btn-sm btn-block" do
                   %i.fa.fa-trash
                   Cancel

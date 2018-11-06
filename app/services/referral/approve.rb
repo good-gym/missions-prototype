@@ -21,7 +21,10 @@ class Referral::Approve
   private
 
   def approve!
-    referral.update!(approved_by: approver, approved_at: Time.now)
+    referral.state_machine.transition_to(
+      :approved,
+      transitioner_id: approver.id, transitioner_type: approver.class.name
+    )
   end
 
   def alert_referrer

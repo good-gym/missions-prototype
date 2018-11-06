@@ -23,13 +23,15 @@ module ReferralHelper
 
   def referral_status(referral, options = {})
     status_class =
-      case referral.status
-      when :scheduled then "danger"
+      case referral.current_state
+      when "approved" then "info"
+      when "scheduled" then "warning"
+      when "rejected" then "danger"
       else "secondary"
       end
 
     content_tag(
-      :span, referral.status.to_s.titleize,
+      :span, referral.current_state.titleize,
       class: "badge badge-#{status_class} #{options[:class]}"
     )
   end

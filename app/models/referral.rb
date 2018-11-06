@@ -19,6 +19,8 @@ class Referral < ApplicationRecord
       pending: relation.pending,
       approved: relation.approved,
       scheduled: relation.scheduled,
+      rejected: relation.in_state(:rejected),
+      cancelled: relation.in_state(:cancelled),
       all: relation
     }
   end

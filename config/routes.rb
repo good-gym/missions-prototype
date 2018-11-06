@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       resources :referrals do
         member do
           patch :approve
+          patch :reject
         end
       end
     end
