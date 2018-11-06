@@ -4,7 +4,8 @@ class Referral < ApplicationRecord
   include TimeSlotable
   include MissionPreferences
   include Referral::HasStateMachine
-  attribute :preferences, :jsonb, default: -> { { lifting: false, cats: false, dogs: false } }
+  attribute :preferences, :jsonb,
+            default: -> { { lifting: false, cats: false, dogs: false, smoking: false } }
 
   def self.durations
     { 15 => "15 minutes or less",

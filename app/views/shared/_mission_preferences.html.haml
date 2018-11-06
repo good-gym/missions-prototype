@@ -9,16 +9,15 @@
   = form.simple_fields_for :preferences, OpenStruct.new(form.object.preferences) do |pf|
     = hidden_field_tag :next, params[:next]
     .row.mb-1
-      .col-12.col-md-4
+      .col-12.col-md-3
         %label.mr-1.d-flex.align-items-start
           .pb-1= pf.check_box :lifting
           .ml-1
             I'm up for heavy lifting
             %small.d-block.text-muted
-              Some GoodGym tasks will be about lifting heavy objects.
-              If this isn’t your thing, you can opt out of being sent lifting
-              tasks by unchecking this box.
-      .col-12.col-md-4
+              Some missions involve lifting heavy objects,
+              you might want to opt out of these if you're injured.
+      .col-12.col-md-3
         %label.mr-1.d-flex.align-items-start
           .pb-1= pf.check_box :cats
           .ml-1
@@ -26,7 +25,7 @@
             %small.d-block.text-muted
               Some mission beneficiaries have cats -
               if you opt out we won’t send you to missions with cats.
-      .col-12.col-md-4
+      .col-12.col-md-3
         %label.mr-1.d-flex.align-items-start
           .pb-1= pf.check_box :dogs
           .ml-1
@@ -34,6 +33,14 @@
             %small.d-block.text-muted
               Some mission beneficiaries have dogs -
               if you opt out we won’t send you to missions with dogs.
+      .col-12.col-md-3
+        %label.mr-1.d-flex.align-items-start
+          .pb-1= pf.check_box :smoking
+          .ml-1
+            I’m up for visiting smokers' homes.
+            %small.d-block.text-muted
+              Some mission beneficiaries smoke -
+              we'll ask them not to while you're there but you can opt of these if you'd like
 
 :javascript
   $(document).ready(function($) {

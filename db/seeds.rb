@@ -12,8 +12,7 @@ times = [{ started_at: (time1) }]
 runner = Runner.create(
   name: "Patrick",
   postcode_str: "E9 7HW",
-  default_radius: 5.0,
-  preferences: { lifting: true, cats: true, dogs: true }
+  default_radius: 5.0
 )
 runner.alerts.create!(
   location: "Home",
@@ -32,8 +31,7 @@ runner.alerts.create!(
 runner = Runner.create(
   name: "Ivo",
   postcode_str: "E2 7RG",
-  default_radius: 7.5,
-  preferences: { lifting: true, cats: true, dogs: true }
+  default_radius: 7.5
 )
 runner.alerts.create!(
   location: "Home",
@@ -53,8 +51,7 @@ runner.alerts.create!(
 runner = Runner.create(
   name: "Polly",
   postcode_str: "W12 7PJ",
-  default_radius: 5.0,
-  preferences: { lifting: false, cats: true, dogs: true }
+  default_radius: 5.0
 )
 runner.alerts.create!(
   location: "Home",
@@ -73,8 +70,7 @@ runner.alerts.create!(
 runner = Runner.create(
   name: "James",
   postcode_str: "W11 4UL",
-  default_radius: 5.0,
-  preferences: { lifting: true, cats: true, dogs: true }
+  default_radius: 5.0
 )
 runner.alerts.create!(
   location: "Home",
@@ -93,8 +89,7 @@ runner.alerts.create!(
 runner = Runner.create(
   name: "Paul",
   postcode_str: "NW1 8QP",
-  default_radius: 5.0,
-  preferences: { lifting: true, cats: true, dogs: true }
+  default_radius: 5.0
 )
 runner.alerts.create!(
   location: "Home",
