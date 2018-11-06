@@ -138,8 +138,7 @@ referrer = Referrer.create(name: "Bob")
       volunteers_needed: [2, 2, 2, 2, 3].sample,
       duration: [30, 60, 90].sample,
       confirmation_by: times[i] - [1, 2, 3].sample.days,
-      postcode_str: postcode,
-      approved_by: coordinator, approved_at: Time.now
+      postcode_str: postcode
     )
     referral.time_slots_attributes = [
       { booking: referral, started_at: (times[i] - 1.hours) },
@@ -147,5 +146,7 @@ referrer = Referrer.create(name: "Bob")
       { booking: referral, started_at: (times[i] + 24.hours) }
     ]
     referral.save!
+
+    Referral::Approve.call(referral, approver: coordinator)
   end
 end

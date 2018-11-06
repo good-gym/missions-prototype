@@ -3,6 +3,7 @@ class Referral < ApplicationRecord
   include Postcodeable
   include TimeSlotable
   include MissionPreferences
+  include Referral::HasStateMachine
   attribute :preferences, :jsonb, default: -> { { lifting: false, cats: false, dogs: false } }
 
   def self.durations
@@ -22,8 +23,8 @@ class Referral < ApplicationRecord
     }
   end
 
-  scope :pending, -> { where(approved_by_id: nil, approved_at: nil) }
-  scope :approved, -> { where.not(approved_by_id: nil, approved_at: nil) }
+  scope :pending, -> { in_state(:pending) }
+  scope :approved, -> { in_state(:approved) }
   scope :scheduled, lambda {
     sql = <<~SQL
       join (
@@ -50,8 +51,6 @@ class Referral < ApplicationRecord
   belongs_to :coach
   accepts_nested_attributes_for :coach
 
-  belongs_to :approved_by, class_name: "Coordinator", optional: true
-
   has_many :reservations
 
   attr_accessor :title
@@ -66,6 +65,8 @@ class Referral < ApplicationRecord
   attr_accessor :confirm_age
   attr_accessor :confirm_tools
 
+  attr_accessor :rejection_note
+
   attr_reader :confirmation_by_time
   def confirmation_by_time=(time)
     super
@@ -78,31 +79,11 @@ class Referral < ApplicationRecord
     end
   end
 
-  def status
-    return :pending unless approved?
-
-    if scheduled?
-      :scheduled
-    elsif approved?
-      :approved
-    else
-      :pending
-    end
-  end
-
-  def approved?
-    approved_at.present? && approved_by.present?
-  end
-
   def scheduled?
     time_slots.joins(:reservations)
       .having("count(reservations.*) >= ?", volunteers_needed)
       .group("time_slots.started_at")
       .any?
-  end
-
-  def cancelled?
-    false
   end
 
   def geometry

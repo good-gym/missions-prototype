@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_05_124441) do
+ActiveRecord::Schema.define(version: 2018_11_06_111237) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,6 +84,21 @@ ActiveRecord::Schema.define(version: 2018_11_05_124441) do
     t.index ["postcode"], name: "index_postcodes_on_postcode", unique: true
   end
 
+  create_table "referral_transitions", force: :cascade do |t|
+    t.string "to_state", null: false
+    t.json "metadata", default: {}
+    t.integer "sort_key", null: false
+    t.integer "referral_id", null: false
+    t.boolean "most_recent", null: false
+    t.string "transitioner_type"
+    t.bigint "transitioner_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["referral_id", "most_recent"], name: "index_referral_transitions_parent_most_recent", unique: true, where: "most_recent"
+    t.index ["referral_id", "sort_key"], name: "index_referral_transitions_parent_sort", unique: true
+    t.index ["transitioner_type", "transitioner_id"], name: "index_referral_transitions_transitioner"
+  end
+
   create_table "referrals", force: :cascade do |t|
     t.jsonb "preferences", default: "{}", null: false
     t.bigint "coach_id"
@@ -94,9 +109,6 @@ ActiveRecord::Schema.define(version: 2018_11_05_124441) do
     t.datetime "confirmation_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "approved_by_id"
-    t.datetime "approved_at"
-    t.index ["approved_by_id"], name: "index_referrals_on_approved_by_id"
     t.index ["coach_id"], name: "index_referrals_on_coach_id"
     t.index ["postcode_id"], name: "index_referrals_on_postcode_id"
     t.index ["referrer_id"], name: "index_referrals_on_referrer_id"
@@ -150,8 +162,8 @@ ActiveRecord::Schema.define(version: 2018_11_05_124441) do
   add_foreign_key "availabilities", "postcodes"
   add_foreign_key "availabilities", "runners"
   add_foreign_key "email_recipients", "emails"
+  add_foreign_key "referral_transitions", "referrals"
   add_foreign_key "referrals", "coaches"
-  add_foreign_key "referrals", "coordinators", column: "approved_by_id"
   add_foreign_key "referrals", "postcodes"
   add_foreign_key "referrals", "referrers"
   add_foreign_key "reservation_time_slots", "reservations"
