@@ -11,7 +11,10 @@ Rails.application.routes.draw do
   resources :referrals
   resources :reservations
   resources :availabilities
-  resources :listings
+
+  resources :listings do
+    collection { get :map }
+  end
 
   resources :emails
 

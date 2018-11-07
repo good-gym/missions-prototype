@@ -9,6 +9,37 @@ module ReferralHelper
     )
   end
 
+  def referrals_map(referrals, center:, &block)
+    referral_shapes = referrals.map do |referral|
+      referral.geometry[:shapes].first
+        .merge(popup: "#referral-map-popup-#{referral.id}")
+    end
+
+    geometry = {
+      center: center,
+      shapes: [
+        { type: "marker", point: postcode.point.to_a }
+      ] + referral_shapes
+    }
+
+    content_tag(:div) do
+      concat content_tag(
+        :div,
+        "&nbsp;",
+        class: "leaflet-map--static w-100 h-100",
+        data: { geometry: geometry.to_json },
+        style: "min-height: 500px;"
+      )
+      referrals.each do |referral|
+        concat content_tag(
+          :div, capture(referral, &block),
+          id: "referral-map-popup-#{referral.id}",
+          class: "d-none"
+        )
+      end
+    end
+  end
+
   def referral_preferences_summary(referral)
     referral
       .preferences.map do |key, value|

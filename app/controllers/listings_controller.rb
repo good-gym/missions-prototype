@@ -15,6 +15,13 @@ class ListingsController < ApplicationController
       .count("*")
   end
 
+  def map
+    @referrals = Referral
+      .approved
+      .where.not(id: Referral.scheduled)
+      .near(postcode, radius)
+  end
+
   private
 
   def radius

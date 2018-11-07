@@ -17,14 +17,24 @@ $(document).on('ready turbolinks:load', function() {
 
     var group = new L.featureGroup();
     geometry.shapes.forEach(function(shape) {
-      var shape;
+      var leafletShape;
+
       if (shape.type === 'circle') {
-        shape = L.circle(shape.point, { radius: shape.radius }).addTo(map);
+        leafletShape = L.circle(shape.point, { radius: shape.radius }).addTo(map);
       } else if (shape.type === 'marker') {
-        shape = L.marker(shape.point).addTo(map);
+        leafletShape = L.marker(shape.point).addTo(map);
       }
-      group.addLayer(shape);
+
+      if (shape.popup) {
+        var content = $(shape.popup).html();
+        if (content) {
+          leafletShape.bindPopup(content);
+        }
+      }
+
+      group.addLayer(leafletShape);
     })
+
     if (zoom == undefined) {
       map.fitBounds(group.getBounds());
     }

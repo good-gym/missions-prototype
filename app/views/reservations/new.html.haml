@@ -1,27 +1,31 @@
 .container
   .text-center
     %h1 Confirm booking
-    %h4= @date.to_s(:wday_long_ordinal)
+    - if @date
+      %h4= @date.to_s(:wday_long_ordinal)
 
   = simple_form_for(@reservation) do |f|
     = f.association :referral, as: :hidden
 
-    - time_slots = @referral.time_slots.select { |ts| ts.date == @date }
-    %small.text-uppercase
+    - if @date
+      - time_slots = @referral.time_slots.select { |ts| ts.date == @date }
+      %small.text-uppercase
 
-    = render "referrals/referral_booking_table",
-      reservation: @reservation, time_slots: time_slots, f: f,
-      checkbox: true, picker: true, referral: @referral
+      = render "referrals/referral_booking_table",
+        reservation: @reservation, time_slots: time_slots, f: f,
+        checkbox: true, picker: true, referral: @referral
 
-    - other_dates = @referral.time_slots.map(&:date).reject { |d| d == @date }.uniq.sort
-    %p.text-center.small
-      Also available
-      = other_dates.map { |d| d.to_s(:wday_long_ordinal) }.to_sentence
-
-    -# - @referral.time_slots.group_by(&:date).each do |date, time_slots|
-    -#   = render "referrals/referral_booking_table",
-    -#     reservation: @reservation, time_slots: time_slots, f: f,
-    -#     checkbox: true, picker: true
+      - other_dates = @referral.time_slots.map(&:date).reject { |d| d == @date }.uniq.sort
+      %p.text-center.small
+        Also available
+        = other_dates.map { |d| d.to_s(:wday_long_ordinal) }.to_sentence
+    - else
+      - @referral.time_slots.group_by(&:date).each do |date, time_slots|
+        .mb-1
+          %small.text-uppercase= date.to_s(:wday_long_ordinal)
+          = render "referrals/referral_booking_table",
+            reservation: @reservation, time_slots: time_slots, f: f,
+            checkbox: true, picker: true, referral: @referral
 
     .d-flex.justify-content-between.align-items-center.mb-3
       %button.btn.btn-secondary.btn-lg.mr-1.flex-shrink-1

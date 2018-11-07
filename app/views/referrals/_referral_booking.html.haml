@@ -1,11 +1,24 @@
 - reservation = current_user.reservations.find_by(referral: referral)
-- time_slots = referral.time_slots.select { |t| t.date == date }
 
 = simple_form_for(current_user.reservations.new(referral: referral), url: new_reservation_path, method: :get) do |f|
-  = hidden_field_tag "date", date
+  = hidden_field_tag "date", date if local_assigns[:date]
   = f.association :referral, as: :hidden
 
+  -# - if local_assigns[:date] == false
+  -#   %p.text-muted.mb-1
+  -#     #{referral.coach.public_name} is available:
+  -#
+  -#   - referral.time_slots.map(&:date).each do |date|
+  -#     - time_slots = referral.time_slots.select { |t| t.date == date }
+  -#     %strong.small= date.to_s(:short)
+  -#     .mb-1
+  -#       = render "referrals/referral_booking_table",
+  -#         reservation: reservation, time_slots: time_slots,
+  -#         picker: local_assigns[:picker], referral: referral
+
   - if local_assigns[:date]
+    - time_slots = referral.time_slots.select { |t| t.date == date }
+
     %p.text-muted.mb-1
       #{referral.coach.public_name} is available at the following times:
 

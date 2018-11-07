@@ -1,28 +1,5 @@
 .container
-  .title-with-button.mt-2
-    %h1 Find a mission
-
-  .mb-4
-    %p.lead
-      GoodGym missions coming up near you - meet others, get fit and do good.
-
-    - if current_user.alerts.many?
-      %ul.nav.nav-tabs.mb-1
-        - current_user.alerts.each do |alert|
-          %li.nav-item.text-center
-            = link_to({ postcode: alert.postcode.to_s, radius: alert.radius }, class: "nav-link #{'active' if alert.postcode == postcode}") do
-              Near #{alert.location}
-
-    = form_tag(nil, method: :get) do |f|
-      .d-flex.align-items-center
-        %div
-          = number_field_tag :radius, radius, class: "form-control w-auto", min: 2.0, max: 50.0
-        %span.flex-shrink-0.mr-1 &nbsp; km from
-        .d-flex.align-items-end.input-group
-          = text_field_tag :postcode, postcode, class: "form-control", placeholder: "Postcode"
-          .input-group-append
-            %button.btn.btn-secondary
-              %i.fa.fa-search
+  = render "header"
 
 .bg-light.py-2
   .container

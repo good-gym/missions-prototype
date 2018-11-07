@@ -1,0 +1,16 @@
+.container
+  = render "header"
+
+= referrals_map(@referrals, center: postcode.point) do |referral|
+  %strong= referral.title
+
+  %ul.list-unstyled.small.text-muted.text-uppercase.mb-0
+    %li
+      = referral.postcode.location
+      - if referral.respond_to? :distance
+        &mdash; #{referral.distance.round(1)}km away
+    %li
+      #{referral.volunteers_needed} runners needed for #{referral.duration} mins
+
+  = render "referrals/referral_booking",
+    referral: referral, picker: false

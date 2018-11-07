@@ -38,4 +38,18 @@ module ApplicationHelper
       data: { target: target, toggle: "collapse" }
     )
   end
+
+  def link_to_if_with_block(condition, options, html_options = {}, &block)
+    if condition
+      link_to(options, html_options, &block)
+    else
+      content_tag(:span, capture(&block), html_options)
+    end
+  end
+
+  def link_to_unless_current_with_block(options, html_options = {}, &block)
+    link_to_if_with_block(
+      !current_page?(options), options, html_options, &block
+    )
+  end
 end
