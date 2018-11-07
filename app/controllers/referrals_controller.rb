@@ -29,6 +29,22 @@ class ReferralsController < ApplicationController
     end
   end
 
+  def update
+    @referral = Referral.find(params[:id])
+    if @referral.update(relist_referral_params)
+      redirect_to root_path, notice: "Referral relisted"
+    else
+      @result = Alert::Finder.near(@referral.postcode)
+      raise @referral.errors.inspect
+      render :relist, notice: "An error occurred"
+    end
+  end
+
+  def relist
+    @referral = Referral.find(params[:referral_id])
+    @result = Alert::Finder.near(@referral.postcode)
+  end
+
   def share
     @referral = Referral.find(params[:referral_id])
     redirect_to referral_path(@referral) unless current_user
@@ -66,6 +82,10 @@ class ReferralsController < ApplicationController
         duration: 60, volunteers_needed: 2
       }
     end
+  end
+
+  def relist_referral_params
+    time_slots_params
   end
 
   def time_slots_params

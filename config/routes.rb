@@ -9,6 +9,7 @@ Rails.application.routes.draw do
 
   resources :alerts
   resources :referrals do
+    get :relist
     get :share
   end
   resources :reservations

@@ -109,6 +109,24 @@ coordinator = Coordinator.create(name: "Gillian")
 
 referrer = Referrer.create(name: "Bob")
 
+def create_referral(postcode, time, referrer, coordinator)
+  referral = referrer.referrals.build(
+    coach: Coach.create!(name: Faker::Name.name),
+    volunteers_needed: [2, 2, 2, 2, 3].sample,
+    duration: [30, 60, 90].sample,
+    confirmation_by: time - [1, 2, 3].sample.days,
+    postcode_str: postcode
+  )
+  referral.time_slots_attributes = [
+    { booking: referral, started_at: (time - 1.hours) },
+    { booking: referral, started_at: (time - 2.hours) },
+    { booking: referral, started_at: (time + 24.hours) }
+  ]
+  referral.save!
+
+  Referral::Approve.call(referral, approver: coordinator)
+end
+
 # areas = ["Bristol", "Newham"]
 # postcodes = areas.map { |area| MissionReferral.joins(coaches: [:residence, :area]).where("areas.location": area).order("random()").limit(3).pluck(:post_code) }
 
@@ -128,20 +146,9 @@ referrer = Referrer.create(name: "Bob")
   ]
 
   area_postcodes.each_with_index do |postcode, i|
-    referral = referrer.referrals.build(
-      coach: Coach.create!(name: Faker::Name.name),
-      volunteers_needed: [2, 2, 2, 2, 3].sample,
-      duration: [30, 60, 90].sample,
-      confirmation_by: times[i] - [1, 2, 3].sample.days,
-      postcode_str: postcode
-    )
-    referral.time_slots_attributes = [
-      { booking: referral, started_at: (times[i] - 1.hours) },
-      { booking: referral, started_at: (times[i] - 2.hours) },
-      { booking: referral, started_at: (times[i] + 24.hours) }
-    ]
-    referral.save!
-
-    Referral::Approve.call(referral, approver: coordinator)
+    create_referral(postcode, times[i], coordinator)
   end
 end
+
+referral = create_referral("E97JX", 1.week.from_now, referrer, coordinator)
+referral.time_slots.each { |ts| ts.update(started_at: ts.started_at - 1.month) }

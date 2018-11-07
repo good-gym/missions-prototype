@@ -1,0 +1,9 @@
+.container
+  .text-center
+    %h1 Relist referral
+
+  = simple_form_for @referral do |f|
+    = render "shared/weekly_calendar", result: @result
+    = f.submit "Relist", class: "btn btn-primary btn-lg btn-block"
+
+  .mt-3= render "referrals/summary", referral: @referral

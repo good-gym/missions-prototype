@@ -14,6 +14,8 @@ class Alert::Finder
   end
 
   def scored_schedule(_date)
+    return Hash.new({}) if joint_schedule == 0
+
     joint_schedule.score
   end
 

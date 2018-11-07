@@ -24,6 +24,10 @@ module Referral::HasStateMachine
     state_machine.in_state?(:approved)
   end
 
+  def expired?
+    time_slots.map(&:started_at).select(&:future?).none?
+  end
+
   def cancelled?
     state_machine.in_state?(:cancelled)
   end

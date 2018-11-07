@@ -19,6 +19,7 @@ class Referral < ApplicationRecord
     {
       pending: relation.pending,
       approved: relation.approved,
+      expired: relation.expired,
       scheduled: relation.scheduled,
       rejected: relation.in_state(:rejected),
       cancelled: relation.in_state(:cancelled),
@@ -28,6 +29,14 @@ class Referral < ApplicationRecord
 
   scope :pending, -> { in_state(:pending) }
   scope :approved, -> { in_state(:approved) }
+  scope :expired, lambda {
+    sql = <<~SQL
+      left join time_slots ts_upcoming on
+      ts_upcoming.booking_id = referrals.id and
+      ts_upcoming.booking_type = 'Referral' and ts_upcoming.started_at > now()
+    SQL
+    approved.distinct.joins(sql).where("ts_upcoming.id": nil)
+  }
   scope :scheduled, lambda {
     sql = <<~SQL
       join (
@@ -36,7 +45,7 @@ class Referral < ApplicationRecord
         group by booking_id, booking_type, started_at
       ) t2 on t2.booking_id = referrals.id and t2.count >= referrals.volunteers_needed
     SQL
-    joins(sql)
+    approved.joins(sql)
   }
   scope :not_scheduled, lambda {
     sql = <<~SQL
@@ -46,7 +55,7 @@ class Referral < ApplicationRecord
         group by booking_id, booking_type, started_at
       ) t2 on t2.booking_id = referrals.id and t2.count < referrals.volunteers_needed
     SQL
-    joins(sql)
+    approved.joins(sql)
   }
 
   belongs_to :referrer

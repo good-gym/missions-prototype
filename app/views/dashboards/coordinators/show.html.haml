@@ -18,11 +18,29 @@
               %h5.mb-0= referral.title
               %div{style: "max-width: 400px;"}
                 = readmore(referral.description)
+
+              %ul.list-unstyled.text-muted.text-uppercase.small
+                - referral.time_slots.group_by(&:date).map do |date, slots|
+                  %li
+                    = date.to_s(:wday_long_ordinal)
+                    &mdash;
+                    = slots.map { |ts| ts.started_at.to_s(:time_of_day) }.to_sentence
+
+              - if referral.expired?
+                .alert.alert-warning.d-flex-bc.flex-column.flex-md-row
+                  %span.mb-1.mb-md-0
+                    %i.fa.fa-exclamation-triangle
+                    Referral has Expired
+                  = link_to referral_relist_path(referral), class: "btn btn-secondary btn-sm" do
+                    %i.fas.fa-sync-alt
+                    Relist
+
               %ul.list-unstyled.small
                 %li Referred by #{referral.referrer.name} on #{referral.created_at.to_s(:short)}
                 - referral.referral_transitions.each do |transition|
                   %li
                     #{transition.to_state.titleize} by #{transition.transitioner.name} on #{transition.created_at.to_s(:short)}
+
 
             %td
               = referral.postcode.location
