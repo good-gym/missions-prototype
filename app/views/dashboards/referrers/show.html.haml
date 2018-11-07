@@ -20,6 +20,6 @@
           = link_to(referrals_path(state: state), class: "d-flex-bc") do
             = state.to_s.titleize
             %div
-              - if referrals.where("updated_at > ?", 1.hour.ago).any?
-                %span.badge.badge-success New
+              -# - if referrals.where("updated_at > ?", 1.hour.ago).any?
+              -#   %span.badge.badge-success New
               %span.badge.badge-secondary= referrals.count
