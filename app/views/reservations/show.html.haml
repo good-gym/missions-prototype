@@ -9,9 +9,9 @@
       = @reservation.reservation_time_slots.map { |ts| ts.started_at.to_s(:short) }.join(" &bullet; ").html_safe
 
     .mb-3
-      = link_to todo_path, class: "btn btn-info btn-lg btn-block" do
+      = link_to todo_path, class: "btn btn-info btn-block" do
         Share with friends
-      = link_to "Back to listings", listings_path, class: "btn btn-link btn-sm btn-block"
+      = link_to "Back to listings", listings_path, class: "btn btn-link btn-block"
 
     %p.small Changed your mind?
     .row.mb-2
