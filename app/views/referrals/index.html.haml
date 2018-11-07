@@ -24,7 +24,7 @@
             %li
               #{referral.volunteers_needed} runners needed for #{referral.duration} mins
 
-          %span.badge.badge-secondary= referral.status
+          = referral_status(referral, class: "w-100")
 
           - if referral.time_slots.any?
             %dl.mb-0
