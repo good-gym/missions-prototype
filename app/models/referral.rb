@@ -91,13 +91,6 @@ class Referral < ApplicationRecord
     end
   end
 
-  def scheduled?
-    time_slots.joins(:reservations)
-      .having("count(reservations.*) >= ?", volunteers_needed)
-      .group("time_slots.started_at")
-      .any?
-  end
-
   def geometry
     {
       center: postcode.public_point.to_a,

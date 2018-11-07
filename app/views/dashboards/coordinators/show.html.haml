@@ -71,8 +71,8 @@
                           Cancel
                         = f.submit "Reject referral", class: "btn btn-primary"
 
-                - elsif referral.scheduled?
-                  = button_to approve_dashboards_coordinator_referral_path(referral), method: :patch, class: "btn btn-primary btn-block" do
+                - if referral.scheduled?
+                  = button_to list_dashboards_coordinator_referral_path(referral), method: :patch, class: "btn btn-primary btn-block" do
                     List
 
               - if referral.can_transition_to?(:cancelled)

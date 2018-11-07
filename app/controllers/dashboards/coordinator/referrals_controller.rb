@@ -11,6 +11,12 @@ class Dashboards::Coordinator::ReferralsController < Dashboards::Coordinator::Ba
     redirect_to root_path, notice: result.notice
   end
 
+  def list
+    referral = Referral.find(params[:id])
+    result = Referral::List.call(referral, user: current_user)
+    redirect_to root_path, notice: result.notice
+  end
+
   private
 
   def rejection_params

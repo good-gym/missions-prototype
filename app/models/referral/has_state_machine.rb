@@ -32,6 +32,16 @@ module Referral::HasStateMachine
     state_machine.in_state?(:cancelled)
   end
 
+  def scheduled?
+    return unless approved?
+    return if expired?
+
+    time_slots.joins(:reservations)
+      .having("count(reservations.*) >= ?", volunteers_needed)
+      .group("time_slots.started_at")
+      .any?
+  end
+
   def state_machine
     @state_machine ||= Referral::StateMachine.new(
       self, transition_class: Referral::Transition
