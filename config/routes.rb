@@ -22,7 +22,6 @@ Rails.application.routes.draw do
 
   namespace :dashboards do
     namespace :coordinator do
-      root to: "coordinators#show"
       resources :referrals do
         member do
           patch :approve
@@ -30,6 +29,7 @@ Rails.application.routes.draw do
         end
       end
     end
+    resource :coordinator, only: %i[show]
 
     resource :referrer do
       get :map
