@@ -5,11 +5,15 @@
     %p.lead
       You've signed up to do the mission on:
 
-    %p.text-muted.text-uppercase
-      = @reservation.reservation_time_slots.map { |ts| ts.started_at.to_s(:short) }.join(" &bullet; ").html_safe
+    %ul.list-unstyled.text-muted.text-uppercase.text-center
+      - @reservation.reservation_time_slots.group_by(&:date).map do |date, slots|
+        %li
+          = date.to_s(:wday_long_ordinal)
+          &mdash;
+          = slots.map { |ts| ts.started_at.to_s(:time_of_day) }.to_sentence
 
     .mb-3
-      = link_to todo_path, class: "btn btn-info btn-block" do
+      = link_to referral_share_path(@reservation.referral), class: "btn btn-info btn-block" do
         Share with friends
       = link_to "Back to listings", listings_path, class: "btn btn-link btn-block"
 

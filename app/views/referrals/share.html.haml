@@ -1,0 +1,33 @@
+.container
+  .text-center
+    %h1.mb-1 You're coming
+    %h2 Invite your friends to come too
+
+  %ul.list-unstyled.text-muted.text-uppercase.text-center
+    - @reservation.reservation_time_slots.group_by(&:date).map do |date, slots|
+      %li
+        = date.to_s(:wday_long_ordinal)
+        &mdash;
+        = slots.map { |ts| ts.started_at.to_s(:time_of_day) }.to_sentence
+
+  .text-center.mb-2
+    = link_to(todo_path, class: "btn btn-info btn-block mr-1 mb-1") do
+      %i.fa.fa-envelope
+      Share by email
+    .input-group
+      .input-group-prepend
+        .input-group-text= referral_url(@referral)
+      .input-group-append
+        .btn.btn-secondary
+          %i.fa.fa-clipboard
+  .text-center.mb-2
+    = link_to(todo_path, class: "btn btn-info rounded-circle mr-1") do
+      %i.fab.fa-facebook{ style: "font-size: 2rem;" }
+    = link_to(todo_path, class: "btn btn-info rounded-circle mr-1") do
+      %i.fab.fa-whatsapp{ style: "font-size: 2rem;" }
+    = link_to(todo_path, class: "btn btn-info rounded-circle mr-1") do
+      %i.fab.fa-facebook-messenger{ style: "font-size: 2rem;" }
+    = link_to(todo_path, class: "btn btn-info rounded-circle mr-1") do
+      %i.fab.fa-twitter{ style: "font-size: 2rem;" }
+
+  = render "referrals/summary", referral: @referral

@@ -8,7 +8,9 @@ Rails.application.routes.draw do
   resources :runners
 
   resources :alerts
-  resources :referrals
+  resources :referrals do
+    get :share
+  end
   resources :reservations
   resources :availabilities
 

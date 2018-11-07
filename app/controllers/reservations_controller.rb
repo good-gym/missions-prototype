@@ -8,6 +8,8 @@ class ReservationsController < ApplicationController
   end
 
   def new
+    return if redirect_to_reservation_if_runner_already_booked?
+
     @reservation = current_user.reservations.new(reservation_params)
     @referral = @reservation.referral
     @date = Date.parse(params[:date]) if params[:date].present?
@@ -51,5 +53,11 @@ class ReservationsController < ApplicationController
       subject: "Your referral has been scheduled",
       body: "Good news, runners have signed up to your referral"
     )
+  end
+
+  def redirect_to_reservation_if_runner_already_booked?
+    reservation = current_user.reservations
+      .find_by(referral_id: reservation_params[:referral_id])
+    redirect_to(reservation) if reservation.present?
   end
 end

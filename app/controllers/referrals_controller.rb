@@ -29,6 +29,13 @@ class ReferralsController < ApplicationController
     end
   end
 
+  def share
+    @referral = Referral.find(params[:referral_id])
+    redirect_to referral_path(@referral) unless current_user
+
+    @reservation = current_user.reservations.find_by(referral: @referral)
+  end
+
   private
 
   def stage
