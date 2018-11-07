@@ -11,6 +11,10 @@
       - time_slots = @referral.time_slots.select { |ts| ts.date == @date }
       %small.text-uppercase
 
+      - if time_slots.many?
+        %p.lead.text-center
+          Select all the times you're available
+
       = render "referrals/referral_booking_table",
         reservation: @reservation, time_slots: time_slots, f: f,
         checkbox: true, picker: true, referral: @referral
@@ -20,6 +24,10 @@
         Also available
         = other_dates.map { |d| d.to_s(:wday_long_ordinal) }.to_sentence
     - else
+      - if @referral.time_slots.many?
+        %p.lead.text-center
+          Select all the times you're available
+
       - @referral.time_slots.group_by(&:date).each do |date, time_slots|
         .mb-1
           %small.text-uppercase= date.to_s(:wday_long_ordinal)

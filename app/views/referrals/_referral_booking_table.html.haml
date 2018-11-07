@@ -12,7 +12,7 @@
         %td
           %strong= time_slot.started_at.to_s(:time_of_day)
         %td
-          %label.w-100{ for: "reservation_time_slots_#{time_slot.id}"}
+          %label.w-100{ for: "reservation_time_slots_#{time_slot.id}" }
             %small #{runners.size} #{"runner".pluralize(runners.size)} signed up
             = render "shared/avatars_list", avatars: runners, class: "justify-content-start mb-1"
         %td
@@ -23,12 +23,14 @@
               .form-check
                 %label.w-100.h-100
                   - checked = reservation && reservation.time_slots.include?(time_slot)
-                  = radio_button_tag "reservation[time_slot_ids][]", time_slot.id, checked, class: "form-control"
+                  = radio_button_tag "reservation[time_slot_ids][]", time_slot.id, checked,
+                    class: "form-control", id: "reservation_time_slots_#{time_slot.id}"
             - elsif local_assigns[:checkbox] || time_slots.many?
               .form-check
                 %label.w-100.h-100
                   - checked = reservation && reservation.time_slots.include?(time_slot)
-                  = check_box_tag "reservation[time_slot_ids][]", time_slot.id, checked, class: "form-control"
+                  = check_box_tag "reservation[time_slot_ids][]", time_slot.id, checked,
+                    class: "form-control", id: "reservation_time_slots_#{time_slot.id}"
             - else
               = hidden_field_tag "reservation[time_slot_ids][]", time_slot.id
 
