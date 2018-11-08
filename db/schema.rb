@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_06_111237) do
+ActiveRecord::Schema.define(version: 2018_11_07_162533) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,6 +74,12 @@ ActiveRecord::Schema.define(version: 2018_11_06_111237) do
     t.index ["sender_type", "sender_id"], name: "index_emails_on_sender_type_and_sender_id"
   end
 
+  create_table "missions", force: :cascade do |t|
+    t.datetime "started_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "postcodes", force: :cascade do |t|
     t.string "postcode"
     t.float "lat"
@@ -109,7 +115,9 @@ ActiveRecord::Schema.define(version: 2018_11_06_111237) do
     t.datetime "confirmation_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "mission_id"
     t.index ["coach_id"], name: "index_referrals_on_coach_id"
+    t.index ["mission_id"], name: "index_referrals_on_mission_id"
     t.index ["postcode_id"], name: "index_referrals_on_postcode_id"
     t.index ["referrer_id"], name: "index_referrals_on_referrer_id"
   end

@@ -36,10 +36,11 @@ module Referral::HasStateMachine
     return unless approved?
     return if expired?
 
-    time_slots.joins(:reservations)
-      .having("count(reservations.*) >= ?", volunteers_needed)
-      .group("time_slots.started_at")
-      .any?
+    scheduled_time_slots.any?
+  end
+
+  def listed?
+    mission.present?
   end
 
   def state_machine

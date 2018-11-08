@@ -7,6 +7,8 @@ class Referral < ApplicationRecord
   attribute :preferences, :jsonb,
             default: -> { { lifting: false, cats: false, dogs: false, smoking: false } }
 
+  belongs_to :mission, optional: true
+
   def self.durations
     { 15 => "15 minutes or less",
       30 => "30 minutes",
@@ -89,6 +91,12 @@ class Referral < ApplicationRecord
     when :tomorrow_morning then self.confirmation_by = Time.now.end_of_day + 8.hours
     when :tomorrow_evening then self.confirmation_by = Time.now.end_of_day + 16.hours
     end
+  end
+
+  def scheduled_time_slots
+    time_slots.joins(:reservations)
+      .having("count(reservations.*) >= ?", volunteers_needed)
+      .group("time_slots.id, time_slots.started_at")
   end
 
   def geometry
