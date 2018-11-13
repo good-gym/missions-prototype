@@ -16,9 +16,7 @@
   - if @available_alerts.any?
     #{@available_alerts.runners.size} volunteers available
 
-    .alert-placeholder.pt-2.mt-2
-      .container
-        %h3 Debug
-        = render "shared/weekly_schedule_heat_map", schedule: @available_alerts.joint_schedule
+    - content_for(:debug) do
+      = render "shared/weekly_schedule_heat_map", schedule: @available_alerts.joint_schedule
 
   = render "map_slots", slots: @available_slots if @available_slots.any?
