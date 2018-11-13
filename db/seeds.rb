@@ -125,6 +125,7 @@ def create_referral(postcode, time, referrer, coordinator)
   referral.save!
 
   Referral::Approve.call(referral, approver: coordinator)
+  referral
 end
 
 # areas = ["Bristol", "Newham"]
@@ -133,11 +134,12 @@ end
 [
   ["E9 7JX"],
   ["BS14 9SL", "BS5 6RP", "BS4 1UF"], # Bristol
+  ["NW3 2YH", "NW3 5RR", "NW1 8UE"], # Camden
+  ["CR5 2JA", "CR0 1BX", "CR0 3QX"], # Croydon
+  ["W5 4ES", "W5 4BL", "W3 8JP"], # Hounslow
   ["E6 3LZ", "E6 3HT", "E7 0NN"], # Newham
-  # ["YO32 3NL", "YO32 2QL", "YO10 3PA"],
-  # ["SE1 5LP", "SE16 3QE", "SE5 7BB"],
-  # ["W5 4ES", "W5 4BL", "W3 8JP"],
-  # ["CR5 2JA", "CR0 1BX", "CR0 3QX"]
+  ["SE1 5LP", "SE16 3QE", "SE5 7BB"], # Southwark
+  ["YO32 3NL", "YO32 2QL", "YO10 3PA"] # York
 ].each do |area_postcodes|
   times = [
     1.week.from_now.beginning_of_week - 12.hours,
@@ -146,9 +148,9 @@ end
   ]
 
   area_postcodes.each_with_index do |postcode, i|
-    create_referral(postcode, times[i], coordinator)
+    create_referral(postcode, times[i], referrer, coordinator)
   end
 end
 
-referral = create_referral("E97JX", 1.week.from_now, referrer, coordinator)
+referral = create_referral("E97JX", 1.week.from_now.beginning_of_hour, referrer, coordinator)
 referral.time_slots.each { |ts| ts.update(started_at: ts.started_at - 1.month) }
